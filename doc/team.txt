@@ -1,9 +1,5 @@
-mkolson1	tokaikeio
-
-ssalman2        samiras24
-
-anurag5		anurag1102990
-
-sukhmanj	sukhman1902
-
-fudu            F-udu
+mkolson1 tokaikeio
+ssalman2 samiras24
+anurag5	anurag1102990
+sukhmanj sukhman1902
+fudu F-udu

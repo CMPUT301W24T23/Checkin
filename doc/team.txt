@@ -1,5 +1,10 @@
 mkolson1	tokaikeio
+<<<<<<< HEAD
 
 ssalman2        samiras24
 
 anurag5		anurag1102990
+=======
+anurag5		anurag1102990
+sukhmanj	sukhman1902
+>>>>>>> 7b90b43 (done)

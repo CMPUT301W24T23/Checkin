@@ -2,8 +2,8 @@
 Backlog for features to be implemented.
 
 Size is estimated in "story points"
-	Story points are denoted as how important the function is to program
-	1 being less important, 5 being crucial 
+	Story points are the effort required for implementation
+	1 being least effort, 5 being max effort 
 Risk Level denoted as "High", "Medium," or "Low".
 	Risk level denotes difficulty of implementation
 ====================================================
@@ -16,14 +16,14 @@ US 01.01.01
 	Features:
 		- Event Creation
 		- QR Code Generation
-	Size: 5
+	Size: 3
 	Risk: Low
 
 US 01.01.02
 - As an organizer, I want the option to reuse an existing QR code for attendee check-ins.
 	Features:
 		- Reuse an existing QR Code
-	Size: 3
+	Size: 2
 	Risk: High
 
 US 01.02.01
@@ -31,21 +31,21 @@ US 01.02.01
   my event.
 	Features:
 		- Checked-in attendee list for organizers
-	Size: 3 
+	Size: 1 
 	Risk: Medium
 
 US 01.03.01
 - As an organizer, I want to send notifications to all attendees through the app.
 	Features:
 		- Send notifications to all attendees
-	Size:  5
-	Risk:	Low
+	Size: 4
+	Risk: Medium
 
 US 01.04.01
 - As an organizer, I want to upload an event poster to provide visual information to attendees.
 	Features:
 		- Poster image upload
-	Size: 5 
+	Size: 1 
 	Risk: Low
 
 US 01.05.01
@@ -60,31 +60,30 @@ US 01.06.01
 - As an organizer, I want to share a generated QR code image to other apps so I can email or update other documents with the QR code.
 	Features:
 		- Sharing QR Code image
-	Size: 4
+	Size: 2
 	Risk: Low
 
 US 01.07.01
 - As an organizer, I want to create a new event and generate a unique promotion QR code that links to the event description and poster within the app.
 	Features:
 		- Event-sharing QR code, links to event page
-	Size: 4
+	Size: 3
 	Risk: Medium
 
 
 US 01.08.01
 - As an organizer, I want to see on a map where users are checking in from
-- (Optional?)
 	Features:
 		- See where users are checking in from
-	Size: 1
+	Size: 5
 	Risk: High
 
 US 01.09.01
 - As an organizer, I want to see how many times an attendee as checked into an event
 	Features:
 		-User check-in count display for org
-	Size: 1 
-	Risk: High
+	Size: 3 
+	Risk: Medium
 
 =========================================================================
 Attendee Features
@@ -93,7 +92,7 @@ US 02.01.01
 - As an attendee, I want to quickly check into an event by scanning the provided QR code
 	Features:
 		- User check-in via QR code
-	Size: 5
+	Size: 2
 	Risk: Low
 
 US 02.02.01
@@ -114,28 +113,28 @@ US 02.02.03
 - As an attendee, I want to update information such as name, homepage, and contact information on my profile.
 	Features:
 		- User contact information
-	Size: 2
+	Size: 1
 	Risk: Low
 
 US 02.03.01
-- As an attendee, Iw ant to receive push notifications with important updates from the event organizers
+- As an attendee, I want to receive push notifications with important updates from the event organizers
 	Features:
 		- Receive event push notifications
-	Size: 5
+	Size: 4
 	Risk: Medium
 
 US 02.04.01
 - As an attendee, I want to view event details and announcements within the app.
 	Features:
 		- View event details
-	Size: 4
-	Risk: Medium
+	Size: 2
+	Risk: Low 
 
 US 02.05.01
 - As an attendee, I want my profile picture to be deterministically generated from my profile name if I haven't uploaded an image yet.
 	Features:
 		- Deterministic profile pic generation
-	Size: 1
+	Size: 2
 	Risk: Medium
 
 US 02.06.01
@@ -144,18 +143,17 @@ US 02.06.01
 		-Device-specific profiles?
 		- Persistent Login?
 	Size: 5 
-	Risk: Medium
+	Risk: High
 
 ============================================================================
 Features for both:
 
 US 03.02.01
 - As a user, I want the option to enable or disable geolocation tracking for event verification
-- (Optional?)
 	Features:
 		- Geolocation tracking toggle
 	Size: 1
-	Risk: Medium
+	Risk: Low
 
 =============================================================================
 Administrator Features:
@@ -164,35 +162,34 @@ US 04.01.01
 - As an administrator, I want to be able to remove events
 	Features:
 		- Event removal
-	Size: 5
+	Size: 3
 	Risk: High
 
 US 04.02.01
 - As an administrator, Iw ant to be able to remove profiles
 	Features:
 		- Profile removal
-	Size: 3
-	Risk: Medium
+	Size: 1
+	Risk: Low
 
-US 04.03.01
-- As an administrator, I want to be able to remove images
+US 04.03.01 - As an administrator, I want to be able to remove images
 	Features:
 		- Image removal
-	Size: 4
+	Size: 3
 	Risk: Medium
 
 US 04.04.01
 - As an administrator, I want to be able to browse events
 	Features:
 		- Event browsing
-	Size: 5
+	Size: 3
 	Risk: Low
 
 US 04.05.01
 - As an administrator, I want to be able to browse profiles
 	Features:
 		- Profile browsing
-	Size: 4
+	Size: 2
 	Risk: Medium
 
 US 04.06.01

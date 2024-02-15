@@ -1,0 +1,117 @@
+Classes:
+
+Admin
+	Responsibilities:
+	- removes events
+	- removes users
+	- removes images
+	- browses events
+	- browses users (UserList)
+	- browse images
+	Collaboration:
+	- User
+	- Events
+	- UserList
+	- ImageList
+	
+Attendee
+	Responsibilities:
+	- checks-in to events
+	- uploads profile picture
+	- removes profile picture
+	- uploads contact information
+	- receives push notifications
+	- views event details
+	- automatically logs in
+	- toggles geolocation tracking
+	Collaboration:
+	- User
+	- Event
+	- EventList
+	- ImageList
+	- Image
+
+	
+Organizer
+	Responsibilities:
+	- creates events
+	- generates qr codes 
+	- assigns qr code to events
+	- checks list of checked-in attendees
+	- sends notifications
+	- uploads poster images
+	- tracks attendance
+	- receives milestone alerts
+	- shares QR codes
+	- shares events
+	- sees user location
+	- sees attendee check-in count
+	- toggles geolocation tracking
+	Collaboration:
+	- User
+	- QRCode
+	- QRCodeList
+	- Event
+	- AttendeeList
+	- EventList
+	
+AttendeeList
+	Responsibilities
+	- has list of attendees
+	- can see number of checked-in user when passed an event
+	Collaboration:
+	- Event
+	- User
+	
+Notification
+	Responsibilities:
+	- has title
+	- has message
+	- sent to Attendee by Organizer
+	Collaboration:
+	- Attendee
+	- Organizer
+	
+QRCode
+	Responsibilities:
+	- is part of the QRCodeList
+	- has an event
+	- removed from events
+	- attached to a events
+	Collaboration:
+	- QRCodeList
+	- Event
+	
+QRCodeList
+	Responsibilities:
+	- holds all QRCodes
+	- return unused QR Codes
+	Collaboration:
+	- QRCode
+
+Event
+	Responsibilities:
+	- has image (poster)
+	- has QR Code
+	Collaboration:
+	- Image
+	- ImageList
+	- QRCode
+	- QRCodeList
+	
+EventList
+	- has events
+	Collaboration
+	- Event
+	
+Image
+	Responsibilities:
+	- is a profile picture or poster
+	Collaboration:
+	
+ImageList
+	- has all images in the app
+	- has list of profile pictures
+	- has list of poster images
+	Collaboration:
+	- Image

@@ -1,201 +1,263 @@
 ====================================================
+
 Backlog for features to be implemented.
 
 Size is estimated in "story points"
+
 	Story points are the effort required for implementation
+
 	1 being least effort, 5 being max effort 
+
 Risk Level denoted as "High", "Medium," or "Low".
+
 	Risk level denotes difficulty of implementation
+
 ====================================================
 
 Organizer Features:
 
 US 01.01.01 
 - As an organizer, I want to create a new event and generate a unique
+
   QR code for attendee check-ins.
+
 	Features:
+
 		- Event Creation
+
 		- QR Code Generation
+
 	Size: 3
 	Risk: Low
 
 US 01.01.02
 - As an organizer, I want the option to reuse an existing QR code for attendee check-ins.
+
 	Features:
 		- Reuse an existing QR Code
+
 	Size: 2
 	Risk: High
 
 US 01.02.01
 - As an organizer, I want to view the list of attendees who have checked in to
   my event.
+
 	Features:
 		- Checked-in attendee list for organizers
+
 	Size: 1 
 	Risk: Medium
 
 US 01.03.01
 - As an organizer, I want to send notifications to all attendees through the app.
+
 	Features:
 		- Send notifications to all attendees
+
 	Size: 4
 	Risk: Medium
 
 US 01.04.01
 - As an organizer, I want to upload an event poster to provide visual information to attendees.
+
 	Features:
 		- Poster image upload
+
 	Size: 1 
 	Risk: Low
 
 US 01.05.01
 - As an organizer, I want to track real-time attendance and receive alerts for important milestones.
+
 	Features:
 		- Track realtime attendance
 		- Milestone alerts
+
 	Size: 3
 	Risk: Medium
 
 US 01.06.01
 - As an organizer, I want to share a generated QR code image to other apps so I can email or update other documents with the QR code.
+
 	Features:
 		- Sharing QR Code image
+
 	Size: 2
 	Risk: Low
 
 US 01.07.01
 - As an organizer, I want to create a new event and generate a unique promotion QR code that links to the event description and poster within the app.
+
 	Features:
 		- Event-sharing QR code, links to event page
+
 	Size: 3
 	Risk: Medium
 
 
 US 01.08.01
 - As an organizer, I want to see on a map where users are checking in from
+
 	Features:
 		- See where users are checking in from
+
 	Size: 5
 	Risk: High
 
 US 01.09.01
 - As an organizer, I want to see how many times an attendee as checked into an event
+
 	Features:
 		-User check-in count display for org
+
 	Size: 3 
 	Risk: Medium
 
 =========================================================================
+
 Attendee Features
 
 US 02.01.01
 - As an attendee, I want to quickly check into an event by scanning the provided QR code
+
 	Features:
 		- User check-in via QR code
+
 	Size: 2
 	Risk: Low
 
 US 02.02.01
 - As an attendee, I want to upload a profile picture for a more personalized experience
+
 	Features:
 		-Profile Picture upload
+
 	Size: 1
 	Risk: Low
 
 US 02.02.02
 - As an attendee, I want to remove a profile picture if need be
+
 	Features:
 		- Profile picture removal
+
 	Size: 1
 	Risk: Low
 
 US 02.02.03
 - As an attendee, I want to update information such as name, homepage, and contact information on my profile.
+
 	Features:
 		- User contact information
+
 	Size: 1
 	Risk: Low
 
 US 02.03.01
 - As an attendee, I want to receive push notifications with important updates from the event organizers
+
 	Features:
 		- Receive event push notifications
+
 	Size: 4
 	Risk: Medium
 
 US 02.04.01
 - As an attendee, I want to view event details and announcements within the app.
+
 	Features:
 		- View event details
+
 	Size: 2
 	Risk: Low 
 
 US 02.05.01
 - As an attendee, I want my profile picture to be deterministically generated from my profile name if I haven't uploaded an image yet.
+
 	Features:
 		- Deterministic profile pic generation
+
 	Size: 2
 	Risk: Medium
 
 US 02.06.01
 - As an attendee, I do not want to login to the app, No username, no password
+
 	Features:
 		-Device-specific profiles?
 		- Persistent Login?
+
 	Size: 5 
 	Risk: High
 
 ============================================================================
+
 Features for both:
 
 US 03.02.01
 - As a user, I want the option to enable or disable geolocation tracking for event verification
+
 	Features:
 		- Geolocation tracking toggle
+
 	Size: 1
 	Risk: Low
 
 =============================================================================
+
 Administrator Features:
 
 US 04.01.01
 - As an administrator, I want to be able to remove events
+
 	Features:
 		- Event removal
+
 	Size: 3
 	Risk: High
 
 US 04.02.01
 - As an administrator, Iw ant to be able to remove profiles
+
 	Features:
 		- Profile removal
+
 	Size: 1
 	Risk: Low
 
 US 04.03.01 - As an administrator, I want to be able to remove images
+
 	Features:
 		- Image removal
+
 	Size: 3
 	Risk: Medium
 
 US 04.04.01
 - As an administrator, I want to be able to browse events
+
 	Features:
 		- Event browsing
+
 	Size: 3
 	Risk: Low
 
 US 04.05.01
 - As an administrator, I want to be able to browse profiles
+
 	Features:
 		- Profile browsing
+
 	Size: 2
 	Risk: Medium
 
 US 04.06.01
 - As an administrator, I want to be able to browse images	
+
 	Features:
 		- Image browsing
+
 	Size: 2
 	Risk: High
 

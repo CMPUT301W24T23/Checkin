@@ -56,8 +56,21 @@ public class Event {
 
     }
 
+    /**
+     * Return the array of attendees who are subscribed to the event
+     * @return
+     */
+    public ArrayList<Attendee> getAttendees() {
+        return Attendees;
+    }
 
-
+    /**
+     * Return the array of attendees who are currently checked in to the event
+     * @return
+     */
+    public ArrayList<Attendee> getCheckInList() {
+        return CheckInList;
+    }
 
     public int getEventId() {
         return EventId;

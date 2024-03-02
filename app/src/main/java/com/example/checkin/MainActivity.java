@@ -23,12 +23,11 @@ public class MainActivity extends AppCompatActivity {
         attendeebutton = findViewById(R.id.attendeebtn);
 
 
-
         attendeebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // add new fragment
-
+                Intent intent = new Intent(getApplicationContext(), AttendeeView.class);
+                startActivity(intent);
             }
         });
 
@@ -36,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
         organizerbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // add new fragment 
+                Intent intent = new Intent(getApplicationContext(), OrganizerView.class);
+                startActivity(intent);
 
             }
         });

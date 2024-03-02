@@ -17,16 +17,34 @@ public class Organizer implements User{
     //          add event posters
     //          remove event posters
     //          has: created events
+    //          UserID generation, firebase integration
 
     //TODO:
     //public addQR(){}              //organizer generates a QR Code
     //TODO:
     //public deleteQR(){}           //organizer deletes one of their QR Codes
+
+    private int generateUserId() {
+        //TODO: Generate the userId for a new user
+        //      Integration with firebase needed in order to have unique IDs
+        //      idea: increment from zero, check if ID is in use, when
+        //            vacant ID is found, assign that to this user
+        return 1;
+    }
+
+    /**
+     * Generates a new Organizer
+     */
+    public Organizer() {
+        this.userId = generateUserId();
+    }
+
+
     //GEOLOCATION===================================================================================
 
-        /**
-         * Toggles the user's geolocation tracking settings
-         */
+    /**
+     * Toggles the user's geolocation tracking settings
+     */
     public void toggleTracking() {
         if (geoTracking) {
             this.geoTracking = false;

@@ -32,6 +32,10 @@ public class Event {
         //            vacant ID is found, assign that to this user
         return 1;
     }
+
+    /**
+     * Creates a new Event
+     */
     public Event() {
         this.EventId = generateEventId();
     }
@@ -48,16 +52,33 @@ public class Event {
     //public void removeQRCODE(){}
 
     //Subscription=============================================================
-    public void userSubs (Attendee a){
+
+    /**
+     * Subscribes a user to the event to mark them as opting in to related notifications
+     * @param a
+     * a valid Attendee object
+     */
+    public void userSubs(Attendee a){
         //Attendee subscribes to receiving information updates
         Subscribers.addAttendee(a);
     }
 
+    /**
+     * Unsubscribes a user to the event to mark them as opting out to related notifications
+     * @param a
+     * a valid Attendee object
+     */
     public void userUnSubs (Attendee a){
         //Attendee unsubscribes to receiving information updates
         Subscribers.removeAttendee(a);
     }
 
+    /**
+     * Check if a user is subscribed to the event
+     * @param a
+     * a valid Attendee object
+     * @return
+     */
     public boolean IsSubscribed(Attendee a){
         for (Attendee user: Subscribers.getAttendees()){
             if (user == a){
@@ -68,6 +89,11 @@ public class Event {
     }
 
     //Attendee checkin==========================================================
+
+    /**
+     * Checks a user a into the event
+     * @param a
+     */
     public void userCheckIn (Attendee a){
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
@@ -84,6 +110,7 @@ public class Event {
     /**
      * Check if the attendee is checked in
      * @param a
+     * a valid Attendee object
      * @return
      * returns true or false
      */

@@ -11,6 +11,8 @@ import java.util.ArrayList;
  * Has separate lists for posters and profile pictures
  */
 public class ImageList {
+    //TODO: add/removing posters
+    //      add/remove profilepictures
     //From CRC cards:
             //Has all images in the app
             //has list of profile pictures

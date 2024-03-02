@@ -10,7 +10,9 @@ public class AttendeeList {
     /**
      * Returns the number of attendees checked in to the event
      * @param e
+     * a valid event object
      * @return
+     * the number of attendees currently checked in
      */
     public int CheckedInCount(Event e){
         int count = 0;
@@ -25,6 +27,7 @@ public class AttendeeList {
     /**
      * Find if Attendee exists in list
      * @param toFind
+     * a valid Attendee object to be found
      * @return
      * boolean
      */
@@ -43,6 +46,7 @@ public class AttendeeList {
     /**
      * Adds an attendee to the list
      * @param a
+     * a valid Attendee object
      */
     public void addAttendee(Attendee a){
         Attendees.add(a);
@@ -51,6 +55,7 @@ public class AttendeeList {
     /**
      * Removes an attendee from the list
      * @param a
+     * a valid Attendee object
      */
     public void removeAttendee(Attendee a){
         Attendees.remove(a);

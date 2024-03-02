@@ -11,15 +11,19 @@ public class Event {
     //      - assign poster
     //      - remove poster
     //      - event ID generation
+    //      - Geolocation integration
+    //              - has: physical boundaries? i'm not sure how geolocation would work
     //      - Firebase Integration
 
     private int EventId;        //unique identifier for event
-    private Image poster;
+    private Image poster;       //event poster
     //private QRCode code;
 
-    private ArrayList<Attendee> Attendees;      //list of attendees subscribed to the event TODO: Firebase Integration
-    private ArrayList<Attendee> CheckInList;    //attendees CURRENTLY checked in to the event TODO: Firebase Integration
 
+    private AttendeeList Subscribers;      //Notation: "Subscribers" refers attendees who
+                                                  //are 'subscribed' to receive event notifications
+                                                  //TODO: Firebase Integration
+    private AttendeeList CheckInList;    //attendees CURRENTLY checked in to the event TODO: Firebase Integration
 
     private int generateEventId(){
         //TODO: Generate the EventId for a new event
@@ -31,44 +35,73 @@ public class Event {
     public Event() {
         this.EventId = generateEventId();
     }
+    //Poster Image===============================================================
 
+    //pri
+
+    //QR CODE=====================================================================
+
+    //TODO: Adding QR Code
+    //public void addQRCode(QRCode qr){}
+
+    //TODO: Removing QR Code
+    //public void removeQRCODE(){}
+
+    //Subscription=============================================================
     public void userSubs (Attendee a){
         //Attendee subscribes to receiving information updates
-        Attendees.add(a);
+        Subscribers.addAttendee(a);
     }
 
     public void userUnSubs (Attendee a){
         //Attendee unsubscribes to receiving information updates
-        Attendees.remove(a);
+        Subscribers.removeAttendee(a);
     }
 
+    //Attendee checkin==========================================================
     public void userCheckIn (Attendee a){
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             a.CheckIn(this);
-            CheckInList.remove(a);
+            CheckInList.removeAttendee(a);
         } else{
             //otherwise the user is checking in
             a.CheckIn(this);
-            CheckInList.add(a);
+            CheckInList.addAttendee(a);
         }
 
 
     }
+    /**
+     * Check if the attendee is checked in
+     * @param a
+     * @return
+     * returns true or false
+     */
+    public boolean IsCheckedIn(Attendee a){
+        for (Attendee user: CheckInList.getAttendees()){
+            if (user == a){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //GETTER/SETTER=====================================================================
 
     /**
      * Return the array of attendees who are subscribed to the event
      * @return
      */
-    public ArrayList<Attendee> getAttendees() {
-        return Attendees;
+    public AttendeeList getSubscribers() {
+        return Subscribers;
     }
 
     /**
      * Return the array of attendees who are currently checked in to the event
      * @return
      */
-    public ArrayList<Attendee> getCheckInList() {
+    public AttendeeList getCheckInList() {
         return CheckInList;
     }
 

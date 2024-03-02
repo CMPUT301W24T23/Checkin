@@ -20,7 +20,7 @@ public class Attendee implements User {
     private int userId;     //the user's ID
     private Image profilePicture;               //TODO: the user's profile picture
 
-    private EventList CheckInHistory;      //array containing the user's check-in history
+    private EventList CheckInHistory = new EventList();      //array containing the user's check-in history
 
     private boolean geoTracking;
 

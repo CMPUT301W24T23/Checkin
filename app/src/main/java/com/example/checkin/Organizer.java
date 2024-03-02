@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Organizer implements User{
     private int userId;
-    private EventList CreatedEvents;     //events this user has created
+    private EventList CreatedEvents = new EventList();     //events this user has created
     private boolean geoTracking;
 
     //private QRCodeList QRCodes;       //the qr codes this organizer has generated

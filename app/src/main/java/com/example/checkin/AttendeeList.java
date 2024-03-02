@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class AttendeeList {
     //has list of attendees
     //see # of checked-in users when passed an event
-    private ArrayList<Attendee> Attendees;
+    private ArrayList<Attendee> Attendees = new ArrayList<Attendee>();
 
     /**
      * Returns the number of attendees checked in to the event
@@ -29,6 +29,9 @@ public class AttendeeList {
      * boolean
      */
     public boolean contains (Attendee toFind){
+        if (Attendees.isEmpty()){
+            return false;
+        }
         for (Attendee a: Attendees){
             if (a == toFind){
                 return true;

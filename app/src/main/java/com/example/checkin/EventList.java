@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class EventList {
     //TODO:
     //      - Firebase Integration
-    private ArrayList<Event> Events;        //array of all events
+    private ArrayList<Event> Events = new ArrayList<Event>();        //array of all events
 
     public void addEvent (Event e){
         Events.add(e);

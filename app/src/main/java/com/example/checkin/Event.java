@@ -18,12 +18,12 @@ public class Event {
     private int EventId;        //unique identifier for event
     private Image poster;       //event poster
     //private QRCode code;
-
-
-    private AttendeeList Subscribers;      //Notation: "Subscribers" refers attendees who
+    private AttendeeList Subscribers = new AttendeeList();
+                                                //Notation: "Subscribers" refers attendees who
                                                   //are 'subscribed' to receive event notifications
                                                   //TODO: Firebase Integration
-    private AttendeeList CheckInList;    //attendees CURRENTLY checked in to the event TODO: Firebase Integration
+    private AttendeeList CheckInList = new AttendeeList();
+                            //attendees CURRENTLY checked in to the event TODO: Firebase Integration
 
     private int generateEventId(){
         //TODO: Generate the EventId for a new event
@@ -56,6 +56,15 @@ public class Event {
     public void userUnSubs (Attendee a){
         //Attendee unsubscribes to receiving information updates
         Subscribers.removeAttendee(a);
+    }
+
+    public boolean IsSubscribed(Attendee a){
+        for (Attendee user: Subscribers.getAttendees()){
+            if (user == a){
+                return true;
+            }
+        }
+        return false;
     }
 
     //Attendee checkin==========================================================

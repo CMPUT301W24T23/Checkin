@@ -24,6 +24,16 @@ public class AttendeeList {
         return count;
     }
 
+    public int SubscribedCount(Event e){
+        int count = 0;
+        for(Attendee a: Attendees){
+            if(e.IsSubscribed(a)){
+                count += 1;
+            }
+        }
+        return count;
+    }
+
     /**
      * Find if Attendee exists in list
      * @param toFind
@@ -50,6 +60,21 @@ public class AttendeeList {
      */
     public void addAttendee(Attendee a){
         Attendees.add(a);
+
+        //FirebaseFirestore db = FirebaseFirestore.getInstance();
+        //CollectionReference attendeeRef;
+        //attendeeRef = db.collection("Attendees");
+
+        //HashMap<String, String> data = new HashMap<>();
+        //data.put("Name", a.getName());
+        //data.put("Homepage", a.getHomepage());
+        //data.put("Email", a.getEmail());
+        //data.put("Phone", a.getPhoneNumber());
+        //data.put("Tracking", Boolean.toString(a.trackingEnabled()));
+
+        // attendeeRef.document(Integer.toString(a.getUserId())).set(data);
+
+        //attendeeRef.set(a);
     }
 
     /**

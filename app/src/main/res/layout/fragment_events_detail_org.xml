@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/eventname_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:textSize="45dp" />
+
+    <EditText
+        android:id="@+id/eventdetails_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventname_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-91dp"
+        android:text="Event Details"
+        android:textColor="@color/pink"
+        android:textSize="20sp" />
+
+
+    <Button
+        android:id="@+id/attendeeslistbtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventdetails_txt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-360dp"
+        android:text="Event Attendees" />
+
+    <Button
+        android:id="@+id/codebtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventdetails_txt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-260dp"
+        android:text="Event QR Code" />
+
+    <Button
+        android:id="@+id/posterbtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventdetails_txt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-210dp"
+        android:text="Event Poster" />
+    <Button
+        android:id="@+id/detailscode"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventdetails_txt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-310dp"
+        android:text="Promotion QR Code" />
+
+
+</RelativeLayout>

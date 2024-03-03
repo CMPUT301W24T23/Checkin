@@ -3,7 +3,6 @@ package com.example.checkin;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -23,6 +22,7 @@ public class OrganizerView extends AppCompatActivity {
 
 
         OrganizerFragment1 org_frag1= new OrganizerFragment1();
+        CheckedInList_org check_frag1= new CheckedInList_org();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.org_view, org_frag1)
@@ -46,6 +46,10 @@ public class OrganizerView extends AppCompatActivity {
                     //implement
                 }
                 else if (item.getItemId() == R.id.attendees){
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.org_view, check_frag1)
+                            .commit();
                    //implement
                 }
                 return false;

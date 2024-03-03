@@ -18,6 +18,7 @@ public class AttendeeView extends AppCompatActivity {
         setContentView(R.layout.activity_attenndee_view);
 
         AttendeeFragment1 att_frg1 = new AttendeeFragment1();
+        Announcements ann_frg1 = new Announcements();
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -41,7 +42,11 @@ public class AttendeeView extends AppCompatActivity {
                     //implement when fragment created
                 }
                 else if (item.getItemId() == R.id.messages2){
-                    //implement when fragment created
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.atten_view, ann_frg1)
+                            .commit();
+
                 }
                 else if (item.getItemId() == R.id.profile){
                     //implement when fragment created

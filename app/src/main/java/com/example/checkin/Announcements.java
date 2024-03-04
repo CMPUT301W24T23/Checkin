@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
+// Announcements page that shows messages received by event organizers
 public class Announcements extends Fragment {
 
 

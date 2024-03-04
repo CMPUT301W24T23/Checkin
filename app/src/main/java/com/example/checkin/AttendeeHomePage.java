@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-
-public class OrganizerFragment1 extends Fragment {
+// Shows Home page for Attendee Perspective
+public class AttendeeHomePage extends Fragment {
 
     private ArrayList<Event> datalist;
     private ListView eventslist;
@@ -24,31 +24,24 @@ public class OrganizerFragment1 extends Fragment {
 
     private EventList allevents;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_attendee1, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
+        allevents = new EventList();
 
 
 
         datalist = new ArrayList<>();
-        allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
-        Attendee attendee1 = new Attendee("Amy");
-        Attendee attendee2 = new Attendee("John");
-        attendees1.add(attendee1);
-        Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
-        attendee1.CheckIn(event1);
-        attendee2.CheckIn(event1);
-        event1.userCheckIn(attendee1);
-        event1.userCheckIn(attendee2);
-        datalist.add(event1);
+        attendees1.add(new Attendee("Amy"));
+        Event event1 = new Event("Show", "Starts at 7", attendees1);
         allevents.add(event1);
+        datalist.add(event1);
 
-
+        // if eventlist is not null set EventAdapter to custom EventArrayAdapter
         if (datalist != null) {
             EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
                 @Override
@@ -70,14 +63,16 @@ public class OrganizerFragment1 extends Fragment {
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                EventsDetail_org eventd_frag1= new EventsDetail_org();
+                EventDetail event_frag1= new EventDetail();
                 Bundle args = new Bundle();
                 args.putSerializable("event", datalist.get(i));
-                eventd_frag1.setArguments(args);
+                event_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
 
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).commit();
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, event_frag1).commit();
+                //getParentFragmentManager().beginTransaction().replace(R.id.attendeeviewfrag, event_frag1).addToBackStack(null).commit();
 
 
             }

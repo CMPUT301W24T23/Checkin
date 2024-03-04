@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textColor="@color/black"
+        android:layout_marginTop="40dp"
         android:textSize="45dp" />
 
     <TextView

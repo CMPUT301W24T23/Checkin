@@ -34,7 +34,7 @@ public class OrganizerViewTest {
     }
 
     @Test
-    public void testeventdinfo(){
+    public void testeventinfo(){
 
         // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
@@ -71,9 +71,10 @@ public class OrganizerViewTest {
     @Test
     public void testcheckedin(){
 
-        onView(withId(R.id.attendeebtn)).perform(click());
-        // check if switches to attendee view
-        onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
+        // click on organizer button
+        onView(withId(R.id.organizerbtn)).perform(click());
+        // check if switches to organizer view
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // click on event
         onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events)).perform(click());
@@ -81,8 +82,11 @@ public class OrganizerViewTest {
         onView(withId(R.id.eventdet_org)).check(matches(isDisplayed()));
         // check if it shows name of event
         onView(withId(R.id.attendeeslistbtn)).perform(click());
+        // check if it shows attendees list fragment
         onView(withId(R.id.attendeeslisted_frag)).check(matches(isDisplayed()));
+        // click on checked in attendees
         onView(withId(R.id.checkedinbtn)).perform(click());
+        // check to see checked in list of attendees
         onView(withId(R.id.checkinlist_frag)).check(matches(isDisplayed()));
     }
 

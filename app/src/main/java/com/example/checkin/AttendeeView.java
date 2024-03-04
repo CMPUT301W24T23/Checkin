@@ -3,13 +3,13 @@ package com.example.checkin;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+// Represents the Attendee Perspective of the app
 public class AttendeeView extends AppCompatActivity {
 
     @Override
@@ -17,7 +17,7 @@ public class AttendeeView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attenndee_view);
 
-        AttendeeFragment1 att_frg1 = new AttendeeFragment1();
+        AttendeeHomePage att_frg1 = new AttendeeHomePage();
         Announcements ann_frg1 = new Announcements();
 
         getSupportFragmentManager()

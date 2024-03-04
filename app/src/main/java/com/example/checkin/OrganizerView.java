@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+// Organizer perspective of the app
 public class OrganizerView extends AppCompatActivity {
 
     @Override
@@ -22,7 +22,7 @@ public class OrganizerView extends AppCompatActivity {
         bottomnav.setSelectedItemId(R.id.home);
 
 
-        OrganizerFragment1 org_frag1= new OrganizerFragment1();
+        OrganizerHomePage org_frag1= new OrganizerHomePage();
         Attendeeslisted list_frag = new Attendeeslisted();
         getSupportFragmentManager()
                 .beginTransaction()

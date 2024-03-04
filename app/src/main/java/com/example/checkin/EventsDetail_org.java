@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
+// Shows event information for an organizer
 public class EventsDetail_org extends Fragment {
 
     Button attendeelistbutton;

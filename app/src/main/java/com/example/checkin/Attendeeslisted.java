@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+// Shows page for an events attendees, including those who checked in
 public class Attendeeslisted extends Fragment {
 
     Button checkedinlistbtn;

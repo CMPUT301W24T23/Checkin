@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
+// Event details page for Attendee
 public class EventDetail extends Fragment {
 
 

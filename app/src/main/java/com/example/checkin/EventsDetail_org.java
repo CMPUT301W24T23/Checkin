@@ -65,8 +65,13 @@ public class EventsDetail_org extends Fragment {
             @Override
             public void onClick(View view) {
                 // add attendees list fragment
-                CheckedInList_org check_frag = new CheckedInList_org();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, check_frag).commit();
+                Attendeeslisted list_frag = new Attendeeslisted();
+
+                Bundle args = new Bundle();
+                args.putSerializable("event", myevent);
+                list_frag.setArguments(args);
+                getParentFragmentManager().setFragmentResult("event",args);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, list_frag).commit();
 
             }
         });

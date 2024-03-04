@@ -35,7 +35,7 @@ public class EventDetail extends Fragment {
         View view = inflater.inflate(R.layout.fragment_event_detail, container, false);
 
         eventnametxt =  view.findViewById(R.id.eventname_text);
-        eventdetails = view.findViewById(R.id.eventdetails_txt);
+        eventdetails = view.findViewById(R.id.eventinfo);
         Button eventmessagesbtn = (Button) view.findViewById(R.id.eventmessg);
 
 

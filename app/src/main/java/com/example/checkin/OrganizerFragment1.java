@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -19,6 +21,8 @@ public class OrganizerFragment1 extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
     private ArrayAdapter<Event> EventAdapter;
+
+    private EventList allevents;
 
 
     @Override
@@ -31,13 +35,35 @@ public class OrganizerFragment1 extends Fragment {
 
 
         datalist = new ArrayList<>();
+        allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
-        attendees1.add(new Attendee("Amy"));
-        datalist.add(new Event("Show", "Starts at 7", attendees1));
+        Attendee attendee1 = new Attendee("Amy");
+        Attendee attendee2 = new Attendee("John");
+        attendees1.add(attendee1);
+        Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
+        attendee1.CheckIn(event1);
+        attendee2.CheckIn(event1);
+        event1.userCheckIn(attendee1);
+        event1.userCheckIn(attendee2);
+        datalist.add(event1);
+        allevents.add(event1);
 
-        // if eventlist is not null set EventAdapter to custom EventArrayAdapter
-        if (eventslist != null) {
-            EventAdapter = new EventArrayAdapter(getActivity(), datalist);
+
+        if (datalist != null) {
+            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = convertView;
+                    if (view == null) {
+                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        view = inflater.inflate(R.layout.content, null);
+                    }
+
+                    TextView textView = view.findViewById(R.id.event_text);
+                    textView.setText(datalist.get(position).getEventname());
+                    return view;
+                }
+            };
             eventslist.setAdapter(EventAdapter);
         }
 

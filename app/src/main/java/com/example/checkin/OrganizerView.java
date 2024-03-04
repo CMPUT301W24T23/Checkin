@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,7 +23,7 @@ public class OrganizerView extends AppCompatActivity {
 
 
         OrganizerFragment1 org_frag1= new OrganizerFragment1();
-        CheckedInList_org check_frag1= new CheckedInList_org();
+        Attendeeslisted list_frag = new Attendeeslisted();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.org_view, org_frag1)
@@ -38,6 +39,8 @@ public class OrganizerView extends AppCompatActivity {
                             .beginTransaction()
                             .replace(R.id.org_view, org_frag1)
                             .commit();
+                    return true;
+
                 }
                 else if (item.getItemId() == R.id.qrcodes){
                     // implement
@@ -48,8 +51,10 @@ public class OrganizerView extends AppCompatActivity {
                 else if (item.getItemId() == R.id.attendees){
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.org_view, check_frag1)
+                            .replace(R.id.org_view, org_frag1)
                             .commit();
+                    return true;
+
                    //implement
                 }
                 return false;

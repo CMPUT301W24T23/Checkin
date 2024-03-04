@@ -24,19 +24,24 @@ public class AttendeeFragment1 extends Fragment {
     private ListView eventslist;
     private ArrayAdapter<Event> EventAdapter;
 
+    private EventList allevents;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_attendee1, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
+        allevents = new EventList();
 
 
 
         datalist = new ArrayList<>();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
         attendees1.add(new Attendee("Amy"));
-        datalist.add(new Event("Show", "Starts at 7", attendees1));
+        Event event1 = new Event("Show", "Starts at 7", attendees1);
+        allevents.add(event1);
+        datalist.add(event1);
 
         // if eventlist is not null set EventAdapter to custom EventArrayAdapter
         if (datalist != null) {

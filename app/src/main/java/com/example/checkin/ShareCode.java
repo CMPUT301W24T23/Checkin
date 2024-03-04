@@ -90,7 +90,7 @@ public class ShareCode extends Fragment {
             public void onClick(View view) {
                 BitmapDrawable bitmapdrawable = (BitmapDrawable) imageCode.getDrawable();
                 Bitmap bitmap = bitmapdrawable.getBitmap();
-                shareImageAndText(bitmap, requireContext());
+                shareImage(bitmap, requireContext());
             }
         });
 
@@ -98,8 +98,8 @@ public class ShareCode extends Fragment {
     }
 
     // URL: https://www.geeksforgeeks.org/how-to-share-image-of-your-app-with-another-app-in-android/
-    private void shareImageAndText(Bitmap bitmap, Context context) {
-        Uri uri = getImageToShare(bitmap, context);
+    private void shareImage(Bitmap bitmap, Context context) {
+        Uri uri = getImageShare(bitmap, context);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, "Sharing QR Code" );
         intent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -108,7 +108,7 @@ public class ShareCode extends Fragment {
     }
 
     // URL: https://www.geeksforgeeks.org/how-to-share-image-of-your-app-with-another-app-in-android/
-    private Uri getImageToShare(Bitmap bitmap, Context context) {
+    private Uri getImageShare(Bitmap bitmap, Context context) {
 
         File images = new File(context.getCacheDir(), "images");
         Uri uri = null;

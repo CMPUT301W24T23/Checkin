@@ -37,6 +37,7 @@ public class AttendeeView extends AppCompatActivity {
                             .beginTransaction()
                             .replace(R.id.atten_view, att_frg1)
                             .commit();
+                    return true;
                 }
                 else if (item.getItemId() == R.id.qrcodes2){
                     //implement when fragment created
@@ -46,6 +47,7 @@ public class AttendeeView extends AppCompatActivity {
                             .beginTransaction()
                             .replace(R.id.atten_view, ann_frg1)
                             .commit();
+                    return true;
 
                 }
                 else if (item.getItemId() == R.id.profile){

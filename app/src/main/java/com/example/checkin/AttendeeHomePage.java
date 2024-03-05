@@ -63,7 +63,7 @@ public class AttendeeHomePage extends Fragment {
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                EventDetail event_frag1= new EventDetail();
+                EventDetailAtten event_frag1= new EventDetailAtten();
                 Bundle args = new Bundle();
                 args.putSerializable("event", datalist.get(i));
                 event_frag1.setArguments(args);
@@ -71,8 +71,8 @@ public class AttendeeHomePage extends Fragment {
 
 
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, event_frag1).commit();
-                //getParentFragmentManager().beginTransaction().replace(R.id.attendeeviewfrag, event_frag1).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, event_frag1).addToBackStack(null).commit();
+
 
 
             }

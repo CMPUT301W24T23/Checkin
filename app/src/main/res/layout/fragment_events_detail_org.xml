@@ -66,5 +66,12 @@
         android:layout_marginBottom="-310dp"
         android:text="Promotion QR Code" />
 
+    <Button
+        android:id="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-400dp"
+        android:text="Back" />
+
 
 </RelativeLayout>

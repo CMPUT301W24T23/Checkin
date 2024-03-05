@@ -16,12 +16,15 @@ public class Attendeeslisted extends Fragment {
 
     Event myevent;
 
+    Button backbutton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_attendeeslisted, container, false);
         checkedinlistbtn = view.findViewById(R.id.checkedinbtn);
+        backbutton = view.findViewById(R.id.backbtn);
 
         Bundle bundle = this.getArguments();
 
@@ -31,13 +34,19 @@ public class Attendeeslisted extends Fragment {
         checkedinlistbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CheckedInList_org check_frag = new CheckedInList_org();
+                CheckedInListOrg check_frag = new CheckedInListOrg();
                 Bundle args = new Bundle();
                 args.putSerializable("event", myevent);
                 check_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, check_frag).commit();
 
+            }
+        });
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 

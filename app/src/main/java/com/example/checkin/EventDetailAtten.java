@@ -1,6 +1,5 @@
 package com.example.checkin;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,11 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 // Event details page for Attendee
-public class EventDetail extends Fragment {
+public class EventDetailAtten extends Fragment {
 
 
     Event myevent;
@@ -21,6 +19,8 @@ public class EventDetail extends Fragment {
     TextView eventnametxt;
 
     TextView eventdetails;
+
+    Button backbutton;
 
 
 
@@ -36,7 +36,9 @@ public class EventDetail extends Fragment {
 
         eventnametxt =  view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventinfo);
-        Button eventmessagesbtn = (Button) view.findViewById(R.id.eventmessg);
+        backbutton = view.findViewById(R.id.backbtn);
+
+        eventmessagesbtn = view.findViewById(R.id.eventmessg);
 
 
 
@@ -52,6 +54,13 @@ public class EventDetail extends Fragment {
 
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, announce_frag1).commit();
 
+            }
+        });
+
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         eventnametxt.setText(myevent.getEventname());

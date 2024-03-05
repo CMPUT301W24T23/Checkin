@@ -34,12 +34,23 @@ public class ShareCode extends Fragment {
 
     Button sharebutton;
 
+    Button backbutton;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View view = inflater.inflate(R.layout.fragment_share_code, container, false);
+       backbutton = view.findViewById(R.id.backbtn);
+
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         // Button btnGenerate = view.findViewById(R.id.btnGenerate);
 

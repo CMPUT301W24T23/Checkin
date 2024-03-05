@@ -70,14 +70,14 @@ public class OrganizerHomePage extends Fragment {
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                EventsDetail_org eventd_frag1= new EventsDetail_org();
+                EventsDetailOrg eventd_frag1= new EventsDetailOrg();
                 Bundle args = new Bundle();
                 args.putSerializable("event", datalist.get(i));
                 eventd_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
 
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).addToBackStack(null).commit();
 
 
             }

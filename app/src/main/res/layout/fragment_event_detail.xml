@@ -48,4 +48,11 @@
         android:layout_marginBottom="-100dp"
         android:text="See Announcements" />
 
+    <Button
+        android:id="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-400dp"
+        android:text="Back" />
+
 </RelativeLayout>

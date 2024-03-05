@@ -1,6 +1,5 @@
 package com.example.checkin;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,10 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 // Shows event information for an organizer
-public class EventsDetail_org extends Fragment {
+public class EventsDetailOrg extends Fragment {
 
     Button attendeelistbutton;
 
@@ -24,6 +22,8 @@ public class EventsDetail_org extends Fragment {
 
     EditText eventdetails;
 
+    Button backbutton;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,8 +31,9 @@ public class EventsDetail_org extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_events_detail_org, container, false);
         // Inflate the layout for this fragment
-        Button attendeelistbutton = (Button) view.findViewById(R.id.attendeeslistbtn);
-        Button qrcodebutton = (Button) view.findViewById(R.id.codebtn);
+        attendeelistbutton = (Button) view.findViewById(R.id.attendeeslistbtn);
+        qrcodebutton = (Button) view.findViewById(R.id.codebtn);
+        backbutton = view.findViewById(R.id.backbtn);
         eventnametxt = view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventdetails_txt);
 
@@ -42,6 +43,14 @@ public class EventsDetail_org extends Fragment {
         Bundle bundle = this.getArguments();
         assert bundle != null;
         myevent = (Event) bundle.getSerializable("event");
+
+
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         qrcodebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +64,7 @@ public class EventsDetail_org extends Fragment {
                 code_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, code_frag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, code_frag).addToBackStack(null).commit();
 
 
             }
@@ -71,7 +80,7 @@ public class EventsDetail_org extends Fragment {
                 args.putSerializable("event", myevent);
                 list_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, list_frag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, list_frag).addToBackStack(null).commit();
 
             }
         });

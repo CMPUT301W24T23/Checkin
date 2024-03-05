@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 // Shows list of checked in attendees for an event
-public class CheckedInList_org extends Fragment {
+public class CheckedInListOrg extends Fragment {
 
 
     private ArrayList<Attendee> attendeedatalist;

@@ -33,6 +33,29 @@ public class Attendee implements User {
     private String phoneNumber;
 
     /**
+     * Updates the profile information according to the parameters.
+     * @param userId represents unique userID
+     * @param profilePicture represent profile picture
+     * @param checkInHistory list of the events that user is signed in
+     * @param geoTracking if user allows its geolocation tracking or not
+     * @param name name of the user
+     * @param homepage homepage representing as a other form of profile of the user
+     * @param email email associated to that user
+     * @param phoneNumber registered phone number of the user
+     */
+    private void updateProfile(int userId, Image profilePicture, EventList checkInHistory, boolean geoTracking,
+                               String name, String homepage, String email, String phoneNumber) {
+        this.userId = userId;
+        this.profilePicture = profilePicture;
+        this.CheckInHistory = checkInHistory;
+        this.geoTracking = geoTracking;
+        this.name = name;
+        this.homepage = homepage;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    /**
      * Generates a new unique identifier for the user
      *
      * @return their assigned id.

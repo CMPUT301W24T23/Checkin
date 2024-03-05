@@ -1,11 +1,17 @@
 package com.example.checkin;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AttendeeList {
     //has list of attendees
     //see # of checked-in users when passed an event
     private ArrayList<Attendee> Attendees = new ArrayList<Attendee>();
+
+    public AttendeeList(){}
 
     /**
      * Returns the number of attendees checked in to the event
@@ -60,21 +66,6 @@ public class AttendeeList {
      */
     public void addAttendee(Attendee a){
         Attendees.add(a);
-
-        //FirebaseFirestore db = FirebaseFirestore.getInstance();
-        //CollectionReference attendeeRef;
-        //attendeeRef = db.collection("Attendees");
-
-        //HashMap<String, String> data = new HashMap<>();
-        //data.put("Name", a.getName());
-        //data.put("Homepage", a.getHomepage());
-        //data.put("Email", a.getEmail());
-        //data.put("Phone", a.getPhoneNumber());
-        //data.put("Tracking", Boolean.toString(a.trackingEnabled()));
-
-        // attendeeRef.document(Integer.toString(a.getUserId())).set(data);
-
-        //attendeeRef.set(a);
     }
 
     /**

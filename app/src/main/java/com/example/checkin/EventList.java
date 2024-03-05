@@ -30,5 +30,8 @@ public class EventList {
         //TODO: Firebase integration
     }
 
+    public ArrayList<Event> getEvents(){
+        return Events;
+    }
 
 }

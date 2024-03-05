@@ -5,6 +5,7 @@ import android.media.Image;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class Attendee implements User {
@@ -37,6 +38,36 @@ public class Attendee implements User {
      *
      * @return their assigned id.
      */
+
+
+    /**
+     * Generates a new Attendee
+     */
+    public Attendee() {
+        this.userId = generateUserId();
+
+        //test
+        Random rand = new Random();
+        this.userId = rand.nextInt(50);
+
+
+        //this.profilePicture = generateProfilePicture(); //TODO:
+        this.name = "";
+        this.homepage = "";
+        this.email = "";
+        this.phoneNumber = "";
+        this.geoTracking = true;                   //on by default
+    }
+
+    public Attendee(int id, String n, String home, String mail, String phone, boolean tracking){
+        this.userId = id;
+        this.name = n;
+        this.homepage = home;
+        this.email = mail;
+        this.phoneNumber = phone;
+        this.geoTracking = tracking;
+    }
+
     private int generateUserId() {
         //TODO: Generate the userId for a new user
         //      Integration with firebase needed in order to have unique IDs
@@ -55,15 +86,6 @@ public class Attendee implements User {
     //private void removeProfilePicture(){
     //    this.profilePicture = generateProfilePicture();
     //}
-
-    /**
-     * Generates a new Attendee
-     */
-    public Attendee() {
-        this.userId = generateUserId();
-        //this.profilePicture = generateProfilePicture(); //TODO:
-    }
-
 
     //Event subscription===========================================================================
 

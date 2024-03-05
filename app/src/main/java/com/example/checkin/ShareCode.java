@@ -77,6 +77,12 @@ public class ShareCode extends Fragment {
         return view;
     }
 
+    /**
+     * Shares generated qr code image to other apps
+     * @param bitmap
+     * @param context
+     */
+
     // URL: https://www.geeksforgeeks.org/how-to-share-image-of-your-app-with-another-app-in-android/
     private void shareImage(Bitmap bitmap, Context context) {
         Uri uri = getImageShare(bitmap, context);
@@ -110,6 +116,11 @@ public class ShareCode extends Fragment {
 
     }
 
+    /**
+     * Generates Qr code 
+     * @param myevent
+     * @param imageCode
+     */
     public void generateQRCode(Event myevent, ImageView imageCode){
         String myText = myevent.getEventname();
 

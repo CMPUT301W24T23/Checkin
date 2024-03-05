@@ -39,6 +39,12 @@ public class Event {
     public Event() {
         this.EventId = generateEventId();
     }
+
+    public Event(int id) {
+        this.EventId = id;
+    }
+
+
     //Poster Image===============================================================
 
     //pri

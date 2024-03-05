@@ -18,6 +18,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public class Database {
     FirebaseFirestore db;
     public Database(){}
 
+
+    /* OLD STORE ATTENDEES, does not store the checkins
     public void storeAttendees(AttendeeList aList){
         for (Attendee a: aList.getAttendees()){
 
@@ -42,44 +45,30 @@ public class Database {
 
             //attendeeRef.set(a);
         }
-    }
+    }*/
 
-    public void storeAttendees2(AttendeeList aList){
+    public void storeAttendees(AttendeeList aList){
         for (Attendee a: aList.getAttendees()){
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference attendeeRef = db.collection("Attendees");
 
-            //HashMap<String, String> data = new HashMap<>();
-            //data.put("Name", a.getName());
-            //data.put("Homepage", a.getHomepage());
-            //data.put("Email", a.getEmail());
-            //data.put("Phone", a.getPhoneNumber());
-            //data.put("Tracking", Boolean.toString(a.trackingEnabled()));
-
-            //attendeeRef.document(Integer.toString(a.getUserId())).set(data);
 
             Map<String, Object> data = new HashMap<>();
-           /*data.put("name", "San Francisco");
-            data.put("state", "CA");
-            data.put("country", "USA");
-            data.put("capital", false);
-            data.put("population", 860000);
-            data.put("regions", Arrays.asList("west_coast", "norcal"));*/
-
             data.put("Name", a.getName());
             data.put("Homepage", a.getHomepage());
             data.put("Email", a.getEmail());
             data.put("Phone", a.getPhoneNumber());
             data.put("Tracking", a.trackingEnabled());
-            //data.put("History", a.getCheckIns());
-            /*
+
+
+            //Stores the check in list as a key value pair of (Event Id : # of checkins)
             Map<String, Object> checkins = new HashMap<>();
             EventList events = a.getCheckIns();
-
             for (Event e : events.getEvents()){
-                checkins
-            }*/
+                checkins.put(Integer.toString(e.getEventId()), Collections.frequency(a.getCheckIns().getEvents(), e));
+            }
+            data.put("Checkins", checkins);
 
             attendeeRef.document(Integer.toString(a.getUserId())).set(data);
 

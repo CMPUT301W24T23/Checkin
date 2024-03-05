@@ -44,8 +44,18 @@ public class MainActivity extends AppCompatActivity {
         aList.addAttendee(a2);
         aList.addAttendee(a3);
 
+        Event e = new Event();
+
+        e.userCheckIn(a1);
+        e.userCheckIn(a2);
+        e.userCheckIn(a3);
+        e.userCheckIn(a1);
+        e.userCheckIn(a1);
+        e.userCheckIn(a3);
+
+
         Database db = new Database();
-        db.storeAttendees2(aList);
+        db.storeAttendees(aList);
 /*
         AttendeeList aList = db.loadAttendees();
         for (Attendee a: aList.getAttendees()){

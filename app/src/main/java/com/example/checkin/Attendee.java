@@ -2,13 +2,12 @@ package com.example.checkin;
 
 import android.media.Image;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class Attendee implements User, Serializable {
+public class Attendee implements User {
     //TODO:
     //      - profile picture adding
     //      - profile picture removing
@@ -63,10 +62,6 @@ public class Attendee implements User, Serializable {
     public Attendee() {
         this.userId = generateUserId();
         //this.profilePicture = generateProfilePicture(); //TODO:
-    }
-
-    public Attendee(String name) {
-        this.name = name;
     }
 
 
@@ -207,3 +202,4 @@ public class Attendee implements User, Serializable {
 
 
 }
+

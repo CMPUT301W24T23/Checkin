@@ -6,3 +6,4 @@ public interface User {
     public void setUserId(int id);
 
 }
+

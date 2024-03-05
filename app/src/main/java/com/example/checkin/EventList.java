@@ -1,3 +1,4 @@
+
 package com.example.checkin;
 
 import java.util.ArrayList;
@@ -32,4 +33,5 @@ public class EventList {
 
 
 }
+
 

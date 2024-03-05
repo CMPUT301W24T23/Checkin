@@ -1,3 +1,4 @@
+
 package com.example.checkin;
 
 import android.media.Image;
@@ -192,3 +193,4 @@ public class Event implements Serializable {
 
 
 }
+

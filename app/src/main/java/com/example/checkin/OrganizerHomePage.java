@@ -1,6 +1,7 @@
 package com.example.checkin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,12 +19,13 @@ import java.util.ArrayList;
 
 // Organizer Home page
 public class OrganizerHomePage extends Fragment {
-
     private ArrayList<Event> datalist;
     private ListView eventslist;
     private ArrayAdapter<Event> EventAdapter;
 
     private EventList allevents;
+
+    Button backbutton;
 
 
     @Override
@@ -31,12 +34,14 @@ public class OrganizerHomePage extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_attendee1, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
-
+        backbutton = view.findViewById(R.id.backbtn);
 
 
         datalist = new ArrayList<>();
         allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
+
+        // Add attendees and check them in to test functionality
         Attendee attendee1 = new Attendee("Amy");
         Attendee attendee2 = new Attendee("John");
         attendees1.add(attendee1);
@@ -46,9 +51,18 @@ public class OrganizerHomePage extends Fragment {
         event1.userCheckIn(attendee1);
         event1.userCheckIn(attendee2);
         datalist.add(event1);
-        allevents.add(event1);
+        allevents.addEvent(event1);
 
+        // move back to previous fragment when clicked
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
+        // if event list is not null, then set eventlist
         if (datalist != null) {
             EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
                 @Override
@@ -67,6 +81,7 @@ public class OrganizerHomePage extends Fragment {
             eventslist.setAdapter(EventAdapter);
         }
 
+        // move to details of event fragment when an event is selected
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

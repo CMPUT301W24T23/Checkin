@@ -16,12 +16,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-// Announcements page that shows messages received by event organizers
+// Announcements page that shows messages received by event organizers - will implement sending notifications in next
+// part of project, has mock data for now
 public class Announcements extends Fragment {
-
-
     ListView announcements;
-
     private ArrayList<String> announcelist;
     private ArrayAdapter<String> Announcements_Adapter;
 
@@ -32,15 +30,15 @@ public class Announcements extends Fragment {
         View view = inflater.inflate(R.layout.fragment_announcements, container, false);
 
         announcements = view.findViewById(R.id.announcements_list);
-
-
         announcelist = new ArrayList<>();
 
+        // Add example announcements
         announcelist.add("First Message");
         announcelist.add("Second Message");
 
 
-
+        // if list of announcements is not null, then add messages to Announcements
+        // Represented as strings now, will create announcement objects in next part
         if (announcelist != null) {
             Announcements_Adapter = new ArrayAdapter<String>(getActivity(), R.layout.content, announcelist) {
                 @Override
@@ -50,7 +48,6 @@ public class Announcements extends Fragment {
                         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         view = inflater.inflate(R.layout.content, null);
                     }
-
                     TextView textView = view.findViewById(R.id.event_text);
                     textView.setText(announcelist.get(position));
                     return view;
@@ -58,7 +55,6 @@ public class Announcements extends Fragment {
             };
             announcements.setAdapter(Announcements_Adapter);
         }
-
         return view;
     }
 }

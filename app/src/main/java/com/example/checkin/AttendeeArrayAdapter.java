@@ -25,12 +25,10 @@ public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
         this.context = context;
     }
 
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         //return super.getView(position, convertView, parent);
-
         View view;
         if (convertView == null) {
             view = LayoutInflater.from(getContext()).inflate(R.layout.content2,
@@ -39,14 +37,8 @@ public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
             view = convertView;
         }
         Attendee attendee = getItem(position);
-
         TextView attendeename = view.findViewById(R.id.attendee_name);
-
-
         attendeename.setText(attendee.getName());
-
-
-
         return view;
     }
 }

@@ -1,10 +1,6 @@
 package com.example.checkin;
 
-
 import android.media.Image;
-import android.os.Bundle;
-import android.widget.ImageView;
-
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,53 +12,22 @@ public class Event implements Serializable {
     //      - assign poster
     //      - remove poster
     //      - event ID generation
+    //      - Geolocation integration
+    //              - has: physical boundaries? i'm not sure how geolocation would work
     //      - Firebase Integration
 
-    private int EventId;        //unique identifier for event
-    private Image poster;
-
+    private int EventId;//unique identifier for event
+    private Image poster;       //event poster
+    //private QRCode code;
     private String eventname;
 
     private String eventdetails;
-
-    public Image getPoster() {
-        return poster;
-    }
-
-    public String getEventname() {
-        return eventname;
-    }
-
-    public String getEventdetails() {
-        return eventdetails;
-    }
-
-//private QRCode code;
-
-    private ArrayList<Attendee> Attendees;      //list of attendees subscribed to the event TODO: Firebase Integration
-    private ArrayList<Attendee> CheckInList;
-
-
-
+    private AttendeeList Subscribers = new AttendeeList();
+    //Notation: "Subscribers" refers attendees who
+    //are 'subscribed' to receive event notifications
+    //TODO: Firebase Integration
+    private AttendeeList CheckInList = new AttendeeList();
     //attendees CURRENTLY checked in to the event TODO: Firebase Integration
-
-    private int eventqrcodeid;
-
-    public int getEventqrcodeid() {
-        return eventqrcodeid;
-    }
-
-    public void setEventqrcodeid(int eventqrcodeid) {
-        this.eventqrcodeid = eventqrcodeid;
-    }
-
-    public void setCheckInList(ArrayList<Attendee> checkInList) {
-        CheckInList = checkInList;
-    }
-
-    public ArrayList<Attendee> getCheckInList() {
-        return CheckInList;
-    }
 
     public Event(String eventname, String eventdetails, ArrayList<Attendee> checkInList) {
         this.eventname = eventname;
@@ -70,25 +35,11 @@ public class Event implements Serializable {
         checkInList = new ArrayList<>();
     }
 
+
+
     public Event(String eventname, String eventdetails) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
-    }
-
-    public void assignQrCode(){
-
-    }
-
-    ArrayList events = new ArrayList<>();
-    private boolean useridInuse(int eventid){
-
-        boolean inuse = false;
-
-        if (events.contains(eventid)){
-            return true;
-        }
-        return inuse;
-
     }
 
     private int generateEventId(){
@@ -96,52 +47,120 @@ public class Event implements Serializable {
         //      Integration with firebase needed in order to have unique IDs
         //      idea: increment from zero, check if ID is in use, when
         //            vacant ID is found, assign that to this user
-
-        int eventid = 0;
-
-        while (useridInuse(eventid)){
-            eventid = eventid+1;
-        }
-        events.add(eventid);
-
-        return eventid;
-
+        return 1;
     }
+
+    /**
+     * Creates a new Event
+     */
     public Event() {
         this.EventId = generateEventId();
     }
+    //Poster Image===============================================================
 
-    public void userSubs (Attendee a){
+    //pri
+
+    //QR CODE=====================================================================
+
+    //TODO: Adding QR Code
+    //public void addQRCode(QRCode qr){}
+
+    //TODO: Removing QR Code
+    //public void removeQRCODE(){}
+
+    //Subscription=============================================================
+
+    /**
+     * Subscribes a user to the event to mark them as opting in to related notifications
+     * @param a
+     * a valid Attendee object
+     */
+    public void userSubs(Attendee a){
         //Attendee subscribes to receiving information updates
-        Attendees.add(a);
+        Subscribers.addAttendee(a);
     }
 
+    /**
+     * Unsubscribes a user to the event to mark them as opting out to related notifications
+     * @param a
+     * a valid Attendee object
+     */
     public void userUnSubs (Attendee a){
         //Attendee unsubscribes to receiving information updates
-        Attendees.remove(a);
+        Subscribers.removeAttendee(a);
     }
 
+    /**
+     * Check if a user is subscribed to the event
+     * @param a
+     * a valid Attendee object
+     * @return
+     */
+    public boolean IsSubscribed(Attendee a){
+        for (Attendee user: Subscribers.getAttendees()){
+            if (user == a){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Attendee checkin==========================================================
+
+    /**
+     * Checks a user a into the event
+     * @param a
+     */
     public void userCheckIn (Attendee a){
 
         if (CheckInList == null) {
-            CheckInList = new ArrayList<>();
+            CheckInList = new AttendeeList();
         }
-
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             a.CheckIn(this);
-            CheckInList.remove(a);
+            CheckInList.removeAttendee(a);
         } else{
             //otherwise the user is checking in
             a.CheckIn(this);
-            CheckInList.add(a);
+            CheckInList.addAttendee(a);
         }
 
 
     }
+    /**
+     * Check if the attendee is checked in
+     * @param a
+     * a valid Attendee object
+     * @return
+     * returns true or false
+     */
+    public boolean IsCheckedIn(Attendee a){
+        for (Attendee user: CheckInList.getAttendees()){
+            if (user == a){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    //GETTER/SETTER=====================================================================
 
+    /**
+     * Return the array of attendees who are subscribed to the event
+     * @return
+     */
+    public AttendeeList getSubscribers() {
+        return Subscribers;
+    }
 
+    /**
+     * Return the array of attendees who are currently checked in to the event
+     * @return
+     */
+    public AttendeeList getCheckInList() {
+        return CheckInList;
+    }
 
     public int getEventId() {
         return EventId;
@@ -151,12 +170,25 @@ public class Event implements Serializable {
         EventId = eventId;
     }
 
-
-    static Event newInstance (Event event){
-        Bundle args = new Bundle();
-        args.putSerializable("event", event);
-
-        return event;
+    public String getEventname() {
+        return eventname;
     }
-}
 
+    public void setEventname(String eventname) {
+        this.eventname = eventname;
+    }
+
+    public String getEventdetails() {
+        return eventdetails;
+    }
+
+    public void setEventdetails(String eventdetails) {
+        this.eventdetails = eventdetails;
+    }
+
+    public void setCheckInList(AttendeeList checkInList) {
+        CheckInList = checkInList;
+    }
+
+
+}

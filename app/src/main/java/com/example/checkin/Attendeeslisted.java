@@ -9,13 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-// Shows page for an events attendees, including those who checked in
+// Page for an events attendees, including those who checked in
 public class Attendeeslisted extends Fragment {
 
     Button checkedinlistbtn;
-
     Event myevent;
-
     Button backbutton;
 
     @Override
@@ -26,11 +24,12 @@ public class Attendeeslisted extends Fragment {
         checkedinlistbtn = view.findViewById(R.id.checkedinbtn);
         backbutton = view.findViewById(R.id.backbtn);
 
+        // get event object from previous fragment
         Bundle bundle = this.getArguments();
-
         if (bundle != null){
             myevent = (Event) bundle.getSerializable("event");
         }
+        // checked in list button, switches to fragment that displays, attendees checked into the event
         checkedinlistbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

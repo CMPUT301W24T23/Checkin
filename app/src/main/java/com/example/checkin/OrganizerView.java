@@ -21,20 +21,19 @@ public class OrganizerView extends AppCompatActivity {
         BottomNavigationView bottomnav = findViewById(R.id.bottomnavbar);
         bottomnav.setSelectedItemId(R.id.home);
 
-
+        // create home page and attendees list fragments
         OrganizerHomePage org_frag1= new OrganizerHomePage();
         Attendeeslisted list_frag = new Attendeeslisted();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.org_view, org_frag1)
+                .addToBackStack(null)
                 .commit();
         bottomnav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 if (item.getItemId() == R.id.home){
-
-                    //implement
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.org_view, org_frag1)
@@ -43,10 +42,10 @@ public class OrganizerView extends AppCompatActivity {
 
                 }
                 else if (item.getItemId() == R.id.qrcodes){
-                    // implement
+                    // implement when fragment is added
                 }
                 else if (item.getItemId() == R.id.messages){
-                    //implement
+                    //implement when fragment is added
                 }
                 else if (item.getItemId() == R.id.attendees){
                     getSupportFragmentManager()
@@ -54,8 +53,6 @@ public class OrganizerView extends AppCompatActivity {
                             .replace(R.id.org_view, org_frag1)
                             .commit();
                     return true;
-
-                   //implement
                 }
                 return false;
             }

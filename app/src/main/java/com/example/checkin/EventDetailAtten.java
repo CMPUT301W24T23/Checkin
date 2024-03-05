@@ -12,20 +12,11 @@ import android.widget.TextView;
 
 // Event details page for Attendee
 public class EventDetailAtten extends Fragment {
-
-
     Event myevent;
-
     TextView eventnametxt;
-
     TextView eventdetails;
-
     Button backbutton;
-
-
-
     Button eventmessagesbtn;
-
 
 
     @Override
@@ -37,26 +28,28 @@ public class EventDetailAtten extends Fragment {
         eventnametxt =  view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventinfo);
         backbutton = view.findViewById(R.id.backbtn);
-
         eventmessagesbtn = view.findViewById(R.id.eventmessg);
 
 
 
+        // get event object from previous fragment
         Bundle bundle = this.getArguments();
         assert bundle != null;
         myevent = (Event) bundle.getSerializable("event");
 
+
+        // move to announcements page when see announcements button is clicked
         eventmessagesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Announcements announce_frag1= new Announcements();
-
 
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, announce_frag1).commit();
 
             }
         });
 
+        // move back to previous fragment when clicked
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,7 +59,6 @@ public class EventDetailAtten extends Fragment {
         eventnametxt.setText(myevent.getEventname());
         eventdetails.setText(myevent.getEventdetails());
 
-        // Inflate the layout for this fragment
         return view;
     }
 }

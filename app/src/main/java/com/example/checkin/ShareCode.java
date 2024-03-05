@@ -31,12 +31,8 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 // generates QR code and shares it
 public class ShareCode extends Fragment {
     Event myevent;
-
     Button sharebutton;
-
     Button backbutton;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +41,7 @@ public class ShareCode extends Fragment {
        View view = inflater.inflate(R.layout.fragment_share_code, container, false);
        backbutton = view.findViewById(R.id.backbtn);
 
+        // move back to previous fragment
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,50 +50,21 @@ public class ShareCode extends Fragment {
         });
 
         // Button btnGenerate = view.findViewById(R.id.btnGenerate);
-
         // EditText etText = view.findViewById(R.id.etText);
 
+        // ----- Generate QR Code -------
         ImageView imageCode = view.findViewById(R.id.imageCode);
 
         Bundle bundle = this.getArguments();
         assert bundle != null;
         myevent = (Event) bundle.getSerializable("event");
 
+        generateQRCode(myevent, imageCode);
 
-            // Getting text from input text field.
-            // String myText = etText.getText().toString().trim();
 
-            String myText = myevent.getEventname();
 
-            // Appending timestamp
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String timestamp = dateFormat.format(new Date());
-            myText += "_" + timestamp;
-
-            // Appending user's ID
-            String userid = "123456"; // Change 123456 to user's ID
-            myText += "_" + userid;
-
-            // Initializing MultiFormatWriter for QR code
-
-            MultiFormatWriter writer = new MultiFormatWriter();
-            try {
-                //https://stackoverflow.com/questions/51917881/zxing-android-qrcode-generator
-                // BitMatrix class to encode entered text and set Width & Height
-                BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
-                BarcodeEncoder mEncoder = new BarcodeEncoder();
-                Bitmap mBitmap = mEncoder.createBitmap(matrix); // Creating bitmap of code
-                imageCode.setImageBitmap(mBitmap); // Setting generated QR code to imageView
-
-                // To hide the keyboard
-                InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
-            } catch (WriterException e) {
-                e.printStackTrace();
-            }
-
+            // ------- Sharing QR Code --------
         sharebutton = view.findViewById(R.id.sharebtn);
-
         sharebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +107,40 @@ public class ShareCode extends Fragment {
             System.out.println("Error");
         }
         return uri;
+
+    }
+
+    public void generateQRCode(Event myevent, ImageView imageCode){
+        String myText = myevent.getEventname();
+
+        // Appending timestamp
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        myText += "_" + timestamp;
+
+        // Appending user's ID
+        String userid = "123456"; // Change 123456 to user's ID
+        myText += "_" + userid;
+
+        // Initializing MultiFormatWriter for QR code
+
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            //https://stackoverflow.com/questions/51917881/zxing-android-qrcode-generator
+            // BitMatrix class to encode entered text and set Width & Height
+            BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
+            BarcodeEncoder mEncoder = new BarcodeEncoder();
+            Bitmap mBitmap = mEncoder.createBitmap(matrix); // Creating bitmap of code
+            imageCode.setImageBitmap(mBitmap); // Setting generated QR code to imageView
+
+            // To hide the keyboard
+            InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 }

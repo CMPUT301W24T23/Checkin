@@ -16,14 +16,10 @@ import java.util.ArrayList;
 
 // Shows list of checked in attendees for an event
 public class CheckedInListOrg extends Fragment {
-
-
-    private ArrayList<Attendee> attendeedatalist;
+    private AttendeeList attendeedatalist;
     private ListView attendeesList;
     private ArrayAdapter<Attendee> AttendeesAdapter;
-
     Event myevent;
-
 
 
     @Override
@@ -40,28 +36,16 @@ public class CheckedInListOrg extends Fragment {
         assert bundle != null;
         myevent = (Event) bundle.getSerializable("event");
 
+        // if event exists, get checked in list of attendees
         if (myevent !=null) {
             attendeedatalist = myevent.getCheckInList();
         }
 
-        // if attendeeslist is not null set AttendeesAdapter to custom EventArrayAdapter
+        // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
         if (attendeedatalist!= null) {
-            AttendeesAdapter = new ArrayAdapter<Attendee>(getActivity(), R.layout.content2, attendeedatalist) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View view = convertView;
-                    if (view == null) {
-                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        view = inflater.inflate(R.layout.content2, null);
-                    }
-
-                    TextView textView = view.findViewById(R.id.attendee_name);
-                    textView.setText(attendeedatalist.get(position).getName());
-                    return view;
-                }
-            };
+            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendeedatalist.getAttendees());
             attendeesList.setAdapter(AttendeesAdapter);
-        }
+                }
 
 
 

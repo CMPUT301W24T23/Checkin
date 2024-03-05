@@ -17,22 +17,23 @@ public class AttendeeView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attenndee_view);
 
+        // create homepage and announcements fragments
         AttendeeHomePage att_frg1 = new AttendeeHomePage();
         Announcements ann_frg1 = new Announcements();
-
+        // move to home page fragment
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.atten_view, att_frg1)
                 .commit();
 
+        // Set bottom navigation bar
         BottomNavigationView bottomnav = findViewById(R.id.bottomnavbar2);
+        // URL: https://www.geeksforgeeks.org/how-to-implement-bottom-navigation-with-activities-in-android/
         bottomnav.setSelectedItemId(R.id.home2);
         bottomnav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 if (item.getItemId() == R.id.home2){
-
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.atten_view, att_frg1)

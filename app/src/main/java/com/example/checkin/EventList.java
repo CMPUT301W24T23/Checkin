@@ -2,13 +2,34 @@ package com.example.checkin;
 
 import java.util.ArrayList;
 
-public class EventList extends ArrayList{
+/**
+ * Tracks all the events currently in use
+ */
+public class EventList {
+    //TODO:
+    //      - Firebase Integration
+    private ArrayList<Event> Events = new ArrayList<Event>();        //array of all events
 
-    private ArrayList<Event> myEvents;
+    /**
+     * Adds an event to the EventList
+     * @param e
+     * a valid event object
+     */
+    public void addEvent (Event e){
+        Events.add(e);
+        //TODO: Firebase integration
+    }
 
-    public ArrayList<Event> getMyEvents() {
-        return myEvents;
+    /**
+     * Removes an event from the EventList
+     * @param e
+     * a valid Event object
+     */
+    public void removeEvent(Event e){
+        Events.remove(e);
+        //TODO: Firebase integration
     }
 
 
 }
+

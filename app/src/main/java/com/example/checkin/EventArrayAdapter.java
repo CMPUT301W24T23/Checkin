@@ -24,12 +24,10 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         this.context = context;
     }
 
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         //return super.getView(position, convertView, parent);
-
         View view;
         if (convertView == null) {
             view = LayoutInflater.from(getContext()).inflate(R.layout.content,
@@ -40,7 +38,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         Event event = getItem(position);
 
         TextView eventTitle = view.findViewById(R.id.event_text);
-
 
         eventTitle.setText(event.getEventname());
 

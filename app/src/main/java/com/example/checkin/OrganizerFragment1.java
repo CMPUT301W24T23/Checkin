@@ -17,13 +17,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-// Home page for Attendee Perspective
-public class AttendeeHomePage extends Fragment {
+// Organizer Home page
+public class OrganizerFragment1 extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
     private ArrayAdapter<Event> EventAdapter;
+
     private EventList allevents;
+
     Button backbutton;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,16 +36,24 @@ public class AttendeeHomePage extends Fragment {
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
 
-        allevents = new EventList();
-        datalist = new ArrayList<>();
-        // Add mock attendee and event for testing purposes
-        ArrayList<Attendee> attendees1 = new ArrayList<>();
-        attendees1.add(new Attendee("Amy"));
-        Event event1 = new Event("Show", "Starts at 7", attendees1);
-        allevents.addEvent(event1);
-        datalist.add(event1);
 
-        // back button that goes to homepage
+        datalist = new ArrayList<>();
+        allevents = new EventList();
+        ArrayList<Attendee> attendees1 = new ArrayList<>();
+
+        // Add attendees and check them in to test functionality
+        Attendee attendee1 = new Attendee("Amy");
+        Attendee attendee2 = new Attendee("John");
+        attendees1.add(attendee1);
+        Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
+        attendee1.CheckIn(event1);
+        attendee2.CheckIn(event1);
+        event1.userCheckIn(attendee1);
+        event1.userCheckIn(attendee2);
+        datalist.add(event1);
+        allevents.addEvent(event1);
+
+        // move back to previous fragment when clicked
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +62,7 @@ public class AttendeeHomePage extends Fragment {
             }
         });
 
-        // if eventlist is not null set EventAdapter to custom EventArrayAdapter
+        // if event list is not null, then set eventlist
         if (datalist != null) {
             EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
                 @Override
@@ -61,6 +72,7 @@ public class AttendeeHomePage extends Fragment {
                         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         view = inflater.inflate(R.layout.content, null);
                     }
+
                     TextView textView = view.findViewById(R.id.event_text);
                     textView.setText(datalist.get(position).getEventname());
                     return view;
@@ -69,16 +81,19 @@ public class AttendeeHomePage extends Fragment {
             eventslist.setAdapter(EventAdapter);
         }
 
-        // When event is selected from list, move to fragment that show event details
+        // move to details of event fragment when an event is selected
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                EventDetailAtten event_frag1= new EventDetailAtten();
+                EventsDetailOrg eventd_frag1= new EventsDetailOrg();
                 Bundle args = new Bundle();
                 args.putSerializable("event", datalist.get(i));
-                event_frag1.setArguments(args);
+                eventd_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, event_frag1).addToBackStack(null).commit();
+
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).addToBackStack(null).commit();
+
 
             }
         });

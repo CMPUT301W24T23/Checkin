@@ -18,7 +18,7 @@ public class AttendeeView extends AppCompatActivity {
         setContentView(R.layout.activity_attenndee_view);
 
         // create homepage and announcements fragments
-        AttendeeHomePage att_frg1 = new AttendeeHomePage();
+        AttendeeFragment1 att_frg1 = new AttendeeFragment1();
         Announcements ann_frg1 = new Announcements();
         // move to home page fragment
         getSupportFragmentManager()

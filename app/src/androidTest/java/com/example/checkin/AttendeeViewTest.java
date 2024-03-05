@@ -35,6 +35,22 @@ public class AttendeeViewTest {
     }
 
     @Test
+    public void testbackbutton(){
+
+        // click on attendee button
+        onView(withId(R.id.attendeebtn)).perform(click());
+
+        // click on back button
+        onView(withId(R.id.backbtn)).perform(click());
+
+        // check if it goes to homepage
+        onView(withId(R.id.main_activity_page)).check(matches(isDisplayed()));
+
+
+    }
+
+
+    @Test
     public void testeventdinfo(){
 
         onView(withId(R.id.attendeebtn)).perform(click());
@@ -56,7 +72,6 @@ public class AttendeeViewTest {
         onView(withId(R.id.attendeebtn)).perform(click());
         // check if switches to attendee view
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
-
 
         // click on event
         onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events)).perform(click());

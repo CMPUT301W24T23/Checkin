@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 // Page for an events attendees, including those who checked in
-public class Attendeeslisted extends Fragment {
+public class AttendeesOptions extends Fragment {
 
     Button checkedinlistbtn;
     Event myevent;

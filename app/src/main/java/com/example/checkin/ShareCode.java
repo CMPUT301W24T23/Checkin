@@ -83,14 +83,14 @@ public class ShareCode extends Fragment {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, "Sharing QR Code" );
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-        intent.setType("app_images/png");
+        intent.setType("image/png");
         startActivity(Intent.createChooser(intent, "Share Via"));
     }
 
     // URL: https://www.geeksforgeeks.org/how-to-share-image-of-your-app-with-another-app-in-android/
     private Uri getImageShare(Bitmap bitmap, Context context) {
 
-        File images = new File(context.getCacheDir(), "images");
+        File images = new File(context.getCacheDir(), "app_images");
         Uri uri = null;
 
         try {

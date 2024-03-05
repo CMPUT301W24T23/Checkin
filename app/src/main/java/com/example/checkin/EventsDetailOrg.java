@@ -19,6 +19,10 @@ public class EventsDetailOrg extends Fragment {
     EditText eventdetails;
     Button backbutton;
 
+    Button posterbutton;
+
+    Button detailscodebutton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -30,6 +34,8 @@ public class EventsDetailOrg extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
         eventnametxt = view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventdetails_txt);
+        detailscodebutton = view.findViewById(R.id.codebtn);
+        posterbutton = view.findViewById(R.id.posterbtn);
 
 
 
@@ -68,7 +74,7 @@ public class EventsDetailOrg extends Fragment {
             @Override
             public void onClick(View view) {
                 // add attendees list fragment
-                Attendeeslisted list_frag = new Attendeeslisted();
+                AttendeesOptions list_frag = new AttendeesOptions();
 
                 Bundle args = new Bundle();
                 args.putSerializable("event", myevent);

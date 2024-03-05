@@ -34,6 +34,22 @@ public class OrganizerViewTest {
     }
 
     @Test
+    public void testbackbutton(){
+
+        // click on attendee button
+        onView(withId(R.id.organizerbtn)).perform(click());
+
+
+        // click on back button
+        onView(withId(R.id.backbtn)).perform(click());
+
+        // check if it goes to homepage
+        onView(withId(R.id.main_activity_page)).check(matches(isDisplayed()));
+
+
+    }
+
+    @Test
     public void testeventinfo(){
 
         // click on organizer button

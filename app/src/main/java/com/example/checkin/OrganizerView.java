@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -23,7 +24,8 @@ public class OrganizerView extends AppCompatActivity {
 
         // create home page and attendees list fragments
         OrganizerHomePage org_frag1= new OrganizerHomePage();
-        Attendeeslisted list_frag = new Attendeeslisted();
+        AttendeesOptions list_frag = new AttendeesOptions();
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.org_view, org_frag1)

@@ -32,6 +32,10 @@ public class Attendee implements User {
     private String email;
     private String phoneNumber;
 
+    public Attendee(String name) {
+        this.name = name;
+    }
+
     /**
      * Generates a new unique identifier for the user
      *

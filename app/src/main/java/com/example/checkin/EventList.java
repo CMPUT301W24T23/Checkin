@@ -1,12 +1,13 @@
 
 package com.example.checkin;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Tracks all the events currently in use
  */
-public class EventList {
+public class EventList implements Serializable {
     //TODO:
     //      - Firebase Integration
     private ArrayList<Event> Events = new ArrayList<Event>();        //array of all events

@@ -2,12 +2,13 @@ package com.example.checkin;
 
 import android.media.Image;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class Attendee implements User {
+public class Attendee implements User, Serializable {
     //TODO:
     //      - profile picture adding
     //      - profile picture removing

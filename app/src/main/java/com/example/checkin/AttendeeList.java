@@ -1,9 +1,10 @@
 
 package com.example.checkin;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class AttendeeList {
+public class AttendeeList implements Serializable {
     //has list of attendees
     //see # of checked-in users when passed an event
     private ArrayList<Attendee> Attendees = new ArrayList<Attendee>();

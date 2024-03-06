@@ -2,9 +2,10 @@ package com.example.checkin;
 
 import android.media.Image;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Event {
+public class Event implements Serializable {
     //TODO:
     //      - assign QR CODE
     //      - remove QR CODE
@@ -15,15 +16,31 @@ public class Event {
     //              - has: physical boundaries? i'm not sure how geolocation would work
     //      - Firebase Integration
 
-    private int EventId;        //unique identifier for event
+    private int EventId;//unique identifier for event
     private Image poster;       //event poster
     //private QRCode code;
+    private String eventname;
+
+    private String eventdetails;
     private AttendeeList Subscribers = new AttendeeList();
-                                                //Notation: "Subscribers" refers attendees who
-                                                  //are 'subscribed' to receive event notifications
-                                                  //TODO: Firebase Integration
+    //Notation: "Subscribers" refers attendees who
+    //are 'subscribed' to receive event notifications
+    //TODO: Firebase Integration
     private AttendeeList CheckInList = new AttendeeList();
-                            //attendees CURRENTLY checked in to the event TODO: Firebase Integration
+    //attendees CURRENTLY checked in to the event TODO: Firebase Integration
+
+    public Event(String eventname, String eventdetails, ArrayList<Attendee> checkInList) {
+        this.eventname = eventname;
+        this.eventdetails = eventdetails;
+        checkInList = new ArrayList<>();
+    }
+
+
+
+    public Event(String eventname, String eventdetails) {
+        this.eventname = eventname;
+        this.eventdetails = eventdetails;
+    }
 
     private int generateEventId(){
         //TODO: Generate the EventId for a new event
@@ -40,11 +57,14 @@ public class Event {
         this.EventId = generateEventId();
     }
 
+    /**
+     * Restore from id
+     * @param id
+     * the identifier for this event
+     */
     public Event(int id) {
         this.EventId = id;
     }
-
-
     //Poster Image===============================================================
 
     //pri
@@ -84,6 +104,7 @@ public class Event {
      * @param a
      * a valid Attendee object
      * @return
+     * returns whether user is subscribed
      */
     public boolean IsSubscribed(Attendee a){
         for (Attendee user: Subscribers.getAttendees()){
@@ -99,8 +120,14 @@ public class Event {
     /**
      * Checks a user a into the event
      * @param a
+     * a valid attendee object
      */
     public void userCheckIn (Attendee a){
+
+        if (CheckInList == null) {
+            CheckInList = new AttendeeList();
+        }
+
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             a.CheckIn(this);
@@ -134,6 +161,7 @@ public class Event {
     /**
      * Return the array of attendees who are subscribed to the event
      * @return
+     * Attendee List of subscribers
      */
     public AttendeeList getSubscribers() {
         return Subscribers;
@@ -154,4 +182,26 @@ public class Event {
     public void setEventId(int eventId) {
         EventId = eventId;
     }
+
+    public String getEventname() {
+        return eventname;
+    }
+
+    public void setEventname(String eventname) {
+        this.eventname = eventname;
+    }
+
+    public String getEventdetails() {
+        return eventdetails;
+    }
+
+    public void setEventdetails(String eventdetails) {
+        this.eventdetails = eventdetails;
+    }
+
+    public void setCheckInList(AttendeeList checkInList) {
+        CheckInList = checkInList;
+    }
+
+
 }

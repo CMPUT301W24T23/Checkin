@@ -2,13 +2,12 @@ package com.example.checkin;
 
 import android.media.Image;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Random;
-import java.util.Set;
 
-public class Attendee implements User {
+public class Attendee implements User, Serializable {
     //TODO:
     //      - profile picture adding
     //      - profile picture removing
@@ -21,7 +20,7 @@ public class Attendee implements User {
     private int userId;     //the user's ID
     private Image profilePicture;               //TODO: the user's profile picture
 
-    private EventList CheckInHistory = new EventList();      //array containing the user's check-in history
+    private Dictionary<String, Integer> CheckInHist = new Hashtable<>();
 
     private boolean geoTracking;
 
@@ -33,12 +32,9 @@ public class Attendee implements User {
     private String email;
     private String phoneNumber;
 
-    /**
-     * Generates a new unique identifier for the user
-     *
-     * @return their assigned id.
-     */
-
+    public Attendee(String name) {
+        this.name = name;
+    }
 
     /**
      * Generates a new Attendee
@@ -68,6 +64,11 @@ public class Attendee implements User {
         this.geoTracking = tracking;
     }
 
+    /**
+     * Generates a new unique identifier for the user
+     *
+     * @return their assigned id.
+     */
     private int generateUserId() {
         //TODO: Generate the userId for a new user
         //      Integration with firebase needed in order to have unique IDs
@@ -86,6 +87,9 @@ public class Attendee implements User {
     //private void removeProfilePicture(){
     //    this.profilePicture = generateProfilePicture();
     //}
+
+
+
 
     //Event subscription===========================================================================
 
@@ -112,25 +116,33 @@ public class Attendee implements User {
     //CheckedInList=================================================================================
 
     /**
-     * Returns the list of events that the user is checked in to. May or may not be needed but I
-     * added it to start off with.
-     *
-     * @return returns CheckInHistory
+     * Return the dictionary with the keys as the eventIds and values of number
+     * of checkins.
+     * @return
+     * dictionary of check in counts
      */
-    public EventList getCheckIns() {
+    public Dictionary<String, Integer> getCheckIns() {
         //get the list of user check-in/outs
         //possibly not necessary
-        return CheckInHistory;
+        return CheckInHist;
+        //edit to return dictionary
     }
 
     /**
-     * Checks a user into an event, adds that event to CheckInHistory
-     *
-     * @param event an event object
+     * Updates the user's check in count so that their number of check ins for each event
+     * can be calculated
+     * @param event
+     * an event object
      */
     public void CheckIn(Event event) {
-        //check a user in/out of an event
-        CheckInHistory.addEvent(event);
+        //increment user check in count
+        if (this.CheckInHist.isEmpty()){
+            CheckInHist.put(String.valueOf(event.getEventId()), 1);
+        } else{
+            int i = 1 + CheckInHist.get(("" + event.getEventId()));
+            CheckInHist.put(String.valueOf(event.getEventId()), i);
+        }
+
     }
 
     /**
@@ -142,10 +154,7 @@ public class Attendee implements User {
     public boolean IsCheckedIn(Event event) {
         //is passed an event and returns whether that user is checked into
         //the event or not
-        if (event.IsCheckedIn(this)) {
-            return true;
-        }
-        return false;
+        return event.IsCheckedIn(this);
     }
 
     //GEOLOCATION===========================================================
@@ -159,7 +168,6 @@ public class Attendee implements User {
             return;
         }
         this.geoTracking = true;
-        return;
     }
 
     /**
@@ -224,3 +232,4 @@ public class Attendee implements User {
 
 
 }
+

@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
         //==========================================================================================
+        // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -19,6 +19,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,34 +27,18 @@ public class Database {
     FirebaseFirestore db;
     public Database(){}
 
-
-    /* OLD STORE ATTENDEES, does not store the checkins
+    /**
+     * Store all the attendees into the database
+     * @param aList
+     * a valid AttendeeList
+     */
     public void storeAttendees(AttendeeList aList){
         for (Attendee a: aList.getAttendees()){
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference attendeeRef = db.collection("Attendees");
 
-            HashMap<String, String> data = new HashMap<>();
-            data.put("Name", a.getName());
-            data.put("Homepage", a.getHomepage());
-            data.put("Email", a.getEmail());
-            data.put("Phone", a.getPhoneNumber());
-            data.put("Tracking", Boolean.toString(a.trackingEnabled()));
-
-            attendeeRef.document(Integer.toString(a.getUserId())).set(data);
-
-            //attendeeRef.set(a);
-        }
-    }*/
-
-    public void storeAttendees(AttendeeList aList){
-        for (Attendee a: aList.getAttendees()){
-
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            CollectionReference attendeeRef = db.collection("Attendees");
-
-
+            //Upload User info
             Map<String, Object> data = new HashMap<>();
             data.put("Name", a.getName());
             data.put("Homepage", a.getHomepage());
@@ -61,18 +46,11 @@ public class Database {
             data.put("Phone", a.getPhoneNumber());
             data.put("Tracking", a.trackingEnabled());
 
-
-            //Stores the check in list as a key value pair of (Event Id : # of checkins)
-            Map<String, Object> checkins = new HashMap<>();
-            EventList events = a.getCheckIns();
-            for (Event e : events.getEvents()){
-                checkins.put(Integer.toString(e.getEventId()), Collections.frequency(a.getCheckIns().getEvents(), e));
-            }
+            //Upload check in counts
+            Dictionary checkins = a.getCheckIns();
             data.put("Checkins", checkins);
 
             attendeeRef.document(Integer.toString(a.getUserId())).set(data);
-
-            //attendeeRef.set(a);
         }
     }
     /*

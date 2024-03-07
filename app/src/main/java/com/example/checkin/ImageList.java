@@ -20,15 +20,19 @@ public class ImageList {
     private ArrayList<Image> posters;
     private ArrayList<Image> ProfilePic;
 
-    //public void addPoster(){};
+    public void addPoster(){};
 
-    //public void removePoster(){};
+    public void removePoster(){};
 
-    //public void addProfilePic(){}
+    public void addProfilePic(){}
 
-    //public void removeProfilePic(){}
+    public void removeProfilePic(){};
 
-    //public ArrayList<Image> getPosters(){}
+    public ArrayList<Image> getPosters(){
+        return posters;
+    };
 
-    //public ArrayList<Image> getProfilePictures(){}
+    public ArrayList<Image> getProfilePictures(){
+        return ProfilePic;
+    };
 }

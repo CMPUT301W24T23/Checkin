@@ -1,4 +1,4 @@
-package com.example.checkin;
+package com.example.checkin;// ImageListFragment class
 
 import android.media.Image;
 import android.os.Bundle;
@@ -10,8 +10,6 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
-
 public class ImageListFragment extends Fragment {
 
     private Administrator administrator;
@@ -19,8 +17,6 @@ public class ImageListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Initialize Administrator (you might pass it through constructor or other methods)
         administrator = new Administrator();
     }
 
@@ -30,14 +26,21 @@ public class ImageListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_image_browsing, container, false);
 
-        // Get reference to ListView widget
-        ListView allImagesListView = view.findViewById(R.id.allImagesListView);
+        // Get references to ListView widgets
+        ListView usersProfileListView = view.findViewById(R.id.usersProfileListView);
+        ListView postersListView = view.findViewById(R.id.postersListView);
 
-        // Create ArrayAdapter for all images
-        ArrayAdapter<Image> allImagesAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_list_item_1, administrator.getAllImages());
-        allImagesListView.setAdapter(allImagesAdapter);
+        // Create ArrayAdapter for users' profile pictures
+        ArrayAdapter<Image> usersProfileAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_list_item_1, administrator.getUsersProfilePictures());
+        usersProfileListView.setAdapter(usersProfileAdapter);
 
+        // Create ArrayAdapter for posters
+        ArrayAdapter<Image> postersAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_list_item_1, administrator.getPosters());
+        postersListView.setAdapter(postersAdapter);
+
+        // Returns a fragment which will display 2 lists, one of profiles and the other one of posters.
         return view;
     }
 }

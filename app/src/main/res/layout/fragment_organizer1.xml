@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrganizerFragment1">
+    tools:context=".OrganizerFragment1"
+    android:id="@+id/org_frag1">
 
 
     <TextView
@@ -16,6 +17,19 @@
         android:layout_marginTop="40dp"
         android:textSize="45dp"
          />
+    <ListView
+        android:id="@+id/events"
+        android:layout_width="match_parent"
+        android:layout_marginTop="100dp"
+        android:layout_height="391dp" />
+
+    <Button
+        android:id="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-400dp"
+        android:text="Back" />
+
 
 
 

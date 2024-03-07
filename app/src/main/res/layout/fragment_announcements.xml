@@ -1,32 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrganizerFragment1"
-    android:id="@+id/attendeeviewfrag">
+    tools:context=".MainActivity"
+    android:id="@+id/announce_frag">
 
     <TextView
-        android:id="@+id/eventname"
+        android:id="@+id/announcements_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Announcements"
         android:layout_centerHorizontal="true"
-        android:text="Events"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:textColor="@color/black"
-        android:textSize="45dp" />
+        android:textSize="45sp" />
+
 
     <ListView
-        android:id="@+id/events"
+        android:id="@+id/announcements_list"
         android:layout_width="match_parent"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="110dp"
         android:layout_height="391dp" />
-
-    <Button
-        android:id="@+id/backbtn"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-400dp"
-        android:text="Back" />
 
 </RelativeLayout>

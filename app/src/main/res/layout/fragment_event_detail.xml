@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:id="@+id/eventdet_frag">
+
+    <TextView
+        android:id="@+id/eventname_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:layout_marginTop="40dp"
+        android:textSize="45dp" />
+
+    <TextView
+        android:id="@+id/eventinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventname_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-120dp"
+        android:text="Event Details"
+        android:textColor="@color/pink"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/eventposterbtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventinfo"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-250dp"
+        android:text="Event Poster" />
+
+    <Button
+
+        android:id="@+id/eventmessg"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventposterbtn"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-100dp"
+        android:text="See Announcements" />
+
+    <Button
+        android:id="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-400dp"
+        android:text="Back" />
+
+</RelativeLayout>

@@ -2,12 +2,13 @@ package com.example.checkin;
 
 import android.media.Image;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class Attendee implements User {
+public class Attendee implements User, Serializable {
     //TODO:
     //      - profile picture adding
     //      - profile picture removing
@@ -31,6 +32,10 @@ public class Attendee implements User {
     private String homepage;        //user's website?
     private String email;
     private String phoneNumber;
+
+    public Attendee(String name) {
+        this.name = name;
+    }
 
     /**
      * Generates a new unique identifier for the user
@@ -202,3 +207,4 @@ public class Attendee implements User {
 
 
 }
+

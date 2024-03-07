@@ -1,9 +1,10 @@
+
 package com.example.checkin;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-public class AttendeeList {
+public class AttendeeList implements Serializable {
     //has list of attendees
     //see # of checked-in users when passed an event
     private ArrayList<Attendee> Attendees = new ArrayList<Attendee>();
@@ -23,18 +24,6 @@ public class AttendeeList {
             }
         }
         return count;
-    }
-
-    /**
-     * Gets the list of attendees to a particular event.
-     * @return List of attendees.
-     */
-    public List<Attendee> getAttendeesInfo() {
-        List<Attendee> attendeeInfo = new ArrayList<>();
-        for (Attendee attendee : Attendees) {
-            attendeeInfo.add(attendee); // Add complete attendee object or relevant information
-        }
-        return attendeeInfo;
     }
 
     /**
@@ -77,4 +66,12 @@ public class AttendeeList {
     public ArrayList<Attendee> getAttendees() {
         return Attendees;
     }
+
+    public Attendee getAttendeePosition(int position){
+        Attendee attendee = Attendees.get(position);
+        return attendee;
+    }
 }
+
+
+

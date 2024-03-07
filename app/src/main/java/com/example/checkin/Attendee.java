@@ -17,7 +17,6 @@ public class Attendee implements User, Serializable {
     //      - current geolocation
     //      - listener for receiving notifications
     //      - FIREBASE INTEGRATION
-    //      - unique UserID generation
 
     private String userId;     //the user's ID
     private Image profilePicture;               //TODO: the user's profile picture
@@ -39,24 +38,34 @@ public class Attendee implements User, Serializable {
     }
 
     /**
-     * Generates a new Attendee
+     * Empty constructor for attendee
+     * DO NOT upload this to the database
      */
     public Attendee() {
+        //DO NOT upload to database
         this.userId = generateUserId();
-
-        //test
-        //Random rand = new Random();
-        //this.userId = rand.nextInt(50);
-
-
-        //this.profilePicture = generateProfilePicture(); //TODO:
         this.name = "";
         this.homepage = "";
         this.email = "";
         this.phoneNumber = "";
-        this.geoTracking = true;                   //on by default
+        this.geoTracking = true;
     }
 
+    /**
+     * Generates a new attendee with preset data
+     * @param id
+     * user's id identifier
+     * @param n
+     * user's name
+     * @param home
+     * user's homepage
+     * @param mail
+     * user's email
+     * @param phone
+     * user's phone number
+     * @param tracking
+     * user's tracking permission setting
+     */
     public Attendee(String id, String n, String home, String mail, String phone, boolean tracking){
         this.userId = id;
         this.name = n;
@@ -72,15 +81,9 @@ public class Attendee implements User, Serializable {
      * @return their assigned id.
      */
     private String generateUserId() {
-        //TODO: Generate the userId for a new user
-        //      Integration with firebase needed in order to have unique IDs
-        //      idea: increment from zero, check if ID is in use, when
-        //            vacant ID is found, assign that to this user
-        // from here https://developer.android.com/training/articles/user-data-ids#java
-        //also will try this https://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
-        //maybe try storing locally so when empty Attendee constructor is called, it always
-        //generates the same one if on the same device?
-        return UUID.randomUUID().toString();
+        //Random ID for the empty constructor
+        Random rand = new Random();
+        return Integer.toString(rand.nextInt(1000));
     }
 
     //TODO: Deterministic generation of a user's profile picture

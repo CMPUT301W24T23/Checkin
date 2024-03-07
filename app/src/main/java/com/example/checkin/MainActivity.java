@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button organizerbutton;
     Button attendeebutton;
-    static String AttendId;         //user's id
-    static String OrgId;
+    static String AttendId;         //User's Attendee ID
+    static String OrgId;            //User's Organizer ID
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +42,11 @@ public class MainActivity extends AppCompatActivity {
         organizerbutton = findViewById(R.id.organizerbtn);
         attendeebutton = findViewById(R.id.attendeebtn);
 
+        //This retrieves the attendee and organizer id from local storage
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String aID = preferences.getString("attendeeId", null); //attendee id
         String oID = preferences.getString("organizerId", null);
+
         //Generate a new ID if none is stored
         if (aID == null){
             generateAttendeeId();
@@ -53,12 +55,13 @@ public class MainActivity extends AppCompatActivity {
             generateOrganizerId();
         }
 
+        // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                //generate a new attendee ID and upload to database if none is stored locally
                 if (aID == null) {
-                    //this is a new user
                     Log.d("ID Generated", String.format("Generated ID: %s", AttendId));
 
                     //create a new Attendee object and upload to fireStore
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("New User", String.format("Created Attendee: %s", AttendId));
                 }
 
-                //gets ID
+                //Loads ID
                 AttendId = preferences.getString("attendeeId", null);
                 Log.d("Loaded User", String.format("Loaded Attendee: %s", AttendId));
 
@@ -87,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
         organizerbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //generate a new organizer ID and upload to database if none is stored locally
                 if (oID == null) {
-                    //this is a new user
                     Log.d("ID Generated", String.format("Generated Organizer ID: %s", OrgId));
 
                     //create a new Attendee object and upload to firestore
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("New Organizer", String.format("Created Organizer: %s", OrgId));
                 }
 
-                //gets ID
+                //Loads id
                 OrgId = preferences.getString("organizerId", null);
                 Log.d("Loaded Organizer", String.format("Loaded Organizer: %s", OrgId));
 
@@ -118,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This generates a new Attendee ID for the user
+     * This will only be called if none is stored locally in preferences
+     */
     public void generateAttendeeId(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.d("Generating ID", "Now generating Attendee id...");
@@ -134,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                             newId += 1;
                             //Set generated user id to 1 higher than last value
-                            //uId = Integer.toString(newId);
                             AttendId = String.valueOf(newId);
                         } else {
                             Log.d("Firebase", "Error getting Attendee documents: ", task.getException());
@@ -143,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * This generates a new Organizer ID for the user
+     * This will only be called if none is stored locally in preferences
+     */
     public void generateOrganizerId(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.d("Generating ID", "Now generating Organizer id...");
@@ -159,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                             newId += 1;
                             //Set generated user id to 1 higher than last value
-                            //uId = Integer.toString(newId);
                             OrgId = String.valueOf(newId);
                         } else {
                             Log.d("Firebase", "Error getting Organizer documents: ", task.getException());

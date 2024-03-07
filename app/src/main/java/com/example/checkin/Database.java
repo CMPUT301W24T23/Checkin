@@ -186,44 +186,27 @@ public class Database {
 
     }
 
-    //use/modify this code from line 207 down if you need to load all the attendees for whatever reason
+    //use/modify this code if you need to load all the attendees for whatever reason
     //To my understanding, retrieving documents from firebase has to be done in a way that doesn't allow
     //for a return value. So it has to be done on the actual activity and you can't create a method for it
 
     /*
-    public AttendeeList loadAttendees(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        //CollectionReference attendeeRef = db.collection("Attendees");
-        //AttendeeList aList = new AttendeeList();
-        //ArrayList<String> uids = new ArrayList<String>();
-
-        DocumentReference attendeeRef = db.collection("Attendees").document("Checkins");
-
-
         db.collection("Attendees")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        AttendeeList aList = new AttendeeList();
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("Firebase", document.getId() + " => " + document.getData());
-                                String id = document.getId();
-                                String name = (String) document.getData().get("Name");
-                                String home = (String) document.getData().get("Homepage");
-                                String mail = (String) document.getData().get("Email");
-                                String phone = (String) document.getData().get("Phone");
-                                Boolean tracking = (Boolean) document.getData().get("Tracking");
-                                aList.addAttendee(new Attendee(id, name, home, mail, phone, tracking));
+                                //MODIFY SOME GLOBAL VARIABLE
                             }
                         } else {
                             Log.d("Firebase", "Error getting documents: ", task.getException());
                         }
                     }
                 });
-        return aList;
-    }
     */
 
 }

@@ -5,19 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//import org.junit.jupiter.api.Test;
-import android.provider.CalendarContract;
-
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 public class AttendeeEventTest {
-    private void setup(){
-        FirebaseFirestore mockFirestore = Mockito.mock(FirebaseFirestore.class);
-        Mockito.when(mockFirestore.getInstance()).thenReturn(null);
-    }
 
     /**
      * Test an attendee checking in

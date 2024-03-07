@@ -4,6 +4,7 @@ import android.media.Image;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Event implements Serializable {
     //TODO:
@@ -11,7 +12,6 @@ public class Event implements Serializable {
     //      - remove QR CODE
     //      - assign poster
     //      - remove poster
-    //      - event ID generation
     //      - Geolocation integration
     //              - has: physical boundaries? i'm not sure how geolocation would work
     //      - Firebase Integration
@@ -35,23 +35,19 @@ public class Event implements Serializable {
         checkInList = new ArrayList<>();
     }
 
-
-
     public Event(String eventname, String eventdetails) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
     }
 
     private String generateEventId(){
-        //TODO: Generate the EventId for a new event
-        //      Integration with firebase needed in order to have unique IDs
-        //      idea: increment from zero, check if ID is in use, when
-        //            vacant ID is found, assign that to this user
-        return "test1";
+        Random rand = new Random();
+        return Integer.toString(rand.nextInt(1000));
     }
 
     /**
-     * Creates a new Event
+     * Creates an empty event
+     * DO NOT PUT THIS IN DATABASE
      */
     public Event() {
         this.EventId = generateEventId();

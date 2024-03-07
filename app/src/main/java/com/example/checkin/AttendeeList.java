@@ -1,6 +1,7 @@
 package com.example.checkin;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AttendeeList {
     //has list of attendees
@@ -22,6 +23,18 @@ public class AttendeeList {
             }
         }
         return count;
+    }
+
+    /**
+     * Gets the list of attendees to a particular event.
+     * @return List of attendees.
+     */
+    public List<Attendee> getAttendeesInfo() {
+        List<Attendee> attendeeInfo = new ArrayList<>();
+        for (Attendee attendee : Attendees) {
+            attendeeInfo.add(attendee); // Add complete attendee object or relevant information
+        }
+        return attendeeInfo;
     }
 
     /**

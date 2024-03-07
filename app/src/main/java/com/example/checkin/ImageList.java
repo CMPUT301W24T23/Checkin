@@ -1,7 +1,5 @@
 package com.example.checkin;
-
 import android.media.Image;
-
 import java.util.ArrayList;
 
 /**
@@ -10,6 +8,7 @@ import java.util.ArrayList;
  * easy admin access
  * Has separate lists for posters and profile pictures
  */
+
 public class ImageList {
     //TODO: add/removing posters
     //      add/remove profilepictures
@@ -20,15 +19,21 @@ public class ImageList {
     private ArrayList<Image> posters;
     private ArrayList<Image> ProfilePic;
 
-    //public void addPoster(){};
+    public void addPoster(){};
 
-    //public void removePoster(){};
+    public void removePoster(){};
 
-    //public void addProfilePic(){}
+    public void addProfilePic(){}
 
-    //public void removeProfilePic(){}
+    public void removeProfilePic(){
+        System.out.println("Safe");
+    }
 
-    //public ArrayList<Image> getPosters(){}
+    public ArrayList<Image> getPosters(){
+        return null;
+    }
 
-    //public ArrayList<Image> getProfilePictures(){}
+    public ArrayList<Image> getProfilePictures(){
+        return null;
+    }
 }

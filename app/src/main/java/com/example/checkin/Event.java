@@ -87,8 +87,6 @@ public class Event implements Serializable {
     public void userSubs(Attendee a){
         //Attendee subscribes to receiving information updates
         Subscribers.addAttendee(a);
-        Database db = new Database();
-        db.updateEvent(this);
     }
 
     /**
@@ -130,20 +128,14 @@ public class Event implements Serializable {
             CheckInList = new AttendeeList();
         }
 
-
-
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             a.CheckIn(this);
             CheckInList.removeAttendee(a);
-            Database db = new Database();
-            db.updateEvent(this);
         } else{
             //otherwise the user is checking in
             a.CheckIn(this);
             CheckInList.addAttendee(a);
-            Database db = new Database();
-            db.updateEvent(this);
         }
 
 

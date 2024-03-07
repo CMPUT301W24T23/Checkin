@@ -43,8 +43,6 @@ public class Organizer implements User{
     /*This user has created an event, add to list of event ids and upload to firebase*/
     public void EventCreate(Event e){
         CreatedEvents.add(e.getEventId());
-        Database db = new Database();
-        db.updateOrganizer(this);
     }
 
 

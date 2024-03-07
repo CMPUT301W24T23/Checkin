@@ -25,6 +25,9 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is for updating the other class objects to firebase
+ */
 public class Database {
     private FirebaseFirestore db;
     public Database(){
@@ -108,6 +111,10 @@ public class Database {
         }
     }
 
+    /**
+     * Update a single organizer class on firebase
+     * @param o
+     */
     public void updateOrganizer(Organizer o){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference orgRef = db.collection("Organizers");
@@ -184,7 +191,7 @@ public class Database {
 
     }
 
-    //Just use this code from line 71* down if you need to load all the attendees for whatever reason
+    //use/modify this code from line 207 down if you need to load all the attendees for whatever reason
     //To my understanding, retrieving documents from firebase has to be done in a way that doesn't allow
     //for a return value. So it has to be done on the actual activity and you can't create a method for it
 
@@ -193,7 +200,6 @@ public class Database {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         //CollectionReference attendeeRef = db.collection("Attendees");
         //AttendeeList aList = new AttendeeList();
-
         //ArrayList<String> uids = new ArrayList<String>();
 
         DocumentReference attendeeRef = db.collection("Attendees").document("Checkins");

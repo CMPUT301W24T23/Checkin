@@ -27,6 +27,11 @@ public class AttendeeList implements Serializable {
         return count;
     }
 
+    /**
+     * Return number of subscribers to the event
+     * @param e
+     * @return
+     */
     public int SubscribedCount(Event e){
         int count = 0;
         for(Attendee a: Attendees){

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://www.youtube.com/watch?v=pziVsDXrjxc -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvCreateEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create An Event"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etEventName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event Name"
+        android:layout_below="@id/tvCreateEvent"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"
+        android:inputType="text"/>
+
+    <EditText
+        android:id="@+id/etEventDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event Details"
+        android:layout_below="@id/etEventName"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:inputType="textMultiLine"/>
+
+    <Button
+        android:id="@+id/btnAddPoster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Event Poster"
+        android:layout_below="@id/etEventDetails"
+        android:layout_marginTop="8dp"/>
+
+    <ImageView
+        android:id="@+id/ivEventPoster"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/btnAddPoster"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/event_poster"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnGenerateQR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generate Event QR Code"
+        android:layout_below="@id/ivEventPoster"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btnUseExistingQR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Use Existing Event QR Code"
+        android:layout_below="@id/btnGenerateQR"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/btnUseExistingQR"
+        android:layout_marginTop="8dp"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Geolocation\nTracking"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_geo_tracking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@android:color/darker_gray"
+            android:layout_marginStart="10dp"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+</RelativeLayout>

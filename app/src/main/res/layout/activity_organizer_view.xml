@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomnavbar"
-         />
+        />
 
 
 
@@ -26,6 +26,7 @@
         app:itemBackground="@color/teal"
         android:background="@color/teal"
         app:itemTextColor="@color/black"
+        app:itemIconTint="@drawable/selection"
         app:menu="@menu/organizermenu" />
 
 </RelativeLayout>

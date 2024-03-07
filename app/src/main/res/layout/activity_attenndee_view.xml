@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomnavbar2"
-         />
+        />
 
 
 
@@ -24,6 +24,7 @@
         app:itemBackground="@color/lightpink"
         android:background="@color/lightpink"
         app:itemTextColor="@color/black"
+        app:itemIconTint="@drawable/selection"
         app:menu="@menu/attendeemenu" />
 
 </RelativeLayout>

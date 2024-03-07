@@ -2,15 +2,21 @@ package com.example.checkin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+// Organizer perspective of the app
 public class OrganizerView extends AppCompatActivity {
+
+
+    OrganizerFragment1 org_frag1;
+
+    Fragment open;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,32 +27,46 @@ public class OrganizerView extends AppCompatActivity {
         BottomNavigationView bottomnav = findViewById(R.id.bottomnavbar);
         bottomnav.setSelectedItemId(R.id.home);
 
+        // create home page and attendees list fragments
 
-        OrganizerFragment1 org_frag1= new OrganizerFragment1();
+
+
+        org_frag1 = new OrganizerFragment1();
+        AttendeesOptions list_frag = new AttendeesOptions();
+
+
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.org_view, org_frag1)
+                .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
                 .commit();
+
+
         bottomnav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                if (item.getItemId() == R.id.home){
+                if (item.getItemId() == R.id.home) {
 
-                    //implement
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
+                            .commit();
+                    return true;
+
+                }
+                else if (item.getItemId() == R.id.qrcodes){
+                    // implement when fragment is added
+                }
+                else if (item.getItemId() == R.id.messages){
+                    //implement when fragment is added
+                }
+                else if (item.getItemId() == R.id.attendees){
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.org_view, org_frag1)
                             .commit();
-                }
-                else if (item.getItemId() == R.id.qrcodes){
-                    // implement
-                }
-                else if (item.getItemId() == R.id.messages){
-                    //implement
-                }
-                else if (item.getItemId() == R.id.attendees){
-                   //implement
+                    return true;
                 }
                 return false;
             }

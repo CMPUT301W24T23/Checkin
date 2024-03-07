@@ -1,10 +1,11 @@
 package com.example.checkin;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Organizer implements User{
-    private int userId;
-    private EventList CreatedEvents = new EventList();     //events this user has created
+    private String userId;
+    private ArrayList<String> CreatedEvents = new ArrayList<>(); //event ids of events this organizer has created
     private boolean geoTracking;
 
     //private QRCodeList QRCodes;       //the qr codes this organizer has generated
@@ -24,12 +25,12 @@ public class Organizer implements User{
     //TODO:
     //public deleteQR(){}           //organizer deletes one of their QR Codes
 
-    private int generateUserId() {
+    private String generateUserId() {
         //TODO: Generate the userId for a new user
         //      Integration with firebase needed in order to have unique IDs
         //      idea: increment from zero, check if ID is in use, when
         //            vacant ID is found, assign that to this user
-        return 1;
+        return UUID.randomUUID().toString();
     }
 
     /**
@@ -37,6 +38,13 @@ public class Organizer implements User{
      */
     public Organizer() {
         this.userId = generateUserId();
+    }
+
+    /*This user has created an event, add to list of event ids and upload to firebase*/
+    public void EventCreate(Event e){
+        CreatedEvents.add(e.getEventId());
+        Database db = new Database();
+        db.updateOrganizer(this);
     }
 
 
@@ -71,12 +79,16 @@ public class Organizer implements User{
     //Variables=====================================================================================
 
     @Override
-    public int getUserId() {
+    public String getUserId() {
         return this.userId;
     }
 
     @Override
-    public void setUserId(int id) {
+    public void setUserId(String id) {
         this.userId = id;
+    }
+
+    public ArrayList<String> getCreatedEvents() {
+        return CreatedEvents;
     }
 }

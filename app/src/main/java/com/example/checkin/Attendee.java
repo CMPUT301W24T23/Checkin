@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Random;
+import java.util.UUID;
 
 public class Attendee implements User, Serializable {
     //TODO:
@@ -17,7 +18,7 @@ public class Attendee implements User, Serializable {
     //      - FIREBASE INTEGRATION
     //      - unique UserID generation
 
-    private int userId;     //the user's ID
+    private String userId;     //the user's ID
     private Image profilePicture;               //TODO: the user's profile picture
 
     private Dictionary<String, Integer> CheckInHist = new Hashtable<>();
@@ -43,8 +44,8 @@ public class Attendee implements User, Serializable {
         this.userId = generateUserId();
 
         //test
-        Random rand = new Random();
-        this.userId = rand.nextInt(50);
+        //Random rand = new Random();
+        //this.userId = rand.nextInt(50);
 
 
         //this.profilePicture = generateProfilePicture(); //TODO:
@@ -55,7 +56,7 @@ public class Attendee implements User, Serializable {
         this.geoTracking = true;                   //on by default
     }
 
-    public Attendee(int id, String n, String home, String mail, String phone, boolean tracking){
+    public Attendee(String id, String n, String home, String mail, String phone, boolean tracking){
         this.userId = id;
         this.name = n;
         this.homepage = home;
@@ -69,12 +70,16 @@ public class Attendee implements User, Serializable {
      *
      * @return their assigned id.
      */
-    private int generateUserId() {
+    private String generateUserId() {
         //TODO: Generate the userId for a new user
         //      Integration with firebase needed in order to have unique IDs
         //      idea: increment from zero, check if ID is in use, when
         //            vacant ID is found, assign that to this user
-        return 1;
+        // from here https://developer.android.com/training/articles/user-data-ids#java
+        //also will try this https://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
+        //maybe try storing locally so when empty Attendee constructor is called, it always
+        //generates the same one if on the same device?
+        return UUID.randomUUID().toString();
     }
 
     //TODO: Deterministic generation of a user's profile picture
@@ -188,13 +193,13 @@ public class Attendee implements User, Serializable {
 
     @Override
     //get the user's ID
-    public int getUserId() {
+    public String getUserId() {
         return this.userId;
     }
 
     @Override
     //set the user's ID
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

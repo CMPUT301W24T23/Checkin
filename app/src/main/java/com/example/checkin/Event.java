@@ -16,7 +16,7 @@ public class Event implements Serializable {
     //              - has: physical boundaries? i'm not sure how geolocation would work
     //      - Firebase Integration
 
-    private int EventId;//unique identifier for event
+    private String EventId;//unique identifier for event
     private Image poster;       //event poster
     //private QRCode code;
     private String eventname;
@@ -42,12 +42,12 @@ public class Event implements Serializable {
         this.eventdetails = eventdetails;
     }
 
-    private int generateEventId(){
+    private String generateEventId(){
         //TODO: Generate the EventId for a new event
         //      Integration with firebase needed in order to have unique IDs
         //      idea: increment from zero, check if ID is in use, when
         //            vacant ID is found, assign that to this user
-        return 1;
+        return "test1";
     }
 
     /**
@@ -62,7 +62,7 @@ public class Event implements Serializable {
      * @param id
      * the identifier for this event
      */
-    public Event(int id) {
+    public Event(String id) {
         this.EventId = id;
     }
     //Poster Image===============================================================
@@ -87,6 +87,8 @@ public class Event implements Serializable {
     public void userSubs(Attendee a){
         //Attendee subscribes to receiving information updates
         Subscribers.addAttendee(a);
+        Database db = new Database();
+        db.updateEvent(this);
     }
 
     /**
@@ -128,14 +130,20 @@ public class Event implements Serializable {
             CheckInList = new AttendeeList();
         }
 
+
+
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             a.CheckIn(this);
             CheckInList.removeAttendee(a);
+            Database db = new Database();
+            db.updateEvent(this);
         } else{
             //otherwise the user is checking in
             a.CheckIn(this);
             CheckInList.addAttendee(a);
+            Database db = new Database();
+            db.updateEvent(this);
         }
 
 
@@ -175,11 +183,11 @@ public class Event implements Serializable {
         return CheckInList;
     }
 
-    public int getEventId() {
+    public String getEventId() {
         return EventId;
     }
 
-    public void setEventId(int eventId) {
+    public void setEventId(String eventId) {
         EventId = eventId;
     }
 

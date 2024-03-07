@@ -14,9 +14,9 @@ public class ImageList {
     //TODO: add/removing posters
     //      add/remove profilepictures
     //From CRC cards:
-            //Has all images in the app
-            //has list of profile pictures
-            //has list of poster images
+    //Has all images in the app
+    //has list of profile pictures
+    //has list of poster images
     private ArrayList<Image> posters;
     private ArrayList<Image> ProfilePic;
 

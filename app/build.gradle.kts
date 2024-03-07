@@ -33,6 +33,7 @@ android {
 
 dependencies {
 
+    implementation("com.google.android.gms:play-services-maps:17.0.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.journeyapps:zxing-android-embedded:4.1.0")
     implementation("com.google.android.material:material:1.11.0")

@@ -145,6 +145,8 @@ public class Event implements Serializable {
         return false;
     }
 
+
+
     //GETTER/SETTER=====================================================================
 
     /**

@@ -27,18 +27,30 @@ public class OrganizerFragment1 extends Fragment {
 
     Button backbutton;
 
+    Button addeventbutton;
+
+    boolean update;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_attendee1, container, false);
+        View view = inflater.inflate(R.layout.fragment_organizer1, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
+        addeventbutton = view.findViewById(R.id.addeventbtn);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            allevents = (EventList) bundle.getSerializable("eventslist");
+        } else {
+            allevents = new EventList(); // Initialize only if bundle is null
+        }
 
 
-        datalist = new ArrayList<>();
-        allevents = new EventList();
+        // allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
 
         // Add attendees and check them in to test functionality
@@ -50,8 +62,22 @@ public class OrganizerFragment1 extends Fragment {
         attendee2.CheckIn(event1);
         event1.userCheckIn(attendee1);
         event1.userCheckIn(attendee2);
-        datalist.add(event1);
+
         allevents.addEvent(event1);
+
+
+        addeventbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CreateEventFragment createeventfrag = new CreateEventFragment();
+                Bundle args = new Bundle();
+                args.putSerializable("eventslist", allevents);
+                createeventfrag.setArguments(args);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, createeventfrag).addToBackStack(null).commit();
+                update = true;
+
+            }
+        });
 
         // move back to previous fragment when clicked
         backbutton.setOnClickListener(new View.OnClickListener() {
@@ -63,8 +89,8 @@ public class OrganizerFragment1 extends Fragment {
         });
 
         // if event list is not null, then set eventlist
-        if (datalist != null) {
-            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
+        if (allevents.getEvents() != null) {
+            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, allevents.getEvents()) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = convertView;
@@ -74,7 +100,7 @@ public class OrganizerFragment1 extends Fragment {
                     }
 
                     TextView textView = view.findViewById(R.id.event_text);
-                    textView.setText(datalist.get(position).getEventname());
+                    textView.setText(allevents.getEvents().get(position).getEventname());
                     return view;
                 }
             };
@@ -87,7 +113,7 @@ public class OrganizerFragment1 extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 EventsDetailOrg eventd_frag1= new EventsDetailOrg();
                 Bundle args = new Bundle();
-                args.putSerializable("event", datalist.get(i));
+                args.putSerializable("event", allevents.getEvents().get(i));
                 eventd_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
 

@@ -5,8 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -28,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button organizerbutton;
     Button attendeebutton;
+    static String AttendId;         //user's id
+    static String OrgId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,78 +42,42 @@ public class MainActivity extends AppCompatActivity {
         organizerbutton = findViewById(R.id.organizerbtn);
         attendeebutton = findViewById(R.id.attendeebtn);
 
-        //REMOVE BEFORE PUSH=========================================================================
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String aID = preferences.getString("attendeeId", null); //attendee id
+        String oID = preferences.getString("organizerId", null);
+        //Generate a new ID if none is stored
+        if (aID == null){
+            generateAttendeeId();
+        }
+        if (oID == null){
+            generateOrganizerId();
+        }
 
-        Attendee a1 = new Attendee();
-        a1.setUserId("123");
-        Attendee a2 = new Attendee();
-        a2.setUserId("456");
-        Attendee a3 = new Attendee();
-        a3.setUserId("789");
-        //AttendeeList aList = new AttendeeList();
-        //aList.addAttendee(a1);
-        //aList.addAttendee(a2);
-        //aList.addAttendee(a3);
-
-        Event e = new Event();
-        e.setEventname("epic party");
-        //Organizer o = new Organizer();
-        //o.EventCreate(e);
-        e.userSubs(a2);
-        e.userSubs(a1);
-
-        //e.userCheckIn(a1);
-        e.userCheckIn(a2);
-        e.userCheckIn(a3);
-
-
-
-
-        //Database db1 = new Database();
-        //db.storeAttendees(aList);
-
-        /*AttendeeList aList2 = db.loadAttendees();
-        for (Attendee a: aList2.getAttendees()){
-            a.toggleTracking();
-            Log.d("LoadAttendee", String.format("Attendee(%s, %s) loaded successfully", a.getUserId(),
-                    a.getName()));
-        }*/
-        //db1.updateAttendees(aList2);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Attendees")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        AttendeeList aList = new AttendeeList();
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("Firebase", document.getId() + " => " + document.getData());
-                                String id = document.getId();
-                                String name = (String) document.getData().get("Name");
-                                String home = (String) document.getData().get("Homepage");
-                                String mail = (String) document.getData().get("Email");
-                                String phone = (String) document.getData().get("Phone");
-                                Boolean tracking = (Boolean) document.getData().get("Tracking");
-                                Attendee a = new Attendee(id, name, home, mail, phone, tracking);
-                                a.toggleTracking();
-                                aList.addAttendee(a);
-                            }
-                        } else {
-                            Log.d("Firebase", "Error getting documents: ", task.getException());
-                        }
-                        Database fire = new Database();
-                        fire.updateAttendees(aList);
-
-                    }
-                });
-
-        //==========================================================================================
-        // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (aID == null) {
+                    //this is a new user
+                    Log.d("ID Generated", String.format("Generated ID: %s", AttendId));
+
+                    //create a new Attendee object and upload to fireStore
+                    Attendee a = new Attendee(AttendId, "", "", "", "", false);
+                    Database db = new Database();
+                    db.updateAttendee(a);
+
+                    //save id locally to preferences
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("attendeeId", AttendId);
+                    editor.apply();
+
+                    Log.d("New User", String.format("Created Attendee: %s", AttendId));
+                }
+
+                //gets ID
+                AttendId = preferences.getString("attendeeId", null);
+                Log.d("Loaded User", String.format("Loaded Attendee: %s", AttendId));
+
                 Intent intent = new Intent(getApplicationContext(), AttendeeView.class);
                 startActivity(intent);
             }
@@ -118,6 +87,28 @@ public class MainActivity extends AppCompatActivity {
         organizerbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (oID == null) {
+                    //this is a new user
+                    Log.d("ID Generated", String.format("Generated Organizer ID: %s", OrgId));
+
+                    //create a new Attendee object and upload to firestore
+                    Organizer o = new Organizer(OrgId);
+                    Database db = new Database();
+                    db.updateOrganizer(o);
+
+                    //save id locally to preferences
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("organizerId", OrgId);
+                    editor.apply();
+
+                    Log.d("New Organizer", String.format("Created Organizer: %s", OrgId));
+                }
+
+                //gets ID
+                OrgId = preferences.getString("organizerId", null);
+                Log.d("Loaded Organizer", String.format("Loaded Organizer: %s", OrgId));
+
+
                 Intent intent = new Intent(getApplicationContext(), OrganizerView.class);
                 startActivity(intent);
 
@@ -125,5 +116,55 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void generateAttendeeId(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Log.d("Generating ID", "Now generating Attendee id...");
+        db.collection("Attendees")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            int newId = 0;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("Firebase", document.getId() + " => " + document.getData());
+                                newId = Integer.parseInt(document.getId());
+                            }
+                            newId += 1;
+                            //Set generated user id to 1 higher than last value
+                            //uId = Integer.toString(newId);
+                            AttendId = String.valueOf(newId);
+                        } else {
+                            Log.d("Firebase", "Error getting Attendee documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void generateOrganizerId(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Log.d("Generating ID", "Now generating Organizer id...");
+        db.collection("Organizers")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            int newId = 0;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("Firebase", document.getId() + " => " + document.getData());
+                                newId = Integer.parseInt(document.getId());
+                            }
+                            newId += 1;
+                            //Set generated user id to 1 higher than last value
+                            //uId = Integer.toString(newId);
+                            OrgId = String.valueOf(newId);
+                        } else {
+                            Log.d("Firebase", "Error getting Organizer documents: ", task.getException());
+                        }
+                    }
+                });
     }
 }

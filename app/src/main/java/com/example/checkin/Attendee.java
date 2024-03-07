@@ -5,6 +5,7 @@ import android.media.Image;
 import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class Attendee implements User, Serializable {
     private String userId;     //the user's ID
     private Image profilePicture;               //TODO: the user's profile picture
 
-    private Dictionary<String, Integer> CheckInHist = new Hashtable<>();
+    private Map<String, Integer> CheckInHist = new Hashtable<>();
 
     private boolean geoTracking;
 
@@ -126,7 +127,7 @@ public class Attendee implements User, Serializable {
      * @return
      * dictionary of check in counts
      */
-    public Dictionary<String, Integer> getCheckIns() {
+    public Map<String, Integer> getCheckIns() {
         //get the list of user check-in/outs
         //possibly not necessary
         return CheckInHist;

@@ -47,4 +47,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     androidTestImplementation("com.jayway.android.robotium:robotium-solo:5.3.1")
     testImplementation("org.mockito:mockito-core:5.11.0")
+    implementation("androidx.preference:preference:1.2.1")
+
 }

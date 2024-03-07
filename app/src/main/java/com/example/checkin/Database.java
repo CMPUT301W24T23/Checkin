@@ -2,25 +2,9 @@ package com.example.checkin;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +47,7 @@ public class Database {
             data.put("Tracking", a.trackingEnabled());
 
             //Upload check in counts
-            Dictionary checkins = a.getCheckIns();
+            Map<String, Integer> checkins = a.getCheckIns();
             data.put("Checkins", checkins);
 
             attendeeRef.document(a.getUserId()).set(data);
@@ -88,7 +72,7 @@ public class Database {
         data.put("Tracking", a.trackingEnabled());
 
         //Upload check in counts
-        Dictionary checkins = a.getCheckIns();
+        Map<String, Integer> checkins = a.getCheckIns();
         data.put("Checkins", checkins);
 
         attendeeRef.document(a.getUserId()).set(data);

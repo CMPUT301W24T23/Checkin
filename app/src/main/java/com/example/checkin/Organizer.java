@@ -40,6 +40,11 @@ public class Organizer implements User{
         this.userId = generateUserId();
     }
 
+    public Organizer(String oID) {
+        this.userId = oID;
+        this.geoTracking = true;
+    }
+
     /*This user has created an event, add to list of event ids and upload to firebase*/
     public void EventCreate(Event e){
         CreatedEvents.add(e.getEventId());

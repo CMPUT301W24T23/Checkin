@@ -58,8 +58,6 @@ public class OrganizerFragment1 extends Fragment {
         Attendee attendee2 = new Attendee("John");
         attendees1.add(attendee1);
         Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
-        attendee1.CheckIn(event1);
-        attendee2.CheckIn(event1);
         event1.userCheckIn(attendee1);
         event1.userCheckIn(attendee2);
 

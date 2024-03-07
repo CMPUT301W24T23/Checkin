@@ -1,10 +1,10 @@
-
 package com.example.checkin;
 
 import android.media.Image;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Event implements Serializable {
     //TODO:
@@ -12,12 +12,11 @@ public class Event implements Serializable {
     //      - remove QR CODE
     //      - assign poster
     //      - remove poster
-    //      - event ID generation
     //      - Geolocation integration
     //              - has: physical boundaries? i'm not sure how geolocation would work
     //      - Firebase Integration
 
-    private int EventId;//unique identifier for event
+    private String EventId;//unique identifier for event
     private Image poster;       //event poster
     //private QRCode code;
     private String eventname;
@@ -36,26 +35,31 @@ public class Event implements Serializable {
         checkInList = new ArrayList<>();
     }
 
-
-
     public Event(String eventname, String eventdetails) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
     }
 
-    private int generateEventId(){
-        //TODO: Generate the EventId for a new event
-        //      Integration with firebase needed in order to have unique IDs
-        //      idea: increment from zero, check if ID is in use, when
-        //            vacant ID is found, assign that to this user
-        return 1;
+    private String generateEventId(){
+        Random rand = new Random();
+        return Integer.toString(rand.nextInt(1000));
     }
 
     /**
-     * Creates a new Event
+     * Creates an empty event
+     * DO NOT PUT THIS IN DATABASE
      */
     public Event() {
         this.EventId = generateEventId();
+    }
+
+    /**
+     * Restore from id
+     * @param id
+     * the identifier for this event
+     */
+    public Event(String id) {
+        this.EventId = id;
     }
     //Poster Image===============================================================
 
@@ -96,6 +100,7 @@ public class Event implements Serializable {
      * @param a
      * a valid Attendee object
      * @return
+     * returns whether user is subscribed
      */
     public boolean IsSubscribed(Attendee a){
         for (Attendee user: Subscribers.getAttendees()){
@@ -111,12 +116,14 @@ public class Event implements Serializable {
     /**
      * Checks a user a into the event
      * @param a
+     * a valid attendee object
      */
     public void userCheckIn (Attendee a){
 
         if (CheckInList == null) {
             CheckInList = new AttendeeList();
         }
+
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             a.CheckIn(this);
@@ -152,6 +159,7 @@ public class Event implements Serializable {
     /**
      * Return the array of attendees who are subscribed to the event
      * @return
+     * Attendee List of subscribers
      */
     public AttendeeList getSubscribers() {
         return Subscribers;
@@ -165,11 +173,11 @@ public class Event implements Serializable {
         return CheckInList;
     }
 
-    public int getEventId() {
+    public String getEventId() {
         return EventId;
     }
 
-    public void setEventId(int eventId) {
+    public void setEventId(String eventId) {
         EventId = eventId;
     }
 
@@ -195,4 +203,3 @@ public class Event implements Serializable {
 
 
 }
-

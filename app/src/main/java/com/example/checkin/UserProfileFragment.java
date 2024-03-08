@@ -1,8 +1,3 @@
-/*
-Fragment displaying the user profile including profile pic, name and other information along with
-the functionality of generating, uploading profile pic based on the name initials and changing attendee information.
-*/
-
 package com.example.checkin;
 
 import android.app.Activity;
@@ -32,6 +27,12 @@ import com.example.checkin.Attendee;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
+
+/*
+Fragment displaying the user profile (using fragment_user_profile.xml layout)
+including profile pic, name and other information along with the functionality of
+generating, uploading profile pic based on the name initials and changing attendee information.
+*/
 
 public class UserProfileFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;

@@ -1,6 +1,14 @@
+/*
+A class managing event details, attendee subscriptions, and check-ins in an event-check-in system.
+It includes methods for subscribing/unsubscribing attendees for notifications, checking them in/out,
+and checking subscription and check-in status.
+The class supports QR code and poster management.
+ */
 package com.example.checkin;
 
 import android.media.Image;
+
+import com.example.checkin.AttendeeList;
 
 import java.io.Serializable;
 import java.util.ArrayList;

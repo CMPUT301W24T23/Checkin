@@ -10,6 +10,17 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+/*
+This Java class, named `Attendee`, represents a user participating in an event-check-in system.
+The class implements the `User` interface and is serializable.
+It includes features for managing user profiles, event subscriptions, check-ins,
+geolocation tracking, and potential integration with Firebase.
+The class also outlines methods for updating profile information,
+subscribing/unsubscribing from events, checking in/out from events,
+toggling geolocation tracking, and retrieving user details.
+Overall, the class serves as a foundation for handling user-related functionalities
+in an event management application.
+ */
 public class Attendee implements User, Serializable {
     //TODO:
     //      - profile picture adding
@@ -41,7 +52,6 @@ public class Attendee implements User, Serializable {
     }
 
     /**
-<<<<<<< HEAD
      * Updates the profile information according to the parameters.
      * @param geoTracking if user allows its geolocation tracking or not
      * @param name name of the user
@@ -247,11 +257,9 @@ public class Attendee implements User, Serializable {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
     public String getCountry() {
         return country;
     }
-
     public void setCountry(String country) {
         this.country = country;
     }

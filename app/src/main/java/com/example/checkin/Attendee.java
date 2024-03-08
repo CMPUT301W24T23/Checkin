@@ -32,9 +32,25 @@ public class Attendee implements User, Serializable {
     private String homepage;        //user's website?
     private String email;
     private String phoneNumber;
+    private String country;
 
     public Attendee(String name) {
         this.name = name;
+    }
+
+    /**
+     * Updates the profile information according to the parameters.
+     * @param geoTracking if user allows its geolocation tracking or not
+     * @param name name of the user
+     * @param homepage homepage representing as a other form of profile of the user
+     * @param email email associated to that user
+     */
+    public void updateProfile(String name, String email, String homepage, String country, boolean geoTracking ) {
+        this.name = name;
+        this.homepage = homepage;
+        this.email = email;
+        this.country = country;
+        this.geoTracking = geoTracking;
     }
 
     /**

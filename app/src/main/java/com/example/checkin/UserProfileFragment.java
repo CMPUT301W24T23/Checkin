@@ -23,6 +23,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.regex.Pattern;
 import com.example.checkin.Attendee;
 
 import java.io.IOException;
@@ -39,6 +42,18 @@ public class UserProfileFragment extends Fragment {
     private ImageView myImageView;
     private Uri imageUri;
     //private UserProfileViewModel viewModel;
+
+// <
+//     // Other UI elements
+//     private EditText nameEdit, emailEdit, homeEdit, countryEdit;
+//     private CheckBox locationBox;
+//     /**
+//      * Default constructor required for fragments.
+//      */
+//     public UserProfileFragment() {
+//         // Required empty public constructor
+//     }
+  
 
     // Instance of the an attendee.
     private Attendee currentUser = new Attendee();
@@ -73,6 +88,7 @@ public class UserProfileFragment extends Fragment {
         countryEdit = view.findViewById(R.id.countryEdit);
         locationBox = view.findViewById(R.id.locationBox);
 
+
         // Setting the contact information of the current user to the xml layout.
         nameEdit.setText(currentUser.getName());
         emailEdit.setText(currentUser.getEmail());
@@ -100,7 +116,9 @@ public class UserProfileFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * Opens a file chooser for selecting an image.
+     */
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -108,6 +126,13 @@ public class UserProfileFragment extends Fragment {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    /**
+     * Handles the result of the file chooser activity and sets the selected image to the ImageView.
+     *
+     * @param requestCode The request code originally supplied to startActivityForResult(),
+     * @param resultCode  The result code returned by the child activity,
+     * @param data        An Intent that carries the result data.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -141,7 +166,9 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Saves the user's profile information and picture.
+     */
     private void saveUserProfile() {
         // Get user-entered information
         String name = nameEdit.getText().toString();
@@ -150,9 +177,10 @@ public class UserProfileFragment extends Fragment {
         String country = countryEdit.getText().toString();
         boolean locationPermission = locationBox.isChecked();
 
+      
         // Updating/Saving the new/changed user information of the current Attendee.
         currentUser.updateProfile(name, email, homepage, country, locationPermission);
-
+      
         // Validate email format
         if (!isValidEmail(email)) {
             emailEdit.setError("Invalid email format");
@@ -177,25 +205,60 @@ public class UserProfileFragment extends Fragment {
             Bitmap bitmap = generateImageWithInitials(name);
             myImageView.setImageBitmap(bitmap);
             imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
+
+            // Upload the generated image here
+            uploadGeneratedImage(bitmap);
+
+            // Log the visibility of the ImageView
+            Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
         }
 
-        // You can save this information or pass it to another fragment for display
-        // For now, let's display a toast message with the information
         String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
                 "\nCountry: " + country + "\nLocation Permission: " + locationPermission;
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+    /**
+     * Uploads the generated image to a desired location.
+     *
+     * @param bitmap The bitmap image to upload.
+     */
+    private void uploadGeneratedImage(Bitmap bitmap) {
+        // Convert the Bitmap to a byte array
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] imageData = baos.toByteArray();
 
+        // Upload the image data to your desired location
+        Log.d("UserProfileFragment", "Uploading generated image...");
 
-
-
+        // Simulate upload process
+        try {
+            // Simulate upload time
+            Thread.sleep(2000);
+            Log.d("UserProfileFragment", "Generated image uploaded successfully");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+  
+    /**
+     * Clears the selected picture from the ImageView.
+     *
+     * @param view The remove picture button view.
+     */
     public void onRemovePictureButtonClick(View view) {
         myImageView.setImageResource(android.R.color.transparent); // Clear the image
         imageUri = null; // Set the imageUri to null
         Button removePictureButton = getView().findViewById(R.id.removePictureButton);
         removePictureButton.setVisibility(View.GONE); // Hide the 'Remove Picture' button
     }
-
+  
+    /**
+     * Generates an image with the initials of the given name.
+     *
+     * @param name The name to generate initials from.
+     * @return The generated image bitmap.
+     */
     private Bitmap generateImageWithInitials(String name) {
         // Generate an image with the initials of the name
         Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
@@ -211,6 +274,13 @@ public class UserProfileFragment extends Fragment {
         int xPos = (canvas.getWidth() / 2);
         int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
         canvas.drawText(String.valueOf(name.charAt(0)), xPos, yPos, paint);
+
+        // Set ImageView visibility to VISIBLE
+        myImageView.setVisibility(View.VISIBLE);
+
+        // Set the bitmap to the ImageView
+        myImageView.setImageBitmap(bitmap);
+
         // Log the content of the bitmap
         StringBuilder bitmapContent = new StringBuilder();
         for (int y = 0; y < bitmap.getHeight(); y++) {
@@ -221,14 +291,31 @@ public class UserProfileFragment extends Fragment {
             bitmapContent.append("\n");
         }
         Log.d("BitmapContent", "Bitmap content:\n" + bitmapContent.toString());
+        Log.d("BitmapSize", "Bitmap width: " + bitmap.getWidth() + ", height: " + bitmap.getHeight());
+
+        // Log the visibility of the ImageView
+        Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
+
         return bitmap;
     }
-
+    /**
+     * Validates an email address.
+     *
+     * @param email The email address to validate.
+     * @return True if the email is valid, false otherwise.
+     */
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return Pattern.matches(emailRegex, email);
     }
-
+  
+    /**
+     * Validates a URL.
+     *
+     * @param url The URL to validate.
+     * @return True if the URL is valid, false otherwise.
+     */
+  
     private boolean isValidUrl(String url) {
         String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         return Pattern.matches(urlRegex, url);

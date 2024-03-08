@@ -26,34 +26,46 @@ import androidx.fragment.app.Fragment;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.regex.Pattern;
-/**
- * A fragment for managing user profile information and picture.
- * Allows the user to edit and save their profile details, including name, email, homepage, country,
- * location permission, and profile picture.
- */
+import com.example.checkin.Attendee;
+
+import java.io.IOException;
+import java.util.regex.Pattern;
+
+/*
+Fragment displaying the user profile (using fragment_user_profile.xml layout)
+including profile pic, name and other information along with the functionality of
+generating, uploading profile pic based on the name initials and changing attendee information.
+*/
+
 public class UserProfileFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageView myImageView;
     private Uri imageUri;
     //private UserProfileViewModel viewModel;
 
+// <<<<<<< sukh
+//     // Other UI elements
+//     private EditText nameEdit, emailEdit, homeEdit, countryEdit;
+//     private CheckBox locationBox;
+//     /**
+//      * Default constructor required for fragments.
+//      */
+//     public UserProfileFragment() {
+//         // Required empty public constructor
+//     }
+  
+
+    // Instance of the an attendee.
+    private Attendee currentUser = new Attendee();
+
     // Other UI elements
     private EditText nameEdit, emailEdit, homeEdit, countryEdit;
     private CheckBox locationBox;
-    /**
-     * Default constructor required for fragments.
-     */
+
     public UserProfileFragment() {
         // Required empty public constructor
     }
-    /**
-     * Inflates the layout for this fragment and initializes UI elements.
-     *
-     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment,
-     * @param container          The parent view that the fragment's UI should be attached to,
-     * @param savedInstanceState The previously saved state, or null if there's no saved state.
-     * @return The inflated view for the fragment.
-     */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,6 +87,15 @@ public class UserProfileFragment extends Fragment {
         homeEdit = view.findViewById(R.id.homeEdit);
         countryEdit = view.findViewById(R.id.countryEdit);
         locationBox = view.findViewById(R.id.locationBox);
+
+
+        // Setting the contact information of the current user to the xml layout.
+        nameEdit.setText(currentUser.getName());
+        emailEdit.setText(currentUser.getEmail());
+        homeEdit.setText(currentUser.getHomepage());
+        countryEdit.setText(currentUser.getCountry());
+        locationBox.setChecked(currentUser.trackingEnabled());
+
 
         Button saveButton = view.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +125,7 @@ public class UserProfileFragment extends Fragment {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
+
     /**
      * Handles the result of the file chooser activity and sets the selected image to the ImageView.
      *
@@ -155,6 +177,10 @@ public class UserProfileFragment extends Fragment {
         String country = countryEdit.getText().toString();
         boolean locationPermission = locationBox.isChecked();
 
+      
+        // Updating/Saving the new/changed user information of the current Attendee.
+        currentUser.updateProfile(name, email, homepage, country, locationPermission);
+      
         // Validate email format
         if (!isValidEmail(email)) {
             emailEdit.setError("Invalid email format");
@@ -187,7 +213,6 @@ public class UserProfileFragment extends Fragment {
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
         }
 
-
         String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
                 "\nCountry: " + country + "\nLocation Permission: " + locationPermission;
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -215,6 +240,7 @@ public class UserProfileFragment extends Fragment {
             e.printStackTrace();
         }
     }
+  
     /**
      * Clears the selected picture from the ImageView.
      *
@@ -226,6 +252,7 @@ public class UserProfileFragment extends Fragment {
         Button removePictureButton = getView().findViewById(R.id.removePictureButton);
         removePictureButton.setVisibility(View.GONE); // Hide the 'Remove Picture' button
     }
+  
     /**
      * Generates an image with the initials of the given name.
      *
@@ -281,18 +308,64 @@ public class UserProfileFragment extends Fragment {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return Pattern.matches(emailRegex, email);
     }
+  
     /**
      * Validates a URL.
      *
      * @param url The URL to validate.
      * @return True if the URL is valid, false otherwise.
      */
+  
     private boolean isValidUrl(String url) {
         String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         return Pattern.matches(urlRegex, url);
     }
 
+
+    // Setters for EditText fields for TestCases.
+    public void setName(String name) {
+        nameEdit.setText(name);
+    }
+
+    public void setEmail(String email) {
+        emailEdit.setText(email);
+    }
+
+    public void setHome(String home) {
+        homeEdit.setText(home);
+    }
+
+    public void setCountry(String country) {
+        countryEdit.setText(country);
+    }
+
+    // Setter for CheckBox
+    public void setLocationChecked(boolean checked) {
+        locationBox.setChecked(checked);
+    }
+
+    // Getters for EditText fields
+    public String getName() {
+        return nameEdit.getText().toString();
+    }
+
+    public String getEmail() {
+        return emailEdit.getText().toString();
+    }
+
+    public String getHome() {
+        return homeEdit.getText().toString();
+    }
+
+    public String getCountry() {
+        return countryEdit.getText().toString();
+    }
+
+    // Getter for CheckBox
+    public boolean isLocationChecked() {
+        return locationBox.isChecked();
+    }
+
+
 }
-
-
 

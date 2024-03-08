@@ -1,8 +1,16 @@
+
 package com.example.checkin;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
+
+/*
+A class representing an organizer in an event-check-in system.
+It manages created events, allows toggling of geolocation tracking, and retrieves user details.
+The class supports event creation and geolocation preferences.
+In the main application, organizers can create and manage events seamlessly.
+ */
 
 public class Organizer implements User{
     private String userId;

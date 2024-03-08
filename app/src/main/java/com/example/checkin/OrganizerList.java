@@ -1,7 +1,12 @@
 package com.example.checkin;
 
+import com.example.checkin.Organizer;
+
 import java.util.ArrayList;
 
+/*
+Represents the list of Organizers.
+ */
 public class OrganizerList {
     //has list of Organizers
     private ArrayList<Organizer> Organizers = new ArrayList<>();

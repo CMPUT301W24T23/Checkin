@@ -39,6 +39,8 @@ dependencies {
     implementation("com.journeyapps:zxing-android-embedded:4.1.0")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.fragment:fragment-testing:1.6.2")
+    implementation("androidx.test.espresso:espresso-intents:3.5.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.2")

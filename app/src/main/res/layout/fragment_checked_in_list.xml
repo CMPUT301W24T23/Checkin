@@ -13,9 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="Attendees"
+        android:text=" Checked In Attendees"
         android:textColor="@color/black"
-        android:textSize="45dp" />
+        android:textSize="40dp" />
 
     <ListView
         android:id="@+id/attendees_list"

@@ -17,22 +17,18 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-// Organizer Home page
+// Shows the Organizer Home page, which includes list of events
 public class OrganizerFragment1 extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
     private ArrayAdapter<Event> EventAdapter;
-
     private EventList allevents;
-
     Button backbutton;
-
     Button addeventbutton;
-
     boolean update;
 
 
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,17 +49,20 @@ public class OrganizerFragment1 extends Fragment {
         // allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
 
-        // Add attendees and check them in to test functionality
+        // Add attendees and check them in/ sign up to test functionality
         Attendee attendee1 = new Attendee("Amy");
         Attendee attendee2 = new Attendee("John");
         attendees1.add(attendee1);
         Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
+        attendee1.CheckIn(event1);
+        attendee2.CheckIn(event1);
         event1.userCheckIn(attendee1);
         event1.userCheckIn(attendee2);
-
+        event1.userSubs(attendee2);
         allevents.addEvent(event1);
 
 
+        // add event button, open create event fragment
         addeventbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,8 +113,6 @@ public class OrganizerFragment1 extends Fragment {
                 args.putSerializable("event", allevents.getEvents().get(i));
                 eventd_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-
-
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).addToBackStack(null).commit();
 
 

@@ -11,6 +11,7 @@
 package com.example.checkin;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -34,6 +35,14 @@ public class CreateEventFragment extends Fragment {
     private ImageView ivEventPoster;
     private Button btnAddPoster;
 
+    private Button addeventbutton;
+
+    private Button qrcodebutton;
+
+    private EventList events;
+
+    Event event;
+
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
@@ -55,6 +64,8 @@ public class CreateEventFragment extends Fragment {
         eventdetails = view.findViewById(R.id.etEventDetails);
         ivEventPoster = view.findViewById(R.id.ivEventPoster);
         btnAddPoster = view.findViewById(R.id.btnAddPoster);
+        addeventbutton = view.findViewById(R.id.createeventbtn);
+        qrcodebutton = view.findViewById(R.id.btnGenerateQR);
 
         btnAddPoster.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +73,40 @@ public class CreateEventFragment extends Fragment {
                 mGetContent.launch("image/*");
             }
         });
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            events = (EventList) bundle.getSerializable("eventslist");
+        }
+
+        // choose event qr code to be generated
+        qrcodebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                qrcodebutton.setBackgroundColor(Color.GRAY);
+            }
+        });
+
+        // create new event and open list of events
+        addeventbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                event = new Event();
+                event.setEventname(eventname.getText().toString());
+                event.setEventdetails(eventdetails.getText().toString());
+                events.addEvent(event);
+                OrganizerFragment1 organizerfrag = new OrganizerFragment1();
+                Bundle args = new Bundle();
+                args.putSerializable("eventslist", events);
+                organizerfrag.setArguments(args);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
+
+            }
+        });
+        
+        
+        
+
 
         return view;
     }

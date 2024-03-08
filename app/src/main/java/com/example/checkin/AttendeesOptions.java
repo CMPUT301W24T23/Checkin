@@ -20,6 +20,8 @@ public class AttendeesOptions extends Fragment {
     Event myevent;
     Button backbutton;
 
+    Button signedinlistbtn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -27,6 +29,7 @@ public class AttendeesOptions extends Fragment {
         View view = inflater.inflate(R.layout.fragment_attendeeslisted, container, false);
         checkedinlistbtn = view.findViewById(R.id.checkedinbtn);
         backbutton = view.findViewById(R.id.backbtn);
+        signedinlistbtn = view.findViewById(R.id.signedinbtn);
 
         // get event object from previous fragment
         Bundle bundle = this.getArguments();
@@ -43,6 +46,20 @@ public class AttendeesOptions extends Fragment {
                 check_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, check_frag).commit();
+
+            }
+        });
+
+        signedinlistbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SignedInList sign_frag = new SignedInList();
+                Bundle args = new Bundle();
+                args.putSerializable("event", myevent);
+                sign_frag.setArguments(args);
+                getParentFragmentManager().setFragmentResult("event",args);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, sign_frag).commit();
+
 
             }
         });

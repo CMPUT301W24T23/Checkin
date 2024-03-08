@@ -22,6 +22,9 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
+
+// need to comment out line 78 and 129 in Database class before testing
+// as it causes the app to close due to unique id generated not being set yet
 public class MainActivityTest {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new

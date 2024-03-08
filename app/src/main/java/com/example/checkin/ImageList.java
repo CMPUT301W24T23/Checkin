@@ -14,21 +14,25 @@ public class ImageList {
     //TODO: add/removing posters
     //      add/remove profilepictures
     //From CRC cards:
-            //Has all images in the app
-            //has list of profile pictures
-            //has list of poster images
+    //Has all images in the app
+    //has list of profile pictures
+    //has list of poster images
     private ArrayList<Image> posters;
     private ArrayList<Image> ProfilePic;
 
-    //public void addPoster(){};
+    public void addPoster(){};
 
-    //public void removePoster(){};
+    public void removePoster(){};
 
-    //public void addProfilePic(){}
+    public void addProfilePic(){}
 
-    //public void removeProfilePic(){}
+    public void removeProfilePic(){};
 
-    //public ArrayList<Image> getPosters(){}
+    public ArrayList<Image> getPosters(){
+        return posters;
+    };
 
-    //public ArrayList<Image> getProfilePictures(){}
+    public ArrayList<Image> getProfilePictures(){
+        return ProfilePic;
+    };
 }

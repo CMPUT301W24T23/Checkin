@@ -1,4 +1,3 @@
-
 package com.example.checkin;
 
 import java.io.Serializable;
@@ -8,6 +7,8 @@ public class AttendeeList implements Serializable {
     //has list of attendees
     //see # of checked-in users when passed an event
     private ArrayList<Attendee> Attendees = new ArrayList<Attendee>();
+
+    public AttendeeList(){}
 
     /**
      * Returns the number of attendees checked in to the event
@@ -20,6 +21,21 @@ public class AttendeeList implements Serializable {
         int count = 0;
         for(Attendee a: Attendees){
             if(e.IsCheckedIn(a)){
+                count += 1;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Return number of subscribers to the event
+     * @param e
+     * @return
+     */
+    public int SubscribedCount(Event e){
+        int count = 0;
+        for(Attendee a: Attendees){
+            if(e.IsSubscribed(a)){
                 count += 1;
             }
         }
@@ -72,6 +88,3 @@ public class AttendeeList implements Serializable {
         return attendee;
     }
 }
-
-
-

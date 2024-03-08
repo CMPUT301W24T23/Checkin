@@ -2,6 +2,7 @@ package com.example.checkin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,6 +12,11 @@ import com.google.android.material.navigation.NavigationBarView;
 
 // Organizer perspective of the app
 public class OrganizerView extends AppCompatActivity {
+
+
+    OrganizerFragment1 org_frag1;
+
+    Fragment open;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,22 +28,29 @@ public class OrganizerView extends AppCompatActivity {
         bottomnav.setSelectedItemId(R.id.home);
 
         // create home page and attendees list fragments
-        OrganizerFragment1 org_frag1= new OrganizerFragment1();
+
+
+
+        org_frag1 = new OrganizerFragment1();
         AttendeesOptions list_frag = new AttendeesOptions();
+
+
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.org_view, org_frag1)
-                .addToBackStack(null)
+                .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
                 .commit();
+
+
         bottomnav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                if (item.getItemId() == R.id.home){
+                if (item.getItemId() == R.id.home) {
+
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.org_view, org_frag1)
+                            .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
                             .commit();
                     return true;
 

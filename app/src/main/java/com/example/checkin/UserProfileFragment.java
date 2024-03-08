@@ -53,13 +53,6 @@ public class UserProfileFragment extends Fragment {
             }
         });
 
-        // Initialize other UI elements
-        nameEdit = view.findViewById(R.id.nameEdit);
-        emailEdit = view.findViewById(R.id.emailEdit);
-        homeEdit = view.findViewById(R.id.homeEdit);
-        countryEdit = view.findViewById(R.id.countryEdit);
-        locationBox = view.findViewById(R.id.locationBox);
-
         Button saveButton = view.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -34,6 +34,7 @@ public class Attendee implements User, Serializable {
     private String phoneNumber;
     private String country;
 
+
     public Attendee(String name) {
         this.name = name;
     }
@@ -221,5 +222,12 @@ public class Attendee implements User, Serializable {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
 }

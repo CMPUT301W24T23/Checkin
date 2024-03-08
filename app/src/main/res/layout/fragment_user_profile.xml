@@ -27,7 +27,8 @@
             android:id="@+id/myImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitCenter"
+            android:visibility="visible"/>
 
     </androidx.cardview.widget.CardView>
 
@@ -40,6 +41,14 @@
         android:layout_marginStart="16dp"
         android:onClick="onUploadImageButtonClick"
         android:text="Edit Picture" />
+    <Button
+        android:id="@+id/removePictureButton"
+        android:layout_width="380dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:onClick="onRemovePictureButtonClick"
+        android:text="Remove Picture"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"
@@ -89,11 +98,11 @@
         android:id="@+id/homeEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="  Your Homepage URL or anything else"
+        android:hint="  Your Homepage URL"
+        android:inputType="textUri"
         android:background="@drawable/border"
         android:layout_marginBottom="20dp"
         android:layout_marginHorizontal="10dp"/>
-
     <!-- Editable TextBox - Country -->
     <TextView
         android:layout_width="match_parent"

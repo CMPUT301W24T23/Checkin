@@ -52,12 +52,7 @@ public class AttendeeView extends AppCompatActivity {
 
                 }
                 else if (item.getItemId() == R.id.profile){
-                    UserProfileFragment profileFragment = new UserProfileFragment();
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.atten_view, profileFragment)
-                            .commit();
-                    return true;
+                    //implement when fragment created
                 }
                 return false;
             }

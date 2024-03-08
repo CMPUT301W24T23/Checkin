@@ -168,6 +168,8 @@ public class UserProfileFragment extends Fragment {
 
     /**
      * Saves the user's profile information and picture.
+     * Citing: Took the help of Chat gpt in order to understand and learn new concepts about Bitmap and
+     * how to work with it.
      */
     private void saveUserProfile() {
         // Get user-entered information

@@ -1,4 +1,5 @@
 package com.example.checkin;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,12 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +19,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class UserProfileFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageView myImageView;
     private Uri imageUri;
+    //private UserProfileViewModel viewModel;
 
     // Other UI elements
     private EditText nameEdit, emailEdit, homeEdit, countryEdit;
@@ -97,11 +100,18 @@ public class UserProfileFragment extends Fragment {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 myImageView.setImageBitmap(bitmap);
+
+                // Check if the image is loaded into the ImageView
+                if (myImageView.getDrawable() != null && myImageView.getVisibility() == View.VISIBLE) {
+                    Log.d("ImageViewVisibility", "Image is visible");
+                } else {
+                    Log.d("ImageViewVisibility", "Image is not visible");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_CANCELED
-                && nameEdit.getText().length() > 0) {
+                && !nameEdit.getText().toString().isEmpty()) {
             // If no picture is uploaded but a name is saved, generate an image with initials
             String name = nameEdit.getText().toString();
             Bitmap bitmap = generateImageWithInitials(name);
@@ -112,6 +122,7 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
+
     private void saveUserProfile() {
         // Get user-entered information
         String name = nameEdit.getText().toString();
@@ -120,27 +131,53 @@ public class UserProfileFragment extends Fragment {
         String country = countryEdit.getText().toString();
         boolean locationPermission = locationBox.isChecked();
 
+        // Validate email format
+        if (!isValidEmail(email)) {
+            emailEdit.setError("Invalid email format");
+            return;
+        }
+
+        // Check if an image is uploaded
+        if (imageUri != null) {
+            // Show the 'Remove Picture' button
+            Button removePictureButton = getView().findViewById(R.id.removePictureButton);
+            removePictureButton.setVisibility(View.VISIBLE);
+
+            // Check if the ImageView is visible
+            if (myImageView.getVisibility() != View.VISIBLE) {
+                Log.d("ImageViewVisibility", "ImageView is not visible");
+            } else {
+                Log.d("ImageViewVisibility", "ImageView is visible");
+            }
+        } else {
+            // Generate a temporary image with initials
+            Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
+            Bitmap bitmap = generateImageWithInitials(name);
+            myImageView.setImageBitmap(bitmap);
+            imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
+        }
+
         // You can save this information or pass it to another fragment for display
         // For now, let's display a toast message with the information
         String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
                 "\nCountry: " + country + "\nLocation Permission: " + locationPermission;
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-
-        // Show the 'Remove Picture' button
-        if (imageUri != null) {
-            Button removePictureButton = getView().findViewById(R.id.removePictureButton);
-            removePictureButton.setVisibility(View.VISIBLE);
-        }
     }
+
+
+
+
     public void onRemovePictureButtonClick(View view) {
         myImageView.setImageResource(android.R.color.transparent); // Clear the image
         imageUri = null; // Set the imageUri to null
         Button removePictureButton = getView().findViewById(R.id.removePictureButton);
         removePictureButton.setVisibility(View.GONE); // Hide the 'Remove Picture' button
     }
+
     private Bitmap generateImageWithInitials(String name) {
         // Generate an image with the initials of the name
         Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        Log.d("BitmapSize", "Bitmap width: " + bitmap.getWidth() + ", height: " + bitmap.getHeight());
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
@@ -152,6 +189,28 @@ public class UserProfileFragment extends Fragment {
         int xPos = (canvas.getWidth() / 2);
         int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
         canvas.drawText(String.valueOf(name.charAt(0)), xPos, yPos, paint);
+        // Log the content of the bitmap
+        StringBuilder bitmapContent = new StringBuilder();
+        for (int y = 0; y < bitmap.getHeight(); y++) {
+            for (int x = 0; x < bitmap.getWidth(); x++) {
+                int pixel = bitmap.getPixel(x, y);
+                bitmapContent.append(String.format("#%06X", (0xFFFFFF & pixel)));
+            }
+            bitmapContent.append("\n");
+        }
+        Log.d("BitmapContent", "Bitmap content:\n" + bitmapContent.toString());
         return bitmap;
     }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return Pattern.matches(emailRegex, email);
+    }
+
+    private boolean isValidUrl(String url) {
+        String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+        return Pattern.matches(urlRegex, url);
+    }
+
 }
+

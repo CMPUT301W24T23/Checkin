@@ -106,7 +106,31 @@ public class OrganizerViewTest {
         onView(withId(R.id.checkinlist_frag)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testGeoLocationTracking() {
+        // click on the organizer button to navigate to the organizer view
+        onView(withId(R.id.organizerbtn)).perform(click());
 
+        // check if the organizer view is displayed
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
+        // assuming there is a button or switch for enabling GeoLocation tracking
+        // click on the button/switch to enable GeoLocation tracking
+        onView(withId(R.id.checkbox_geo_tracking)).perform(click());
+
+    }
+
+    @Test
+    public void testAddEventPoster() {
+        // Click on the organizer button to navigate to the organizer view
+        onView(withId(R.id.organizerbtn)).perform(click());
+
+        // Check if the organizer view is displayed
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+        // Click on the button to add an event poster
+        onView(withId(R.id.ivEventPoster)).perform(click());
+
+    }
 
 }

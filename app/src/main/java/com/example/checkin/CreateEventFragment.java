@@ -1,3 +1,6 @@
+// This class is a Fragment used to create new events. It allows the user to input event details,
+// including name, details, and upload poster image. The user can also enable/disable
+// geo-tracking for the event. The poster image can be selected from the device's gallery.
 // https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
 // https://stackoverflow.com/questions/66036757/android-location-gps-track
 // https://www.geeksforgeeks.org/how-to-manage-startactivityforresult-on-android/
@@ -30,8 +33,6 @@ public class CreateEventFragment extends Fragment {
     private EditText eventdetails;
     private ImageView ivEventPoster;
     private Button btnAddPoster;
-    private EventList events;
-    private Event event;
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),

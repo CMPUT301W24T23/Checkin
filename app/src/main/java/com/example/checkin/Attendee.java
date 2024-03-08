@@ -3,12 +3,24 @@ package com.example.checkin;
 import android.media.Image;
 
 import java.io.Serializable;
+
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+/*
+This Java class, named `Attendee`, represents a user participating in an event-check-in system.
+The class implements the `User` interface and is serializable.
+It includes features for managing user profiles, event subscriptions, check-ins,
+geolocation tracking, and potential integration with Firebase.
+The class also outlines methods for updating profile information,
+subscribing/unsubscribing from events, checking in/out from events,
+toggling geolocation tracking, and retrieving user details.
+Overall, the class serves as a foundation for handling user-related functionalities
+in an event management application.
+ */
 public class Attendee implements User, Serializable {
     //TODO:
     //      - profile picture adding
@@ -32,18 +44,34 @@ public class Attendee implements User, Serializable {
     private String homepage;        //user's website?
     private String email;
     private String phoneNumber;
+    private String country;
+
 
     public Attendee(String name) {
         this.name = name;
     }
 
     /**
-     * Empty constructor for attendee
+     * Updates the profile information according to the parameters.
+     * @param geoTracking if user allows its geolocation tracking or not
+     * @param name name of the user
+     * @param homepage homepage representing as a other form of profile of the user
+     * @param email email associated to that user
+     */
+    public void updateProfile(String name, String email, String homepage, String country, boolean geoTracking ) {
+        this.name = name;
+        this.homepage = homepage;
+        this.email = email;
+        this.country = country;
+        this.geoTracking = geoTracking;
+    }
+
+     /* Empty constructor for attendee
      * DO NOT upload this to the database
      */
     public Attendee() {
         //DO NOT upload to database
-        this.userId = generateUserId();
+        this.userId = String.valueOf(generateUserId());
         this.name = "";
         this.homepage = "";
         this.email = "";
@@ -99,7 +127,6 @@ public class Attendee implements User, Serializable {
 
 
 
-
     //Event subscription===========================================================================
 
     /**
@@ -124,8 +151,7 @@ public class Attendee implements User, Serializable {
 
     //CheckedInList=================================================================================
 
-    /**
-     * Return the dictionary with the keys as the eventIds and values of number
+     /** Return the dictionary with the keys as the eventIds and values of number
      * of checkins.
      * @return
      * dictionary of check in counts
@@ -164,6 +190,7 @@ public class Attendee implements User, Serializable {
         //is passed an event and returns whether that user is checked into
         //the event or not
         return event.IsCheckedIn(this);
+
     }
 
     //GEOLOCATION===========================================================
@@ -193,52 +220,47 @@ public class Attendee implements User, Serializable {
     //}
 
 
-    //Variables=================================================
+
+//Variables=================================================
 
     @Override
     //get the user's ID
     public String getUserId() {
         return this.userId;
     }
-
     @Override
     //set the user's ID
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public String getHomepage() {
         return homepage;
     }
-
     public void setHomepage(String homepage) {
         this.homepage = homepage;
     }
-
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
-
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
-
+    public String getCountry() {
+        return country;
+    }
+    public void setCountry(String country) {
+        this.country = country;
+    }
 }
-

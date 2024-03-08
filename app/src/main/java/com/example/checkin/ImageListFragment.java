@@ -10,8 +10,15 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
+/*
+This fragment class is responsible of showing and displaying two types of list
+(using fragment_admin_image_browsing.xml layout) to the Administrator,
+one being the list of total posters uploaded in the app
+and the second one being the list of all the profile pictures used and uploaded in the app.
+ */
 public class ImageListFragment extends Fragment {
 
+    // Creates an instance of Administrator class.
     private Administrator administrator;
 
     @Override

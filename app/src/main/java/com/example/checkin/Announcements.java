@@ -15,9 +15,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-
-// Announcements page that shows messages received by event organizers - will implement sending notifications in next
-// part of project, has mock data for now
+/*
+Announcements page that shows messages received by event organizers - will implement
+sending notifications in next part of project, has mock data for now
+*/
 public class Announcements extends Fragment {
     ListView announcements;
     private ArrayList<String> announcelist;

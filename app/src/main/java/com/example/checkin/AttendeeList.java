@@ -3,6 +3,13 @@ package com.example.checkin;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/*
+`AttendeeList` is a serializable class representing a list of attendees.
+Provides functionality to count checked-in and subscribed attendees for a given event,
+checks if an attendee exists in the list, and supports adding or removing attendees.
+The class facilitates easy management and retrieval of attendee information within an event-check-in system.
+ */
+
 public class AttendeeList implements Serializable {
     //has list of attendees
     //see # of checked-in users when passed an event

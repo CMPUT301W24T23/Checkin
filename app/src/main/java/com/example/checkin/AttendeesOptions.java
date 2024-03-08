@@ -9,7 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-// Page for an events attendees, including those who checked in
+/*
+An Android Fragment displaying options for an event's attendees,
+featuring buttons to view the checked-in list and navigate back.
+ */
+
 public class AttendeesOptions extends Fragment {
 
     Button checkedinlistbtn;

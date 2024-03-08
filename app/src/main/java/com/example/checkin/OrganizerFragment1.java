@@ -18,4 +18,5 @@ public class OrganizerFragment1 extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_organizer1, container, false);
     }
+    //fudu's change
 }

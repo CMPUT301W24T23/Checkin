@@ -43,7 +43,7 @@ public class UserProfileFragment extends Fragment {
     private Uri imageUri;
     //private UserProfileViewModel viewModel;
 
-// <<<<<<< sukh
+// <
 //     // Other UI elements
 //     private EditText nameEdit, emailEdit, homeEdit, countryEdit;
 //     private CheckBox locationBox;

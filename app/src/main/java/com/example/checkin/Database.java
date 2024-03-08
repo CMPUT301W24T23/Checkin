@@ -75,7 +75,7 @@ public class Database {
         Map<String, Integer> checkins = a.getCheckIns();
         data.put("Checkins", checkins);
 
-        attendeeRef.document(a.getUserId()).set(data);
+//        attendeeRef.document(a.getUserId()).set(data);
     }
 
     /**
@@ -126,7 +126,7 @@ public class Database {
 
         data.put("Events", events);
 
-        orgRef.document(o.getUserId()).set(data);
+//        orgRef.document(o.getUserId()).set(data);
     }
 
     public void updateEvents(EventList events){

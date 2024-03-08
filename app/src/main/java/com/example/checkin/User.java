@@ -2,8 +2,8 @@ package com.example.checkin;
 
 public interface User {
 
-    public int getUserId();
-    public void setUserId(int id);
+    public String getUserId();
+    public void setUserId(String id);
 
 }
 

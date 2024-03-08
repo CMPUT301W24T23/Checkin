@@ -1,5 +1,7 @@
 package com.example.checkin;
+
 import android.media.Image;
+
 import java.util.ArrayList;
 
 /**
@@ -8,14 +10,13 @@ import java.util.ArrayList;
  * easy admin access
  * Has separate lists for posters and profile pictures
  */
-
 public class ImageList {
     //TODO: add/removing posters
     //      add/remove profilepictures
     //From CRC cards:
-            //Has all images in the app
-            //has list of profile pictures
-            //has list of poster images
+    //Has all images in the app
+    //has list of profile pictures
+    //has list of poster images
     private ArrayList<Image> posters;
     private ArrayList<Image> ProfilePic;
 
@@ -25,15 +26,13 @@ public class ImageList {
 
     public void addProfilePic(){}
 
-    public void removeProfilePic(){
-        System.out.println("Safe");
-    }
+    public void removeProfilePic(){};
 
     public ArrayList<Image> getPosters(){
-        return null;
-    }
+        return posters;
+    };
 
     public ArrayList<Image> getProfilePictures(){
-        return null;
-    }
+        return ProfilePic;
+    };
 }

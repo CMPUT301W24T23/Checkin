@@ -28,7 +28,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-// generates QR code and shares it
+// generates QR code and shares it to the other apps
 public class ShareCode extends Fragment {
     Event myevent;
     Button sharebutton;
@@ -92,6 +92,13 @@ public class ShareCode extends Fragment {
         intent.setType("image/png");
         startActivity(Intent.createChooser(intent, "Share Via"));
     }
+
+    /**
+     *
+     * @param bitmap
+     * @param context
+     * @return
+     */
 
     // URL: https://www.geeksforgeeks.org/how-to-share-image-of-your-app-with-another-app-in-android/
     private Uri getImageShare(Bitmap bitmap, Context context) {

@@ -16,7 +16,7 @@
         android:textColor="@color/black"
         android:layout_marginTop="40dp"
         android:textSize="45dp"
-         />
+        />
     <ListView
         android:id="@+id/events"
         android:layout_width="match_parent"
@@ -29,6 +29,17 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="-400dp"
         android:text="Back" />
+
+    <Button
+        android:id="@+id/addeventbtn"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Add Event"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="530dp"
+
+
+        />
 
 
 

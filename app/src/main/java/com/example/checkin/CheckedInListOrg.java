@@ -33,8 +33,9 @@ public class CheckedInListOrg extends Fragment {
         ArrayList<Attendee> attendees = new ArrayList<>();
 
         Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
+        if (bundle != null) {
+            myevent = (Event) bundle.getSerializable("event");
+        }
 
         // if event exists, get checked in list of attendees
         if (myevent !=null) {
@@ -45,7 +46,7 @@ public class CheckedInListOrg extends Fragment {
         if (attendeedatalist!= null) {
             AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendeedatalist.getAttendees());
             attendeesList.setAdapter(AttendeesAdapter);
-                }
+        }
 
 
 

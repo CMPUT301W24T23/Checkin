@@ -1,4 +1,3 @@
-
 package com.example.checkin;
 
 import java.io.Serializable;
@@ -32,7 +31,8 @@ public class EventList implements Serializable {
         //TODO: Firebase integration
     }
 
-
+    public ArrayList<Event> getEvents(){
+        return Events;
+    }
 }
-
 

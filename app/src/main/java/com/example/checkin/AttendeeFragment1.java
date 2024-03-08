@@ -1,3 +1,8 @@
+/*
+An Android Fragment serving as the attendee home page.
+It displays events in a ListView, uses a back button to return to `MainActivity`,
+and handles event selection, transitioning to an `EventDetailAtten` fragment for detailed information.
+ */
 package com.example.checkin;
 
 import android.content.Context;

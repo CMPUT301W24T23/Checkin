@@ -1,3 +1,6 @@
+// This code defines a custom ArrayAdapter for displaying a list of attendees in a ListView.
+// It inflates a layout (content2.xml) for each item in the list and sets the text of a TextView
+// (attendee_name) to the name of the attendee at the corresponding position in the list.
 package com.example.checkin;
 
 
@@ -13,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-// Attendee Array Adapter that contains Attendees
 
 public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
     private ArrayList<Attendee> attendees;

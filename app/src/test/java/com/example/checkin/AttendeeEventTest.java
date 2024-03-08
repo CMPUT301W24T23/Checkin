@@ -5,12 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//import org.junit.jupiter.api.Test;
-import android.provider.CalendarContract;
 
 import org.junit.Test;
-public class AttendeeEventTest {
 
+public class AttendeeEventTest {
 
     /**
      * Test an attendee checking in

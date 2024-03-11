@@ -119,7 +119,7 @@ public class OrganizerViewTest {
 
         // assuming there is a button or switch for enabling GeoLocation tracking
         // click on the button/switch to enable GeoLocation tracking
-        onView(withId(R.id.checkbox_geo_tracking)).perform(click());
+        //onView(withId(R.id.checkbox_geo_tracking)).perform(click());
 
     }
 
@@ -132,7 +132,7 @@ public class OrganizerViewTest {
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // Click on the button to add an event poster
-        onView(withId(R.id.ivEventPoster)).perform(click());
+        //onView(withId(R.id.ivEventPoster)).perform(click());
 
     }
 

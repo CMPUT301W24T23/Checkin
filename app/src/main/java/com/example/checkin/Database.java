@@ -2,8 +2,16 @@ package com.example.checkin;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -126,7 +134,7 @@ public class Database {
 
         data.put("Events", events);
 
-        orgRef.document(o.getUserId()).set(data);
+        //orgRef.document(o.getUserId()).set(data);
     }
 
     public void updateEvents(EventList events){
@@ -186,6 +194,41 @@ public class Database {
 
     }
 
+    public Attendee getAttendee(String id){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Attendee a = new Attendee(id);
+
+
+        DocumentReference docRef = db.collection("Attendees").document(id);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
+                        a.setUserId(document.getId());
+                        a.setName(document.getString("Name"));
+                        a.setHomepage(document.getString("Homepage"));
+                        a.setPhoneNumber(document.getString("Phone"));
+
+                        //set the tracking status of the attendee
+                        //the empty constructor has tracking as true by default
+                        boolean track = Boolean.parseBoolean(document.getString("Tracking"));
+                        if(!(track == a.trackingEnabled())){
+                            a.toggleTracking();
+                        }
+
+                    } else {
+                        Log.d("Firebase", "No such document");
+                    }
+                } else {
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
+                }
+            }
+        });
+        return a;
+    }
     //use/modify this code if you need to load all the attendees for whatever reason
     //To my understanding, retrieving documents from firebase has to be done in a way that doesn't allow
     //for a return value. So it has to be done on the actual activity and you can't create a method for it

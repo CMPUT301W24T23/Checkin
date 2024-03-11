@@ -83,7 +83,7 @@ public class Database {
         Map<String, Integer> checkins = a.getCheckIns();
         data.put("Checkins", checkins);
 
-        attendeeRef.document(a.getUserId()).set(data);
+//        attendeeRef.document(a.getUserId()).set(data);
     }
 
     /**

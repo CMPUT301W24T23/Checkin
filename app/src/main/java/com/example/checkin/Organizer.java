@@ -45,10 +45,10 @@ public class Organizer implements User{
 
     /**
      * Generates a new Organizer
-     * DO NOT put this in the database
      */
     public Organizer() {
         this.userId = generateUserId();
+        this.geoTracking = true;
     }
 
     /**

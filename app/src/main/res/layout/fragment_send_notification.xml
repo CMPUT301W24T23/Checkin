@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OrganizerFragment1"
+    android:id="@+id/org_frag1">
+
+
+    <TextView
+        android:id="@+id/sendmssg_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Notification"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:layout_marginTop="50dp"
+        android:textSize="40dp"
+        />
+
+    <EditText
+        android:id="@+id/title_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:layout_centerHorizontal="true"
+        android:text="Event Name"/>
+
+    <EditText
+        android:id="@+id/body_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="270dp"
+        android:layout_centerHorizontal="true"
+        android:text="Event Message"/>
+
+
+    <Button
+        android:id="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-400dp"
+        android:text="Back" />
+
+    <Button
+        android:id="@+id/sendmessagebtn"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="530dp"
+
+
+        />
+
+
+
+
+</RelativeLayout>

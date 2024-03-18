@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -17,6 +19,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packaging {
+        resources {
+            excludes.add("META-INF/DEPENDENCIES")
+        }
+    }
+
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -26,6 +35,13 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    sourceSets {
+        getByName("main") {
+            assets {
+                srcDirs("src/main/assets")
+            }
+        }
     }
 
 }
@@ -53,5 +69,5 @@ dependencies {
     implementation("androidx.preference:preference:1.2.1")
     implementation ("com.google.firebase:firebase-messaging:23.4.1")
     implementation("com.android.volley:volley:1.2.1")
-    implementation("com.google.firebase:firebase-admin:9.2.0")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.17.0")
 }

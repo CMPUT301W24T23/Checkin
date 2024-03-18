@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONException;
@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,8 +58,6 @@ public class SendNotification extends Fragment {
             @Override
             public void onClick(View view) {
                 //String token = "fF1-N2eFRhSXdSmUBpe9VI:APA91bHydxfMLCklsISAfOTBvE1WFZ3lrS60Ho5wzs9Ec0PxP0iLyxFEKdoRI_F9tv_8_txBFCteJ7YZjMgKihF5JOFwO4w-sfCXEt-G-sQK4W4IsS96iS44SutO5dNlWTxSgxO_5Svs";
-                //Message message = Message.builder().putData("Hello", "today").putData("time","7").setToken(token).build();
-                //String response = FirebaseMessaging.getInstance().send(message);
 
                 try {
                     sendNotification();
@@ -92,18 +91,38 @@ public class SendNotification extends Fragment {
         notificationbody2.put("body", bodymessage.getText().toString());
 
         JSONObject message2 = new JSONObject();
-        message.put("topic", "event");
-        message.put("notification", notificationbody2);
+        message2.put("topic", "event");
+        message2.put("notification", notificationbody2);
 
         JSONObject mainObject2 = new JSONObject();
         mainObject2.put("message", message2);
 
-        FileInputStream serviceAccountStream = new FileInputStream("admin.json");
-        GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccountStream);
+        String json = null;
+        InputStream is = getContext().getAssets().open("admin.json");
 
-        System.out.println(credentials.getAccessToken().getTokenValue());
+        int size = is.available();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL, mainObject,  new Response.Listener<JSONObject>() {
+        byte[] buffer = new byte[size];
+
+        //is.read(buffer);
+
+
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+        json = new String(buffer, "UTF-8");
+
+        String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
+        String[] SCOPES = { MESSAGING_SCOPE };
+        GoogleCredentials googleCredentials = GoogleCredentials
+                .fromStream(is)
+                .createScoped(Arrays.asList(SCOPES));
+        googleCredentials.refresh();
+        String token = googleCredentials.getAccessToken().getTokenValue();
+        is.close();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL2, mainObject2,  new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("NotificationSuccess", "Error sending notification: ");
@@ -121,7 +140,7 @@ public class SendNotification extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
                 header.put("Content-Type", "application/json");
-                header.put("Authorization", "key=AAAAxpawIEE:APA91bGHVJc5ORvHkmdn1i9Q0DzGHqBSyx4cbw9XsH3xKU9QjBMLGef5INCn9uxRa2fQGxyroHEskZqJuuAEzh-CohOdTcpJtIVK87FaEfjiq8Jt3a1qJOU-eZ_946JYzyIDCZhZXUm-");
+                header.put("Authorization", "Bearer "+ token);
                 return header;
             }
         };

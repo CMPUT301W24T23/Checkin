@@ -16,6 +16,8 @@ public class Organizer implements User{
     private String userId;
     private ArrayList<String> CreatedEvents = new ArrayList<>(); //event ids of events this organizer has created
     private boolean geoTracking;
+    private ArrayList<String> QRCodes = new ArrayList<>(); //encoded qr codes created by this organizer
+    private boolean IsAdmin;
 
     //private QRCodeList QRCodes;       //the qr codes this organizer has generated
     //private ImageList images;         //posters uploaded by this organizer
@@ -49,6 +51,10 @@ public class Organizer implements User{
     public Organizer() {
         this.userId = generateUserId();
         this.geoTracking = true;
+        this.IsAdmin = false;
+        this.CreatedEvents = new ArrayList<>();
+        this.QRCodes = new ArrayList<>();
+
     }
 
     /**
@@ -111,4 +117,19 @@ public class Organizer implements User{
     public ArrayList<String> getCreatedEvents() {
         return CreatedEvents;
     }
+
+    public boolean isAdmin() {
+        return IsAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        IsAdmin = admin;
+    }
+
+    public ArrayList<String> getQRCodes() {
+        return QRCodes;
+    }
+
+
 }
+

@@ -94,7 +94,8 @@ public class UserProfileFragment extends Fragment {
 
         //Set user information
         currentUser.setUserId(Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID));
-        //Restore saved local data
+
+        //Restore saved local data for quick access
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         currentUser.setName(preferences.getString("Name", ""));
         currentUser.setEmail(preferences.getString("Email", ""));
@@ -103,6 +104,11 @@ public class UserProfileFragment extends Fragment {
         if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
             currentUser.toggleTracking();
         }
+
+        //Load from firebase in case changes made there
+        retrieveAttendee(currentUser.getUserId());
+
+
 
         // Initialize other UI elements
         nameEdit = view.findViewById(R.id.nameEdit);
@@ -366,9 +372,10 @@ public class UserProfileFragment extends Fragment {
     }
 
 
-    public void getAttendee(String id){
+    public void retrieveAttendee(String id){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
+        Database fireBase = new Database();
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -376,6 +383,7 @@ public class UserProfileFragment extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
+                        /*
                         //currentUser.setUserId(document.getId());
                         currentUser.setName(document.getString("Name"));
                         currentUser.setHomepage(document.getString("Homepage"));
@@ -386,10 +394,17 @@ public class UserProfileFragment extends Fragment {
                         boolean track = Boolean.TRUE.equals(document.getBoolean("Tracking"));
                         if(!(track == currentUser.trackingEnabled())){
                             currentUser.toggleTracking();
-                        }
+                        }*/
+                        currentUser = fireBase.getAttendee(document);
+
 
                     } else {
                         Log.d("Firebase", "No such document");
+                        nameEdit.setText("");
+                        emailEdit.setText("");
+                        homeEdit.setText("");
+                        countryEdit.setText("");
+                        locationBox.setChecked(false);
                     }
                 } else {
                     Log.d("Firebase get failed", "get failed with ", task.getException());

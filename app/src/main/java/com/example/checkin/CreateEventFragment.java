@@ -19,6 +19,8 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,8 +93,8 @@ public class CreateEventFragment extends Fragment {
         addeventbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                event = new Event();
-                event.setEventname(eventname.getText().toString());
+                event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+                //event.setEventname(eventname.getText().toString());
                 event.setEventdetails(eventdetails.getText().toString());
                 events.addEvent(event);
                 OrganizerFragment1 organizerfrag = new OrganizerFragment1();

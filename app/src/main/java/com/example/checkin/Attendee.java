@@ -31,9 +31,11 @@ public class Attendee implements User, Serializable {
     //      - FIREBASE INTEGRATION
 
     private String userId;     //the user's ID
-    private Image profilePicture;               //TODO: the user's profile picture
 
-    private Map<String, Integer> CheckInHist = new Hashtable<>();
+    //private Image profilePicture;               //TODO: the user's profile picture
+    private String profilePicture;              //user's profile picture as an encoded 64bit string
+
+    private Map<String, Integer> CheckInHist;
 
     private boolean geoTracking;
 
@@ -67,16 +69,16 @@ public class Attendee implements User, Serializable {
     }
 
      /* Empty constructor for attendee
-     * DO NOT upload this to the database
      */
     public Attendee() {
-        //DO NOT upload to database
         this.userId = String.valueOf(generateUserId());
         this.name = "";
         this.homepage = "";
         this.email = "";
         this.phoneNumber = "";
-        this.geoTracking = true;
+        this.geoTracking = true;        //on by default
+        this.profilePicture = "";           //Generate a new profile picture
+        this.CheckInHist = new Hashtable<>();
     }
 
     /**
@@ -262,5 +264,13 @@ public class Attendee implements User, Serializable {
     }
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

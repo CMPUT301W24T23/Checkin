@@ -37,10 +37,6 @@ public class Database {
     }
 
 
-
-
-
-
     /**
      * Update an attendee in firestore
      * @param a
@@ -57,6 +53,7 @@ public class Database {
         data.put("Email", a.getEmail());
         data.put("Phone", a.getPhoneNumber());
         data.put("Tracking", a.trackingEnabled());
+        data.put("ProfilePic", a.getProfilePicture());
 
         //Upload check in counts
         Map<String, Integer> checkins = a.getCheckIns();
@@ -77,19 +74,30 @@ public class Database {
         //Upload User info
         Map<String, Object> data = new HashMap<>();
         data.put("Tracking", o.trackingEnabled());
+        data.put("Admin", o.isAdmin());
 
         //Upload created events array
         Map<String, String> events = new HashMap<>();
         for (String eventId: o.getCreatedEvents()){
             events.put(eventId, "");
         }
-
         data.put("Events", events);
+
+        //upload created qr codes array
+        Map<String, String> qrCodes = new HashMap<>();
+        for(String QR: o.getQRCodes()){
+            events.put(QR, "");
+        }
+        data.put("QRCodes", qrCodes);
 
         orgRef.document(o.getUserId()).set(data);
         Log.d("New Organizer", String.format("Added Organizer to Firebase, ID: %s", o.getUserId()));
     }
 
+    /**
+     * Update an event onto firebase
+     * @param e
+     */
     public void updateEvent(Event e){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference attendeeRef = db.collection("Events");
@@ -98,6 +106,8 @@ public class Database {
         Map<String, Object> data = new HashMap<>();
         data.put("Name", e.getEventname());
         data.put("Details", e.getEventdetails());
+        data.put("Poster", e.getPoster());
+        data.put("Creator", e.getCreator());
 
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
@@ -153,6 +163,7 @@ public class Database {
                             a.toggleTracking();
                         }
 
+
                     } else {
                         Log.d("Firebase", "No such document");
                     }
@@ -163,12 +174,33 @@ public class Database {
         });
         return a;
     }
-    /*
-    public boolean AttendeeExists(String id){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final boolean[] exists = {false};
 
+    /**
+     * For use within an
+     * @param doc
+     * @return
+     */
+    public Attendee getAttendee(DocumentSnapshot doc){
+        Attendee a = new Attendee();
+        Log.d("Firebase Succeed", "Retrieve attendee: " + doc.getData());
+        a.setUserId(doc.getId());
+        a.setName(doc.getString("Name"));
+        a.setHomepage(doc.getString("Homepage"));
+        a.setPhoneNumber(doc.getString("Phone"));
+
+        //set the tracking status of the attendee
+        //the empty constructor has tracking as true by default
+        boolean track = Boolean.TRUE.equals(doc.getBoolean("Tracking"));
+        if(!(track == a.trackingEnabled())){
+            a.toggleTracking();
+        }
+
+        return a;
+    }
+    /*
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -176,7 +208,7 @@ public class Database {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
-                        exists[0] = true;
+
 
                     } else {
                         Log.d("Firebase", "No such document");
@@ -186,10 +218,9 @@ public class Database {
                 }
             }
         });
-        return exists[0];
-    }
+    */
 
-     */
+
 
     public boolean OrganizerExists(String id){
         FirebaseFirestore db = FirebaseFirestore.getInstance();

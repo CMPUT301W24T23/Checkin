@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:layout_centerHorizontal="true"
-        android:text="Event Name"/>
+        android:hint="Event Name"/>
 
     <EditText
         android:id="@+id/body_msg"
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="270dp"
         android:layout_centerHorizontal="true"
-        android:text="Event Message"/>
+        android:hint="Event Message"/>
 
 
     <Button

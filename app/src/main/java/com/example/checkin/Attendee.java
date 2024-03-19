@@ -35,7 +35,7 @@ public class Attendee implements User, Serializable {
     //private Image profilePicture;               //TODO: the user's profile picture
     private String profilePicture;              //user's profile picture as an encoded 64bit string
 
-    private Map<String, Integer> CheckInHist;
+    private Map<String, Integer> CheckInHist = new Hashtable<>();;
 
     private boolean geoTracking;
 
@@ -103,6 +103,7 @@ public class Attendee implements User, Serializable {
         this.email = mail;
         this.phoneNumber = phone;
         this.geoTracking = tracking;
+        this.CheckInHist = new Hashtable<>();
     }
 
     /**
@@ -272,5 +273,9 @@ public class Attendee implements User, Serializable {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public void setCheckInHist(Map<String, Integer> checkInHist) {
+        CheckInHist = checkInHist;
     }
 }

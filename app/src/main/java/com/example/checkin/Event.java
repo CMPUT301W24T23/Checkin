@@ -90,6 +90,12 @@ public class Event implements Serializable {
      */
     public Event(String id) {
         this.EventId = id;
+        this.eventname = "";
+        this.eventdetails = "";
+        this.creator = "";
+        this.Subscribers = new AttendeeList();
+        this.CheckInList = new AttendeeList();
+        this.poster = "";
     }
     //Poster Image===============================================================
 

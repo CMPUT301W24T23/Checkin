@@ -95,20 +95,9 @@ public class UserProfileFragment extends Fragment {
         //Set user information
         currentUser.setUserId(Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID));
 
-        //Restore saved local data for quick access
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        currentUser.setName(preferences.getString("Name", ""));
-        currentUser.setEmail(preferences.getString("Email", ""));
-        currentUser.setHomepage(preferences.getString("Homepage", ""));
-        //TODO: discuss country vs phone
-        if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
-            currentUser.toggleTracking();
-        }
-
+        loadPrefs();
         //Load from firebase in case changes made there
         retrieveAttendee(currentUser.getUserId());
-
-
 
         // Initialize other UI elements
         nameEdit = view.findViewById(R.id.nameEdit);
@@ -143,6 +132,33 @@ public class UserProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    /**
+     * Load stored local data into view
+     */
+    private void loadPrefs(){
+        //Restore saved local data for quick access
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        currentUser.setName(preferences.getString("Name", ""));
+        currentUser.setEmail(preferences.getString("Email", ""));
+        currentUser.setHomepage(preferences.getString("Homepage", ""));
+        //TODO: discuss country vs phone
+        if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
+            currentUser.toggleTracking();
+        }
+    }
+
+    private void savePrefs(){
+        //save data locally so it can be displayed instantly when this fragment is opened again
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("Name", currentUser.getName());
+        editor.putString("Email", currentUser.getEmail());
+        editor.putString("Homepage", currentUser.getHomepage());
+        //TODO: discuss country vs phone
+        editor.putBoolean("Tracking", currentUser.trackingEnabled());
+        editor.apply();
     }
 
     /**
@@ -252,15 +268,7 @@ public class UserProfileFragment extends Fragment {
         }
         db.updateAttendee(currentUser);
 
-        //save data locally so it can be displayed instantly when this fragment is opened again
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("Name", currentUser.getName());
-        editor.putString("Email", currentUser.getEmail());
-        editor.putString("Homepage", currentUser.getHomepage());
-        //TODO: discuss country vs phone
-        editor.putBoolean("Tracking", currentUser.trackingEnabled());
-        editor.apply();
+        savePrefs();        //Save user info to local preferences
 
 
         String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
@@ -375,7 +383,7 @@ public class UserProfileFragment extends Fragment {
     public void retrieveAttendee(String id){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
-        Database fireBase = new Database();
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -395,8 +403,14 @@ public class UserProfileFragment extends Fragment {
                         if(!(track == currentUser.trackingEnabled())){
                             currentUser.toggleTracking();
                         }*/
+                        Database fireBase = new Database();
                         currentUser = fireBase.getAttendee(document);
-
+                        nameEdit.setText(currentUser.getName());
+                        emailEdit.setText(currentUser.getEmail());
+                        homeEdit.setText(currentUser.getHomepage());
+                        countryEdit.setText(currentUser.getCountry());
+                        locationBox.setChecked(currentUser.trackingEnabled());
+                        savePrefs();
 
                     } else {
                         Log.d("Firebase", "No such document");
@@ -405,6 +419,7 @@ public class UserProfileFragment extends Fragment {
                         homeEdit.setText("");
                         countryEdit.setText("");
                         locationBox.setChecked(false);
+                        savePrefs();
                     }
                 } else {
                     Log.d("Firebase get failed", "get failed with ", task.getException());

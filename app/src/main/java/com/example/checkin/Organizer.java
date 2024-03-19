@@ -14,10 +14,12 @@ In the main application, organizers can create and manage events seamlessly.
 
 public class Organizer implements User{
     private String userId;
-    private ArrayList<String> CreatedEvents = new ArrayList<>(); //event ids of events this organizer has created
-    private boolean geoTracking;
-    private ArrayList<String> QRCodes = new ArrayList<>(); //encoded qr codes created by this organizer
     private boolean IsAdmin;
+    private boolean geoTracking;
+    private ArrayList<String> CreatedEvents = new ArrayList<>(); //event ids of events this organizer has created
+
+    private ArrayList<String> QRCodes = new ArrayList<>(); //encoded qr codes created by this organizer
+
 
     //private QRCodeList QRCodes;       //the qr codes this organizer has generated
     //private ImageList images;         //posters uploaded by this organizer
@@ -68,11 +70,14 @@ public class Organizer implements User{
         //TODO:         loading event list from firebase
     }
 
-    /*This user has created an event, add to list of event ids and upload to firebase*/
-    public void EventCreate(Event e){
-        CreatedEvents.add(e.getEventId());
+    /*This user has created an event, add to list of event ids*/
+    public void EventCreate(String e){
+        CreatedEvents.add(e);
     }
 
+    public void QRCreate(String qr) {
+        QRCodes.add(qr);
+    }
 
     //GEOLOCATION===================================================================================
 

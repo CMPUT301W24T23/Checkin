@@ -84,40 +84,13 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("ID", id);
             editor.apply();
         }
-        /*
-        if(!(attendExists)){
-            //if attendee id does not exist in database then add it
-            String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-            Attendee a = new Attendee();
-            a.setUserId(id);
-            db.updateAttendee(a);
-            attendExists = true;
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("ID", id);
-            editor.apply();
-        }
-        if(!(organizerExists)){
-            //if organizer id does not exist in database then add it
-            String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-            Organizer o = new Organizer();
-            o.setUserId(id);
-            db.updateOrganizer(o);
-            organizerExists = true;
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("ID", id);
-            editor.apply();
-        }*/
+        //Event e = new Event("RetrieveTest", android_id);
+        //Database b = new Database();
+        //b.updateEvent(e);
 
 
+        //getEvent();
 
-        /*
-        if(!(OrganizerExists(android_id))){
-            //if organizer id does not exist in database then add it
-            Organizer o = new Organizer();
-            o.setUserId(android_id);
-            db.updateOrganizer(o);
-            organizerExists = true;
-        }*/
 
         // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +109,65 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
     }
+
+    /*
+    public void getOrg(){
+        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        FirebaseFirestore fireb = FirebaseFirestore.getInstance();
+        DocumentReference docRef = fireb.collection("Organizers").document(id);
+        Database db = new Database();
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
+                        Organizer o = db.getOrganizer(document);
+                        for(String QR: o.getQRCodes()){
+                            Log.d("QR CODE", String.format("CODE: %s", QR));
+                        }
+
+                    } else {
+                        Log.d("Firebase", String.format("No such document: %s", id));
+                    }
+                } else {
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
+                }
+            }
+        });}
+        */
+    /*
+    public void getEvent(){
+        FirebaseFirestore fireb = FirebaseFirestore.getInstance();
+        DocumentReference docRef = fireb.collection("Events").document("983");
+        Database db = new Database();
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
+                        Event e = db.getEvent(document);
+                        for(Attendee a: e.getSubscribers().getAttendees()){
+                            Log.d("Successful Event Retrieve", String.format("Retrieved user %s", a.getUserId()));
+                        }
+
+                    } else {
+                        Log.d("Firebase", String.format("No such document: %s", "983"));
+                    }
+                } else {
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
+                }
+            }
+        });}
+        */
+
 
 }

@@ -13,8 +13,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,10 +34,11 @@ import java.util.Map;
  *
  */
 public class Database {
-    private FirebaseFirestore db;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();;
     public Database(){
     }
-
+    //TODO: Profile Picture storing
+    //      QR Code Storing
 
     /**
      * Update an attendee in firestore
@@ -131,58 +134,12 @@ public class Database {
     }
 
     /**
-     * Retrieves an attendee from the database using their id
-     * @param id
-     * the user's ID (device id)
-     * @return
-     * the Attendee object containing their information
-     */
-    public Attendee getAttendee(String id){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Attendee a = new Attendee(id);
-
-        DocumentReference docRef = db.collection("Attendees").document(id);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-
-
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
-                        a.setUserId(document.getId());
-                        a.setName(document.getString("Name"));
-                        a.setHomepage(document.getString("Homepage"));
-                        a.setPhoneNumber(document.getString("Phone"));
-
-                        //set the tracking status of the attendee
-                        //the empty constructor has tracking as true by default
-                        boolean track = Boolean.TRUE.equals(document.getBoolean("Tracking"));
-                        if(!(track == a.trackingEnabled())){
-                            a.toggleTracking();
-                        }
-
-
-                    } else {
-                        Log.d("Firebase", "No such document");
-                    }
-                } else {
-                    Log.d("Firebase get failed", "get failed with ", task.getException());
-                }
-            }
-        });
-        return a;
-    }
-
-    /**
-     * For use within an
+     * For use within a snapshot listener to return an attendee
      * @param doc
      * @return
      */
     public Attendee getAttendee(DocumentSnapshot doc){
         Attendee a = new Attendee();
-        Log.d("Firebase Succeed", "Retrieve attendee: " + doc.getData());
         a.setUserId(doc.getId());
         a.setName(doc.getString("Name"));
         a.setHomepage(doc.getString("Homepage"));
@@ -195,9 +152,16 @@ public class Database {
             a.toggleTracking();
         }
 
+        //get checkins
+        Map<String, Object> data = doc.getData();
+        Map<String, Integer> CheckIns = (Map<String, Integer>)data.get("Checkins");
+        a.setCheckInHist(CheckIns);
+
         return a;
     }
+    //template snapshot listener for retrieving an attendee
     /*
+        String id = Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
 
@@ -220,13 +184,50 @@ public class Database {
         });
     */
 
+    /**
+     * For use within a snapshot listener for firebase, retrieve an organizer
+     * @param doc
+     * @return
+     */
+    public Organizer getOrganizer(DocumentSnapshot doc){
+        Organizer o = new Organizer();
+        //load user info
+        o.setUserId(doc.getId());
+        o.setAdmin(doc.getBoolean("Admin"));
+        boolean track = Boolean.TRUE.equals(doc.getBoolean("Tracking"));
+        if(!(track == o.trackingEnabled())){
+            o.toggleTracking();
+        }
+        Map<String, Object> data = doc.getData();
 
+        //Retrieve Events
+        //data.get("Events");
+        Map<String, String> events = (Map<String, String>)data.get("Events");
+        assert events != null;
+        for(String key: events.keySet()){
+            o.EventCreate(key);
+            Log.d("Retrieved Organizer Events", String.format("Organizer %s event %s retrieved", o.getUserId(), key));
+        }
 
-    public boolean OrganizerExists(String id){
+        //Retrieve QR Codes
+        //data.get("QRCodes");
+        Map<String, String> QRCodes = (Map<String, String>)data.get("QRCodes");
+        assert QRCodes != null;
+        for(String key: QRCodes.keySet()){
+            o.QRCreate(key);
+            Log.d("Retrieved Organizer QRCodes", String.format("Organizer %s QRCode %s retrieved", o.getUserId(), key));
+        }
+
+        Log.d("Retrieved Organizer", String.format("Organizer ID: %s ", o.getUserId()));
+        return o;
+    }
+
+    //template snapshot listener function content for retrieving an organizer
+    /*
+        String id = Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final boolean[] exists = {false};
-
         DocumentReference docRef = db.collection("Organizers").document(id);
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -234,7 +235,7 @@ public class Database {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
-                        exists[0] = true;
+
 
                     } else {
                         Log.d("Firebase", "No such document");
@@ -244,11 +245,72 @@ public class Database {
                 }
             }
         });
-        return exists[0];
+    */
+
+    public Event getEvent(DocumentSnapshot doc){
+        Organizer o = new Organizer();
+        Event e = new Event(doc.getId());
+        //load user info
+
+        e.setEventname(doc.getString("Name"));
+        e.setEventdetails(doc.getString("Details"));
+        e.setPoster(doc.getString("Poster"));
+        e.setCreator(doc.getString("Creator"));
+
+        Map<String, Object> data = doc.getData();
+
+        //Retrieve Subscribers
+        Map<String, String> Subs = (Map<String, String>)data.get("Subscribers");
+        for(String subber: Subs.keySet()){
+            DocumentReference docRef = db.collection("Attendees").document(subber);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
+                            Attendee a = getAttendee(document);
+                            e.userSubs(a);
+                        } else {
+                            Log.d("Firebase", String.format("No such document: %s", subber));
+                        }
+                    } else {
+                        Log.d("Firebase get failed", "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
+
+        //Retrieve Checked In users
+        Map<String, String> Users = (Map<String, String>)data.get("UserCheckIn");
+        for(String user: Subs.keySet()){
+            DocumentReference docRef = db.collection("Attendees").document(user);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
+                            Attendee a = getAttendee(document);
+                            e.userCheckIn(a);
+                        } else {
+                            Log.d("Firebase", String.format("No such document: %s", user));
+                        }
+                    } else {
+                        Log.d("Firebase get failed", "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
+        Log.d("Retrieved Event", String.format("Event ID: %s ", e.getEventId()));
+        return e;
     }
+
     //use/modify this code if you need to load all the attendees for whatever reason
-    //To my understanding, retrieving documents from firebase has to be done in a way that doesn't allow
-    //for a return value. So it has to be done on the actual activity and you can't create a method for it
+    //Firebase data pulls must be done asynchronously through listeners
+    //https://firebase.google.com/docs/firestore/query-data/get-data#java_2
 
     /*
         FirebaseFirestore db = FirebaseFirestore.getInstance();

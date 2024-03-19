@@ -26,6 +26,7 @@ public class OrganizerFragment1 extends Fragment {
     Button backbutton;
     Button addeventbutton;
     boolean update;
+    Organizer organizer;
 
 
     
@@ -48,6 +49,10 @@ public class OrganizerFragment1 extends Fragment {
 
         // allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
+        Bundle bundle2 = this.getArguments();
+        if (bundle2 != null) {
+            organizer = (Organizer) bundle2.getSerializable("organizer");
+        }
 
         // Add attendees and check them in/ sign up to test functionality
         Attendee attendee1 = new Attendee("Amy");

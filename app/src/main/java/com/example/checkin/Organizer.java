@@ -1,6 +1,7 @@
 
 package com.example.checkin;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
@@ -12,7 +13,7 @@ The class supports event creation and geolocation preferences.
 In the main application, organizers can create and manage events seamlessly.
  */
 
-public class Organizer implements User{
+public class Organizer implements User, Serializable {
     private String userId;
     private boolean IsAdmin;
     private boolean geoTracking;

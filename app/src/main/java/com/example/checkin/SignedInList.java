@@ -21,6 +21,8 @@ public class SignedInList extends Fragment {
     private ArrayAdapter<Attendee> AttendeesAdapter;
     Event myevent;
 
+    Organizer organizer;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,6 +32,10 @@ public class SignedInList extends Fragment {
 
         attendeesList = view.findViewById(R.id.signedin_attendees_list);
 
+        Bundle bundle2 = this.getArguments();
+        if (bundle2 != null) {
+            organizer = (Organizer) bundle2.getSerializable("organizer");
+        }
         ArrayList<Attendee> attendees = new ArrayList<>();
 
         Bundle bundle = this.getArguments();

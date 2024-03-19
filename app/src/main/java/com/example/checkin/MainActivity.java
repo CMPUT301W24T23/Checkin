@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     //boolean attendExists = false;                 //User exists as Attendee in the database
     //boolean organizerExists;                 //User exists as Attendee in the database
     boolean exists = false;
+    Organizer o;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +58,30 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
 
+
+        Database db = new Database();
+        if(!(android_id == "a3b5a4dd251c5090")){
+            //create attendee profile
+            String id2 = "a3b5a4dd251c5090";
+            Attendee a = new Attendee();
+            a.setUserId(id2);
+            db.updateAttendee(a);
+
+            //create organizer profile
+            Organizer o = new Organizer();
+            o.setUserId(id2);
+            db.updateOrganizer(o);
+        }
+
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already
             //attendExists = true;
             //organizerExists = true;
             Log.d("Attendee Exists", String.format("Attendee Exists, ID: %s ", android_id));
             exists = true;
+
         }
-        Database db = new Database();
+
         if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
             String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
@@ -75,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             db.updateAttendee(a);
 
             //create organizer profile
-            Organizer o = new Organizer();
+            o = new Organizer();
             o.setUserId(id);
             db.updateOrganizer(o);
 
@@ -107,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), OrganizerView.class);
                 startActivity(intent);
+                Bundle args = new Bundle();
+                args.putSerializable("organizer", o);
             }
         });
 

@@ -55,6 +55,13 @@
         android:visibility="gone" />
 
     <Button
+        android:id="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-400dp"
+        android:text="Back" />
+
+    <Button
         android:id="@+id/btnGenerateQR"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

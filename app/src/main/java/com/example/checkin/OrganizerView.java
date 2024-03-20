@@ -15,6 +15,7 @@ public class OrganizerView extends AppCompatActivity {
 
 
     OrganizerFragment1 org_frag1;
+    Organizer organizer;
 
     Fragment open;
 
@@ -35,6 +36,7 @@ public class OrganizerView extends AppCompatActivity {
 
 
 
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
@@ -47,7 +49,8 @@ public class OrganizerView extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 if (item.getItemId() == R.id.home) {
-
+                    Bundle args = new Bundle();
+                    org_frag1.setArguments(args);
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.org_view, org_frag1, "OrganizerFragment1")

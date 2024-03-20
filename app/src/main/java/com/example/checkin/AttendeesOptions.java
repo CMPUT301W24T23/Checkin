@@ -45,7 +45,7 @@ public class AttendeesOptions extends Fragment {
                 args.putSerializable("event", myevent);
                 check_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, check_frag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, check_frag).addToBackStack(null).commit();
 
             }
         });
@@ -58,7 +58,7 @@ public class AttendeesOptions extends Fragment {
                 args.putSerializable("event", myevent);
                 sign_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, sign_frag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, sign_frag).addToBackStack(null).commit();
 
 
             }

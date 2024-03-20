@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Button organizerbutton;
     Button attendeebutton;
     boolean exists = false;
+    Organizer o;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +53,19 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
 
+
+        Database db = new Database();
+
+
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already
             Log.d("Attendee Exists", String.format("Attendee Exists, ID: %s ", android_id));
             exists = true;
+
         }
-        Database db = new Database();
+        String id2 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+
+
         if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
             String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
@@ -68,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             db.updateAttendee(a);
 
             //create organizer profile
-            Organizer o = new Organizer();
+            o = new Organizer();
             o.setUserId(id);
             db.updateOrganizer(o);
 
@@ -96,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), OrganizerView.class);
+                Bundle args = new Bundle();
+                args.putSerializable("organizer", o);
                 startActivity(intent);
             }
         });

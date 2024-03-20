@@ -59,7 +59,7 @@ public class Database {
         data.put("ProfilePic", a.getProfilePicture());
 
         //Upload check in counts
-        Map<String, Integer> checkins = a.getCheckIns();
+        Map<String, Long> checkins = a.getCheckIns();
         data.put("Checkins", checkins);
 
         attendeeRef.document(a.getUserId()).set(data);
@@ -155,7 +155,7 @@ public class Database {
 
         //get checkins
         Map<String, Object> data = doc.getData();
-        Map<String, Integer> CheckIns = (Map<String, Integer>)data.get("Checkins");
+        Map<String, Long> CheckIns = (Map<String, Long>)data.get("Checkins");
         a.setCheckInHist(CheckIns);
 
         return a;

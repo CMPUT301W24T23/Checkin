@@ -39,11 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     Button organizerbutton;
     Button attendeebutton;
-    static String AttendId;         //User's Attendee ID
-    static String OrgId;            //User's Organizer ID
-
-    //boolean attendExists = false;                 //User exists as Attendee in the database
-    //boolean organizerExists;                 //User exists as Attendee in the database
     boolean exists = false;
 
     @Override
@@ -59,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already
-            //attendExists = true;
-            //organizerExists = true;
             Log.d("Attendee Exists", String.format("Attendee Exists, ID: %s ", android_id));
             exists = true;
         }
@@ -84,13 +77,10 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("ID", id);
             editor.apply();
         }
-        //Event e = new Event("RetrieveTest", android_id);
-        //Database b = new Database();
-        //b.updateEvent(e);
 
-
-        //getEvent();
-
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("ID", "");
+        editor.apply();
 
         // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {
@@ -113,61 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*
-    public void getOrg(){
-        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-        FirebaseFirestore fireb = FirebaseFirestore.getInstance();
-        DocumentReference docRef = fireb.collection("Organizers").document(id);
-        Database db = new Database();
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
-                        Organizer o = db.getOrganizer(document);
-                        for(String QR: o.getQRCodes()){
-                            Log.d("QR CODE", String.format("CODE: %s", QR));
-                        }
-
-                    } else {
-                        Log.d("Firebase", String.format("No such document: %s", id));
-                    }
-                } else {
-                    Log.d("Firebase get failed", "get failed with ", task.getException());
-                }
-            }
-        });}
-        */
-    /*
-    public void getEvent(){
-        FirebaseFirestore fireb = FirebaseFirestore.getInstance();
-        DocumentReference docRef = fireb.collection("Events").document("983");
-        Database db = new Database();
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
-                        Event e = db.getEvent(document);
-                        for(Attendee a: e.getSubscribers().getAttendees()){
-                            Log.d("Successful Event Retrieve", String.format("Retrieved user %s", a.getUserId()));
-                        }
-
-                    } else {
-                        Log.d("Firebase", String.format("No such document: %s", "983"));
-                    }
-                } else {
-                    Log.d("Firebase get failed", "get failed with ", task.getException());
-                }
-            }
-        });}
-        */
 
 
 }

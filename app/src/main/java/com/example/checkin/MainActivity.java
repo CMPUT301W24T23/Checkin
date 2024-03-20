@@ -60,18 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Database db = new Database();
-        if(!(android_id == "a3b5a4dd251c5090")){
-            //create attendee profile
-            String id2 = "a3b5a4dd251c5090";
-            Attendee a = new Attendee();
-            a.setUserId(id2);
-            db.updateAttendee(a);
 
-            //create organizer profile
-            Organizer o = new Organizer();
-            o.setUserId(id2);
-            db.updateOrganizer(o);
-        }
 
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already
@@ -81,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
             exists = true;
 
         }
+        String id2 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+
 
         if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
@@ -123,9 +114,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), OrganizerView.class);
-                startActivity(intent);
                 Bundle args = new Bundle();
                 args.putSerializable("organizer", o);
+                startActivity(intent);
             }
         });
 

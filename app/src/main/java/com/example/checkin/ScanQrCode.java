@@ -117,16 +117,17 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
                             // check in attendee using firebase- use event id and attendee id to get
                             // event and attendee from firebase, and update both
 
-                            EventDetailAtten eventfragment = new EventDetailAtten();
-                            Bundle args = new Bundle();
-                            args.putString("eventid", intentResult.getContents());
-                            eventfragment.setArguments(args);
+                            //EventDetailAtten eventfragment = new EventDetailAtten();
+                          //  Bundle args = new Bundle();
+                            //args.putString("eventid", intentResult.getContents());
+                            //eventfragment.setArguments(args);
 
+                            // --- needs to be implemented
                             // Navigate to the EventDetailAtten Frgment
-                            requireActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.atten_view, eventfragment)
-                                    .addToBackStack(null)
-                                    .commit();
+                           // requireActivity().getSupportFragmentManager().beginTransaction()
+                            // .replace(R.id.atten_view, eventfragment)
+                                   // .addToBackStack(null)
+                                  //  .commit();
 
 
                         }

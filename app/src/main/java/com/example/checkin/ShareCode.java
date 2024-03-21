@@ -129,7 +129,10 @@ public class ShareCode extends Fragment {
      * @param imageCode
      */
     public void generateQRCode(Event myevent, ImageView imageCode){
-        String myText = myevent.getEventId();
+        String myText = myevent.getEventname();
+
+        // use event id instead -> to retrieve event from firebase?
+       // String myText = myevent.getEventId();
 
         // Appending timestamp
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");

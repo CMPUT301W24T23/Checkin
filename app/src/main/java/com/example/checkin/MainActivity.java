@@ -86,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         }
 
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("ID", "");
+        editor.apply();
+
+
+
         // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {
             @Override

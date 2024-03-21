@@ -70,7 +70,7 @@ public class UserProfileFragment extends Fragment {
     private Attendee currentUser = new Attendee();
 
     // Other UI elements
-    private EditText nameEdit, emailEdit, homeEdit, countryEdit;
+    private EditText nameEdit, emailEdit, homeEdit, phoneEdit;
     private CheckBox locationBox;
 
     public UserProfileFragment() {
@@ -103,7 +103,7 @@ public class UserProfileFragment extends Fragment {
         nameEdit = view.findViewById(R.id.nameEdit);
         emailEdit = view.findViewById(R.id.emailEdit);
         homeEdit = view.findViewById(R.id.homeEdit);
-        countryEdit = view.findViewById(R.id.countryEdit);
+        phoneEdit = view.findViewById(R.id.phoneEdit);
         locationBox = view.findViewById(R.id.locationBox);
 
 
@@ -111,7 +111,7 @@ public class UserProfileFragment extends Fragment {
         nameEdit.setText(currentUser.getName());
         emailEdit.setText(currentUser.getEmail());
         homeEdit.setText(currentUser.getHomepage());
-        countryEdit.setText(currentUser.getCountry());
+        phoneEdit.setText(currentUser.getCountry());
         locationBox.setChecked(currentUser.trackingEnabled());
 
 
@@ -143,7 +143,7 @@ public class UserProfileFragment extends Fragment {
         currentUser.setName(preferences.getString("Name", ""));
         currentUser.setEmail(preferences.getString("Email", ""));
         currentUser.setHomepage(preferences.getString("Homepage", ""));
-        //TODO: discuss country vs phone
+        currentUser.setPhoneNumber(preferences.getString("Phone", ""));
         if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
             currentUser.toggleTracking();
         }
@@ -156,7 +156,7 @@ public class UserProfileFragment extends Fragment {
         editor.putString("Name", currentUser.getName());
         editor.putString("Email", currentUser.getEmail());
         editor.putString("Homepage", currentUser.getHomepage());
-        //TODO: discuss country vs phone
+        editor.putString("Phone", currentUser.getPhoneNumber());
         editor.putBoolean("Tracking", currentUser.trackingEnabled());
         editor.apply();
     }
@@ -221,7 +221,7 @@ public class UserProfileFragment extends Fragment {
         String name = nameEdit.getText().toString();
         String email = emailEdit.getText().toString();
         String homepage = homeEdit.getText().toString();
-        String country = countryEdit.getText().toString();
+        String phone = phoneEdit.getText().toString();
         boolean locationPermission = locationBox.isChecked();
 
       
@@ -262,7 +262,7 @@ public class UserProfileFragment extends Fragment {
         currentUser.setName(name);
         currentUser.setEmail(email);
         currentUser.setHomepage(homepage);
-        //currentUser.setCountry();
+        currentUser.setPhoneNumber(phone);
         if(!(currentUser.trackingEnabled() == locationPermission)){
             currentUser.toggleTracking();
         }
@@ -272,7 +272,7 @@ public class UserProfileFragment extends Fragment {
 
 
         String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
-                "\nCountry: " + country + "\nLocation Permission: " + locationPermission;
+                "\nPhone: " + phone + "\nLocation Permission: " + locationPermission;
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
     /**
@@ -408,7 +408,8 @@ public class UserProfileFragment extends Fragment {
                         nameEdit.setText(currentUser.getName());
                         emailEdit.setText(currentUser.getEmail());
                         homeEdit.setText(currentUser.getHomepage());
-                        countryEdit.setText(currentUser.getCountry());
+                        phoneEdit.setText(currentUser.getPhoneNumber());
+                        //countryEdit.setText(currentUser.getCountry());
                         locationBox.setChecked(currentUser.trackingEnabled());
                         savePrefs();
 
@@ -417,7 +418,8 @@ public class UserProfileFragment extends Fragment {
                         nameEdit.setText("");
                         emailEdit.setText("");
                         homeEdit.setText("");
-                        countryEdit.setText("");
+                        phoneEdit.setText("");
+                        //countryEdit.setText("");
                         locationBox.setChecked(false);
                         savePrefs();
                     }
@@ -442,8 +444,8 @@ public class UserProfileFragment extends Fragment {
         homeEdit.setText(home);
     }
 
-    public void setCountry(String country) {
-        countryEdit.setText(country);
+    public void setPhone(String phone) {
+        phoneEdit.setText(phone);
     }
 
     // Setter for CheckBox
@@ -464,8 +466,8 @@ public class UserProfileFragment extends Fragment {
         return homeEdit.getText().toString();
     }
 
-    public String getCountry() {
-        return countryEdit.getText().toString();
+    public String getPhone() {
+        return phoneEdit.getText().toString();
     }
 
     // Getter for CheckBox

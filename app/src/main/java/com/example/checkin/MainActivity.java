@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     boolean exists = false;
     Organizer o;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,9 +93,38 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("ID", id);
             editor.apply();
         }
+
+
+
+
+        /*
+        if(!(attendExists)){
+            //if attendee id does not exist in database then add it
+            String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+            Attendee a = new Attendee();
+            a.setUserId(id);
+            db.updateAttendee(a);
+            attendExists = true;
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("ID", id);
+            editor.apply();
+        }
+        if(!(organizerExists)){
+            //if organizer id does not exist in database then add it
+            String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+            Organizer o = new Organizer();
+            o.setUserId(id);
+            db.updateOrganizer(o);
+            organizerExists = true;
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("ID", id);
+            editor.apply();
+        }*/
+
         //Event e = new Event("RetrieveTest", android_id);
         //Database b = new Database();
         //b.updateEvent(e);
+
 
 
         //getEvent();

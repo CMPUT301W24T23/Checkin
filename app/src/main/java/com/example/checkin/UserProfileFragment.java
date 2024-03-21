@@ -111,7 +111,7 @@ public class UserProfileFragment extends Fragment {
         nameEdit.setText(currentUser.getName());
         emailEdit.setText(currentUser.getEmail());
         homeEdit.setText(currentUser.getHomepage());
-        phoneEdit.setText(currentUser.getCountry());
+        phoneEdit.setText(currentUser.getPhoneNumber());
         locationBox.setChecked(currentUser.trackingEnabled());
 
 

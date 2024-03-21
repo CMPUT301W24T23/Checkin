@@ -82,7 +82,7 @@ public class CheckedInListOrg extends Fragment {
                         if (subscribersMap != null) {
                             for (String attendeeId : subscribersMap.keySet()) {
                                 // Fetch each attendee document and create Attendee objects
-                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
+                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist, eventid);
                             }
                         }
                     } else {
@@ -97,7 +97,7 @@ public class CheckedInListOrg extends Fragment {
         return view;
     }
 
-    private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees) {
+    private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees, String eventId) {
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -107,26 +107,35 @@ public class CheckedInListOrg extends Fragment {
                     if (document.exists()) {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
-                        // Add the attendee to the list
-                        attendees.addAttendee(attendee);
-                        // Update the UI with the attendees list
 
-                        if (attendeedatalist != null) {
-                            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
-                            attendeesList.setAdapter(AttendeesAdapter);
+                        Map<String, Long> checkIns = (Map<String, Long>) document.get("Checkins");
+                        if (checkIns != null) {
+                            // Retrieve the check-in count for the specified eventId
+                            Long checkInValue = checkIns.get(eventId);
+                            if (checkInValue != null) {
+                                // Set the check-in count for the attendee
+                                attendee.setCheckInValue(checkInValue);
+                                // Add the attendee to the list
+                                attendees.addAttendee(attendee);
+                                // Update the UI with the attendees list
+
+                                if (attendeedatalist != null) {
+                                    AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
+                                    attendeesList.setAdapter(AttendeesAdapter);
+                                }
+                            } else {
+                                Log.d("Firestore", "No such document");
+                            }
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
                         }
-                    } else {
-                        Log.d("Firestore", "No such document");
                     }
-                } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
+
                 }
             }
-        });
+
+                 });
     }
-
-
-
 
 
 

@@ -269,6 +269,7 @@ public class UserProfileFragment extends Fragment {
 
         String imageBase64 = BitmapToBase64(originalBitmap);
 
+        /*
         // Decode the Base64 string back to a Bitmap for checking
         Bitmap decodedBitmap = base64ToBitmap(imageBase64);
 
@@ -279,6 +280,8 @@ public class UserProfileFragment extends Fragment {
             Log.d("ImageCheck", "Image conversion failed");
         }
 
+         */
+
         // Updating/Saving the new/changed user information of the current Attendee.
         //currentUser.updateProfile(name, email, homepage, country, locationPermission);
         currentUser.setName(name);
@@ -288,6 +291,9 @@ public class UserProfileFragment extends Fragment {
         if(!(currentUser.trackingEnabled() == locationPermission)){
             currentUser.toggleTracking();
         }
+
+        currentUser.setProfilePicture(imageBase64);
+
         db.updateAttendee(currentUser);
 
         savePrefs();        //Save user info to local preferences

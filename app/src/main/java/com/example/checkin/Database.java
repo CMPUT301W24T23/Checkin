@@ -57,6 +57,8 @@ public class Database {
         data.put("Phone", a.getPhoneNumber());
         data.put("Tracking", a.trackingEnabled());
         data.put("ProfilePic", a.getProfilePicture());
+        DocumentReference picRef = attendeeRef.document("ProfilePic");
+
 
         //Upload check in counts
         Map<String, Long> checkins = a.getCheckIns();

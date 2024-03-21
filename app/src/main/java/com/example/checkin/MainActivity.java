@@ -63,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
             exists = true;
 
         }
-        String id2 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
 
         if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
-            String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+            //String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
             //create attendee profile
             Attendee a = new Attendee();
@@ -86,7 +86,9 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         }
 
-
+        SharedPreferences.Editor editor = preferences.edit();
+        //editor.putString("ID", "");
+        editor.apply();
 
         // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {

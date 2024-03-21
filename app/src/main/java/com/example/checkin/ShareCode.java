@@ -129,7 +129,7 @@ public class ShareCode extends Fragment {
      * @param imageCode
      */
     public void generateQRCode(Event myevent, ImageView imageCode){
-        String myText = myevent.getEventname();
+        String myText = myevent.getEventId();
 
         // Appending timestamp
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");

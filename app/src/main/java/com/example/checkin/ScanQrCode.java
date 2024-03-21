@@ -1,5 +1,5 @@
 package com.example.checkin;
-
+// Fragment that allows you to scan a QR Code
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -25,6 +25,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 
+//https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
 public class ScanQrCode extends Fragment implements View.OnClickListener{
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
@@ -54,9 +55,6 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
 
         Intent intent = getActivity().getIntent();
 
-        // Retrieve the object from the Intent extras
-        Attendee attendee = (Attendee) intent.getSerializableExtra("attendee");
-        Database db = new Database();
 
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +79,7 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
                     != PackageManager.PERMISSION_GRANTED) {
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA);
             } else {
-                startQRScan();
+                //startQRScan();
             }
         }
 
@@ -115,6 +113,22 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
                         } else {
                             messageText.setText(intentResult.getContents());
                             messageFormat.setText(intentResult.getFormatName());
+
+                            // check in attendee using firebase- use event id and attendee id to get
+                            // event and attendee from firebase, and update both
+
+                            EventDetailAtten eventfragment = new EventDetailAtten();
+                            Bundle args = new Bundle();
+                            args.putString("eventid", intentResult.getContents());
+                            eventfragment.setArguments(args);
+
+                            // Navigate to the EventDetailAtten Frgment
+                            requireActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.atten_view, eventfragment)
+                                    .addToBackStack(null)
+                                    .commit();
+
+
                         }
                     }
                 }

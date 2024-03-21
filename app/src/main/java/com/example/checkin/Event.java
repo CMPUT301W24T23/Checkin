@@ -25,17 +25,18 @@ public class Event implements Serializable {
     //      - Firebase Integration
 
     private String EventId;//unique identifier for event
-    private Image poster;       //event poster
+    //private Image poster;       //event poster
+    private String poster;        //Poster uploaded to this Event
     //private QRCode code;
     private String eventname;
-
     private String eventdetails;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
-    //TODO: Firebase Integration
+    private String creator;     //The organizer who created this event
+
     private AttendeeList CheckInList = new AttendeeList();
-    //attendees CURRENTLY checked in to the event TODO: Firebase Integration
+    //attendees CURRENTLY checked in to the event
 
     public Event(String eventname, String eventdetails, ArrayList<Attendee> checkInList) {
         this.eventname = eventname;
@@ -43,22 +44,43 @@ public class Event implements Serializable {
         checkInList = new ArrayList<>();
     }
 
+    /*
     public Event(String eventname, String eventdetails) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
     }
+    */
 
+
+    //TODO: ID generation
     private String generateEventId(){
         Random rand = new Random();
         return Integer.toString(rand.nextInt(1000));
     }
 
-    /**
-     * Creates an empty event
-     * DO NOT PUT THIS IN DATABASE
-     */
+    /*
     public Event() {
+        this.eventname = "";
+        this.eventdetails = "";
+        this.creator = "";
         this.EventId = generateEventId();
+        this.Subscribers = new AttendeeList();
+        this.CheckInList = new AttendeeList();
+        this.poster = "";
+    }*/
+
+    /**
+     * Creates an event, requires a name and a creator at bare minimum
+     * @param name
+     */
+    public Event(String name, String creatorID){
+        this.eventname = name;
+        this.eventdetails = "";
+        this.creator = creatorID;
+        this.EventId = generateEventId();       //TODO: Generate event ID (CreatorID + Year + Month + Day + Minute + Second)
+        this.Subscribers = new AttendeeList();
+        this.CheckInList = new AttendeeList();
+        this.poster = "";
     }
 
     /**
@@ -68,6 +90,12 @@ public class Event implements Serializable {
      */
     public Event(String id) {
         this.EventId = id;
+        this.eventname = "";
+        this.eventdetails = "";
+        this.creator = "";
+        this.Subscribers = new AttendeeList();
+        this.CheckInList = new AttendeeList();
+        this.poster = "";
     }
     //Poster Image===============================================================
 
@@ -209,5 +237,19 @@ public class Event implements Serializable {
         CheckInList = checkInList;
     }
 
+    public String getPoster() {
+        return poster;
+    }
 
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 }

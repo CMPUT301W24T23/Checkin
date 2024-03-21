@@ -31,9 +31,11 @@ public class Attendee implements User, Serializable {
     //      - FIREBASE INTEGRATION
 
     private String userId;     //the user's ID
-    private Image profilePicture;               //TODO: the user's profile picture
 
-    private Map<String, Integer> CheckInHist = new Hashtable<>();
+    //private Image profilePicture;               //TODO: the user's profile picture
+    private String profilePicture;              //user's profile picture as an encoded 64bit string
+
+    private Map<String, Long> CheckInHist = new Hashtable<>();
 
     private boolean geoTracking;
 
@@ -67,16 +69,16 @@ public class Attendee implements User, Serializable {
     }
 
      /* Empty constructor for attendee
-     * DO NOT upload this to the database
      */
     public Attendee() {
-        //DO NOT upload to database
         this.userId = String.valueOf(generateUserId());
         this.name = "";
         this.homepage = "";
         this.email = "";
         this.phoneNumber = "";
-        this.geoTracking = true;
+        this.geoTracking = true;        //on by default
+        this.profilePicture = "";           //Generate a new profile picture
+        this.CheckInHist = new Hashtable<>();
     }
 
     /**
@@ -101,6 +103,7 @@ public class Attendee implements User, Serializable {
         this.email = mail;
         this.phoneNumber = phone;
         this.geoTracking = tracking;
+        this.CheckInHist = new Hashtable<>();
     }
 
     /**
@@ -156,7 +159,7 @@ public class Attendee implements User, Serializable {
      * @return
      * dictionary of check in counts
      */
-    public Map<String, Integer> getCheckIns() {
+    public Map<String, Long> getCheckIns() {
         //get the list of user check-in/outs
         //possibly not necessary
         return CheckInHist;
@@ -171,13 +174,20 @@ public class Attendee implements User, Serializable {
      */
     public void CheckIn(Event event) {
         //increment user check in count
-        if (this.CheckInHist.isEmpty()){
-            CheckInHist.put(String.valueOf(event.getEventId()), 1);
-        } else{
-            int i = 1 + CheckInHist.get(("" + event.getEventId()));
-            CheckInHist.put(String.valueOf(event.getEventId()), i);
+        if (this.CheckInHist.isEmpty()) {
+            // If the CheckInHist map is empty, initialize the count to 1
+            CheckInHist.put(String.valueOf(event.getEventId()), 1L);
+        } else {
+            // If the map is not empty, retrieve the current count and increment it by 1
+            Long checkInCount = CheckInHist.get(String.valueOf(event.getEventId()));
+            if (checkInCount != null) {
+                long count = checkInCount + 1;
+                CheckInHist.put(String.valueOf(event.getEventId()), count);
+            } else {
+                // If the value for the event ID is null, initialize it to 1
+                CheckInHist.put(String.valueOf(event.getEventId()), 1L);
+            }
         }
-
     }
 
     /**
@@ -262,5 +272,17 @@ public class Attendee implements User, Serializable {
     }
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public void setCheckInHist(Map<String, Long> checkInHist) {
+        CheckInHist = checkInHist;
     }
 }

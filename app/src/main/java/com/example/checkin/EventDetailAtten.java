@@ -1,14 +1,24 @@
 package com.example.checkin;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 // Event details page for Attendee
 public class EventDetailAtten extends Fragment {
@@ -17,6 +27,14 @@ public class EventDetailAtten extends Fragment {
     TextView eventdetails;
     Button backbutton;
     Button eventmessagesbtn;
+
+    Button checkinbutton;
+    Button signupbutton;
+
+    Attendee attendee;
+
+
+    private FirebaseFirestore db;
 
 
     @Override
@@ -29,6 +47,55 @@ public class EventDetailAtten extends Fragment {
         eventdetails = view.findViewById(R.id.eventinfo);
         backbutton = view.findViewById(R.id.backbtn);
         eventmessagesbtn = view.findViewById(R.id.eventmessg);
+        checkinbutton  = view.findViewById(R.id.checkinbtn);
+        signupbutton =  view.findViewById(R.id.signupbtn);
+
+        db = FirebaseFirestore.getInstance();
+        Database database = new Database();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String android_id = preferences.getString("ID", "");
+        DocumentReference organizerRef = db.collection("Attendees").document(android_id);
+        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Organizer object using Database class method
+                        attendee = database.getAttendee(document);
+                        // Proceed with setting up the UI using the retrieved organizer object
+                    } else {
+                        Log.d("document", "No such document");
+                    }
+                } else {
+                    Log.d("error", "get failed with ", task.getException());
+                }
+            }
+        });
+
+        checkinbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attendee.CheckIn(myevent);
+                myevent.userCheckIn(attendee);
+                database.updateEvent(myevent);
+                database.updateAttendee(attendee);
+
+
+            }
+        });
+
+        signupbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attendee.setName("testname");
+                attendee.EventSub(myevent);
+                myevent.userSubs(attendee);
+                database.updateEvent(myevent);
+                database.updateAttendee(attendee);
+
+            }
+        });
 
 
 

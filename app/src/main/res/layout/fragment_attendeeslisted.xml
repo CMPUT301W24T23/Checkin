@@ -17,6 +17,8 @@
         android:textColor="@color/black"
         android:textSize="45dp" />
 
+
+
     <Button
         android:id="@+id/checkedinbtn"
         android:layout_width="200dp"
@@ -34,7 +36,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignBottom="@id/checkedinbtn"
         android:layout_marginBottom="-100dp"
-        android:text="Signed In Attendees" />
+        android:text="Signed Up Attendees" />
 
     <Button
         android:id="@+id/backbtn"

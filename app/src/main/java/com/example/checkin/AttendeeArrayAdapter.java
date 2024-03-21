@@ -16,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
     private ArrayList<Attendee> attendees;
@@ -40,7 +43,25 @@ public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
         }
         Attendee attendee = getItem(position);
         TextView attendeename = view.findViewById(R.id.attendee_name);
-        attendeename.setText(attendee.getName());
+        String name = "Name: " + attendee.getName();
+        attendeename.setText(name);
+        TextView attendee_checkintimes = view.findViewById(R.id.checkin_times);
+        Map<String, Long> checkIns = attendee.getCheckIns();
+
+        Collection<Long> values = checkIns.values();
+        Iterator<Long> iterator = values.iterator();
+        // Skip the first value
+        iterator.next();
+        if (iterator.hasNext()) {
+            // Get the second value
+            Long secondValue = iterator.next();
+            // Convert the value to String
+            String numberoftimes = String.valueOf(secondValue);
+
+            String Check_in = "Check In Times: " + numberoftimes;
+            attendee_checkintimes.setText(Check_in);
+
+        }
         return view;
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -223,6 +224,8 @@ public class UserProfileFragment extends Fragment {
      * Citing: Took the help of Chat gpt in order to understand and learn new concepts about Bitmap and
      * how to work with it.
      */
+    private Bitmap originalBitmap; // Store the original Bitmap here
+
     private void saveUserProfile() {
         // Get user-entered information
         String name = nameEdit.getText().toString();
@@ -237,18 +240,11 @@ public class UserProfileFragment extends Fragment {
             return;
         }
 
-        String imageBase64 = "";
-
         // Check if an image is uploaded
         if (imageUri != null) {
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                myImageView.setImageBitmap(bitmap);
-                imageBase64 = BitmapToBase64(bitmap);
-
-                // Show the 'Edit Picture' button
-                Button editPictureButton = getView().findViewById(R.id.editPictureButton);
-                editPictureButton.setVisibility(View.VISIBLE);
+                originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                myImageView.setImageBitmap(originalBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -257,6 +253,7 @@ public class UserProfileFragment extends Fragment {
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
             Bitmap bitmap = generateImageWithInitials(name);
             myImageView.setImageBitmap(bitmap);
+            originalBitmap = bitmap;
             imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
 
             // Upload the generated image here
@@ -270,7 +267,17 @@ public class UserProfileFragment extends Fragment {
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
         }
 
-        Log.d("Base64Image", "Base64 Image: " + imageBase64);
+        String imageBase64 = BitmapToBase64(originalBitmap);
+
+        // Decode the Base64 string back to a Bitmap for checking
+        Bitmap decodedBitmap = base64ToBitmap(imageBase64);
+
+        // Check if the original Bitmap and the decoded Bitmap are the same
+        if (originalBitmap.sameAs(decodedBitmap)) {
+            Log.d("ImageCheck", "Image conversion successful");
+        } else {
+            Log.d("ImageCheck", "Image conversion failed");
+        }
 
         // Updating/Saving the new/changed user information of the current Attendee.
         //currentUser.updateProfile(name, email, homepage, country, locationPermission);
@@ -285,10 +292,14 @@ public class UserProfileFragment extends Fragment {
 
         savePrefs();        //Save user info to local preferences
 
-
         String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
                 "\nPhone: " + phone + "\nLocation Permission: " + locationPermission;
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private Bitmap base64ToBitmap(String base64String) {
+        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
     /**
      * Uploads the generated image to a desired location.
@@ -492,8 +503,3 @@ public class UserProfileFragment extends Fragment {
 
 
 }
-
-
-
-
-

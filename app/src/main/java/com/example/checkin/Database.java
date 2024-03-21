@@ -145,6 +145,7 @@ public class Database {
         a.setHomepage(doc.getString("Homepage"));
         a.setPhoneNumber(doc.getString("Phone"));
         a.setEmail(doc.getString("Email"));
+        a.setProfilePicture(doc.getString("ProfilePic"));
 
         //set the tracking status of the attendee
         //the empty constructor has tracking as true by default

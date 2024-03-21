@@ -11,23 +11,22 @@
         android:id="@+id/eventpage_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Events"
+        android:text="Select an Event"
         android:layout_centerHorizontal="true"
         android:textColor="@color/black"
         android:layout_marginTop="40dp"
-        android:textSize="45dp"
+        android:textSize="40dp"
         />
 
     <ListView
         android:id="@+id/events"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_above="@id/addeventbtn"
+        android:layout_height="wrap_content"
         android:layout_below="@id/eventpage_text"
         android:layout_marginTop="4dp"
         android:fadeScrollbars="false"
 
-         />
+        />
 
     <Button
         android:id="@+id/backbtn"
@@ -36,14 +35,6 @@
         android:layout_marginBottom="-400dp"
         android:text="Back" />
 
-    <Button
-        android:id="@+id/addeventbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Event"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="90dp" />
 
 
 

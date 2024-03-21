@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     boolean exists = false;
     Organizer o;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,21 +50,18 @@ public class MainActivity extends AppCompatActivity {
 
         organizerbutton = findViewById(R.id.organizerbtn);
         attendeebutton = findViewById(R.id.attendeebtn);
-        //String android_id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
-
-
+        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        
         Database db = new Database();
-
-
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already
             Log.d("Attendee Exists", String.format("Attendee Exists, ID: %s ", android_id));
             exists = true;
 
         }
-        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
 
         if (!(exists)){

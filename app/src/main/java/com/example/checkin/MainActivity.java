@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     //boolean attendExists = false;                 //User exists as Attendee in the database
     //boolean organizerExists;                 //User exists as Attendee in the database
     boolean exists = false;
-    Attendee a;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
             //create attendee profile
-            a = new Attendee();
+            Attendee a = new Attendee();
             a.setUserId(id);
             db.updateAttendee(a);
 
@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AttendeeView.class);
-                intent.putExtra("attendee", a);
                 startActivity(intent);
             }
         });

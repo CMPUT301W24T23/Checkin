@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/adminMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:text="Menu"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="45dp" />
+
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/adminevent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/adminMenu"
+        android:layout_marginBottom="523dp"
+        android:text="View Events."/>
+
+    <Button
+        android:id="@+id/adminprofile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/adminevent"
+        android:layout_marginBottom="-45dp"
+        android:text="View Profiles." />
+
+    <Button
+        android:id="@+id/adminimages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-45dp"
+        android:text="Profile Images."
+        android:layout_alignBottom="@id/adminprofile"
+        />
+
+    <Button
+        android:id="@+id/adminposter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/adminimages"
+        android:layout_marginBottom="-45dp"
+        android:text="Event Poster Image" />
+
+
+
+</RelativeLayout>

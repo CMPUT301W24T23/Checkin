@@ -17,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,7 +41,11 @@ public class OrganizerFragment1 extends Fragment {
     boolean update;
     Organizer organizer;
 
+    ProgressBar p;
+
     private FirebaseFirestore db;
+
+    RelativeLayout maincontent;
 
 
     
@@ -51,6 +57,8 @@ public class OrganizerFragment1 extends Fragment {
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
         addeventbutton = view.findViewById(R.id.addeventbtn);
+        p = view.findViewById(R.id.progress);
+        maincontent = view.findViewById(R.id.maincontent);
         //EventList allevents  = new EventList();
         Bundle bundle = this.getArguments();
        // if (bundle != null) {
@@ -109,6 +117,8 @@ public class OrganizerFragment1 extends Fragment {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
+                        p.setVisibility(View.GONE);
+                        maincontent.setVisibility(View.VISIBLE);
                         if (task.isSuccessful()) {
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);

@@ -15,10 +15,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 // Event details page for Attendee
 public class EventDetailAtten extends Fragment {
@@ -50,6 +52,11 @@ public class EventDetailAtten extends Fragment {
         checkinbutton  = view.findViewById(R.id.checkinbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
 
+        Bundle bundle = this.getArguments();
+        assert bundle != null;
+        myevent = (Event) bundle.getSerializable("event");
+        String eventid = myevent.getEventId();
+
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -78,6 +85,13 @@ public class EventDetailAtten extends Fragment {
             public void onClick(View view) {
                 attendee.CheckIn(myevent);
                 myevent.userCheckIn(attendee);
+
+                FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Subscribe", "subscribe to event");
+                    }
+                });
                 database.updateEvent(myevent);
                 database.updateAttendee(attendee);
 
@@ -100,9 +114,7 @@ public class EventDetailAtten extends Fragment {
 
 
         // get event object from previous fragment
-        Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
+
 
 
         // move to announcements page when see announcements button is clicked

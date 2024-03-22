@@ -6,7 +6,19 @@
     tools:context=".OrganizerFragment1"
     android:id="@+id/org_frag1">
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"/>
 
+
+    <RelativeLayout
+        android:id="@+id/maincontent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" >
     <TextView
         android:id="@+id/eventpage_text"
         android:layout_width="wrap_content"
@@ -40,6 +52,7 @@
 
 
         />
+    </RelativeLayout>
 
 
 

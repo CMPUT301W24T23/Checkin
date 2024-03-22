@@ -68,6 +68,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.11.0")
     implementation("androidx.preference:preference:1.2.1")
     implementation ("com.google.firebase:firebase-messaging:23.4.1")
+
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.google.auth:google-auth-library-oauth2-http:1.17.0")
 }

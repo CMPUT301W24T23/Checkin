@@ -215,6 +215,27 @@ public class Database {
         });
         return exists[0];
     }
+
+
+    public void updateMessage(Message m){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference messageRef = db.collection("Messages");
+
+     // Create a new message object
+        Map<String, Object> data = new HashMap<>();
+        data.put("Title", m.getTitle());
+        data.put("Body", m.getBody());
+
+        messageRef.add(data)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("Upload Message", "Message uploaded successfully with ID: " + documentReference.getId());
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Upload Message", "Error uploading message", e);
+                });
+
+
+    }
     //use/modify this code if you need to load all the attendees for whatever reason
     //To my understanding, retrieving documents from firebase has to be done in a way that doesn't allow
     //for a return value. So it has to be done on the actual activity and you can't create a method for it

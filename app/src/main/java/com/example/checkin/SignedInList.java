@@ -42,6 +42,11 @@ public class SignedInList extends Fragment {
             attendeedatalist = myevent.getSubscribers();
         }
 
+
+
+
+
+
         // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
         if (attendeedatalist!= null) {
             AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendeedatalist.getAttendees());

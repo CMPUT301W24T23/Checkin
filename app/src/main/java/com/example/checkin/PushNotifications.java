@@ -15,12 +15,17 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 
 public class PushNotifications extends FirebaseMessagingService {
+
+    Database d = new Database();
+    Message m = new Message();
+    private FirebaseFirestore db;
 
     @Override
     public void onNewToken(@NonNull String token) {
@@ -31,8 +36,26 @@ public class PushNotifications extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         String title = message.getNotification().getTitle();
         String body = message.getNotification().getBody();
+
+
+
+
+
         String CHANNEL_ID = "message";
         CharSequence name;
+
+        Intent intent = new Intent(this, NotificationHandleActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Message", NotificationManager.IMPORTANCE_HIGH);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
@@ -59,44 +82,12 @@ public class PushNotifications extends FirebaseMessagingService {
         super.onMessageReceived(message);
 
     }
-       // if (message.getNotification() != null) {
-            // Since the notification is received directly
-            // from FCM, the title and the body can be
-            // fetched directly as below.
-           // showNotification(
-                  //  message.getNotification().getTitle(),
-              //      message.getNotification().getBody());
-      //  }
-   // }
-
-
-   // @Override
-  //  public void onNewToken(@NonNull String token) {
-      //  Log.d("new token", "Refreshed token: " + token);
-   // }
 
 
 
 
 
-    //public void showNotification(String title,
-                             //    String message) {
-        // Pass the intent to switch to the MainActivity
-      //  Intent intent
-              //  = new Intent(this, MainActivity.class);
-        // Assign channel ID
 
-       // String channel_id = "Notification";
-      //  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-          //  CharSequence name = "MyChannel";
-          //  String description = "Channel for FCM notifications";
-          //  int importance = NotificationManager.IMPORTANCE_HIGH;
-            //NotificationChannel channel = new NotificationChannel(channel_id, name, importance);
-           // channel.setDescription(description);
-
-         //   NotificationManager notificationManager = getSystemService(NotificationManager.class);
-         //   notificationManager.createNotificationChannel(channel);
-     //   }
 
 
 

@@ -21,6 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -44,6 +45,12 @@ public class SendNotification extends Fragment {
     Button sendbtn;
     EditText titlemessage;
     EditText bodymessage;
+
+    Database d = new Database();
+    Message m = new Message();
+
+    Event myevent;
+    private FirebaseFirestore db;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,13 +61,25 @@ public class SendNotification extends Fragment {
         titlemessage = view.findViewById(R.id.title_msg);
         bodymessage = view.findViewById(R.id.body_msg);
 
+        Bundle bundle = this.getArguments();
+        assert bundle != null;
+        myevent = (Event) bundle.getSerializable("event");
+        String topic = myevent.getEventId();
+
         sendbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //String token = "fF1-N2eFRhSXdSmUBpe9VI:APA91bHydxfMLCklsISAfOTBvE1WFZ3lrS60Ho5wzs9Ec0PxP0iLyxFEKdoRI_F9tv_8_txBFCteJ7YZjMgKihF5JOFwO4w-sfCXEt-G-sQK4W4IsS96iS44SutO5dNlWTxSgxO_5Svs";
 
                 try {
-                    sendNotification();
+                    sendNotification(topic);
+                    String title = titlemessage.getText().toString();
+                    String body = bodymessage.getText().toString();
+                    m.setTitle(title);
+                    m.setBody(body);
+                    d.updateMessage(m);
+
+
                 } catch (JSONException | IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -71,7 +90,7 @@ public class SendNotification extends Fragment {
         return view;
     }
 
-    private void sendNotification() throws JSONException, IOException {
+    private void sendNotification(String topic) throws JSONException, IOException {
         // json object
 
         JSONObject notification = new JSONObject();
@@ -91,7 +110,7 @@ public class SendNotification extends Fragment {
         notificationbody2.put("body", bodymessage.getText().toString());
 
         JSONObject message2 = new JSONObject();
-        message2.put("topic", "event");
+        message2.put("topic", topic);
         message2.put("notification", notificationbody2);
 
         JSONObject mainObject2 = new JSONObject();
@@ -144,6 +163,8 @@ public class SendNotification extends Fragment {
                 return header;
             }
         };
+
+
 
         mrequest.add(request);
 

@@ -1,6 +1,7 @@
 
 package com.example.checkin;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
@@ -12,10 +13,14 @@ The class supports event creation and geolocation preferences.
 In the main application, organizers can create and manage events seamlessly.
  */
 
-public class Organizer implements User{
+public class Organizer implements User, Serializable {
     private String userId;
-    private ArrayList<String> CreatedEvents = new ArrayList<>(); //event ids of events this organizer has created
+    private boolean IsAdmin;
     private boolean geoTracking;
+    private ArrayList<String> CreatedEvents = new ArrayList<>(); //event ids of events this organizer has created
+
+    private ArrayList<String> QRCodes = new ArrayList<>(); //encoded qr codes created by this organizer
+
 
     //private QRCodeList QRCodes;       //the qr codes this organizer has generated
     //private ImageList images;         //posters uploaded by this organizer
@@ -49,6 +54,10 @@ public class Organizer implements User{
     public Organizer() {
         this.userId = generateUserId();
         this.geoTracking = true;
+        this.IsAdmin = false;
+        this.CreatedEvents = new ArrayList<>();
+        this.QRCodes = new ArrayList<>();
+
     }
 
     /**
@@ -62,11 +71,14 @@ public class Organizer implements User{
         //TODO:         loading event list from firebase
     }
 
-    /*This user has created an event, add to list of event ids and upload to firebase*/
-    public void EventCreate(Event e){
-        CreatedEvents.add(e.getEventId());
+    /*This user has created an event, add to list of event ids*/
+    public void EventCreate(String e){
+        CreatedEvents.add(e);
     }
 
+    public void QRCreate(String qr) {
+        QRCodes.add(qr);
+    }
 
     //GEOLOCATION===================================================================================
 
@@ -111,4 +123,19 @@ public class Organizer implements User{
     public ArrayList<String> getCreatedEvents() {
         return CreatedEvents;
     }
+
+    public boolean isAdmin() {
+        return IsAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        IsAdmin = admin;
+    }
+
+    public ArrayList<String> getQRCodes() {
+        return QRCodes;
+    }
+
+
 }
+

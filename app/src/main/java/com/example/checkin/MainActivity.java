@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     boolean exists = false;
     Organizer o;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("ID", id);
             editor.apply();
         }
-
-
 
         // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {

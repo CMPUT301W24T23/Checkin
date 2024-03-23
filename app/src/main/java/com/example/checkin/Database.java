@@ -309,63 +309,6 @@ public class Database {
         return e;
     }
 
-        /*
-    public void getOrg(){
-        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-        FirebaseFirestore fireb = FirebaseFirestore.getInstance();
-        DocumentReference docRef = fireb.collection("Organizers").document(id);
-        Database db = new Database();
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
-                        Organizer o = db.getOrganizer(document);
-                        for(String QR: o.getQRCodes()){
-                            Log.d("QR CODE", String.format("CODE: %s", QR));
-                        }
-
-                    } else {
-                        Log.d("Firebase", String.format("No such document: %s", id));
-                    }
-                } else {
-                    Log.d("Firebase get failed", "get failed with ", task.getException());
-                }
-            }
-        });}
-        */
-    /*
-    public void getEvent(){
-        FirebaseFirestore fireb = FirebaseFirestore.getInstance();
-        DocumentReference docRef = fireb.collection("Events").document("983");
-        Database db = new Database();
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
-                        Event e = db.getEvent(document);
-                        for(Attendee a: e.getSubscribers().getAttendees()){
-                            Log.d("Successful Event Retrieve", String.format("Retrieved user %s", a.getUserId()));
-                        }
-
-                    } else {
-                        Log.d("Firebase", String.format("No such document: %s", "983"));
-                    }
-                } else {
-                    Log.d("Firebase get failed", "get failed with ", task.getException());
-                }
-            }
-        });}
-        */
-
-
     //use/modify this code if you need to load all the attendees for whatever reason
     //Firebase data pulls must be done asynchronously through listeners
     //https://firebase.google.com/docs/firestore/query-data/get-data#java_2

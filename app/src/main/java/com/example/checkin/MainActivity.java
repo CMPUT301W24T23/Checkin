@@ -50,26 +50,23 @@ public class MainActivity extends AppCompatActivity {
 
         organizerbutton = findViewById(R.id.organizerbtn);
         attendeebutton = findViewById(R.id.attendeebtn);
-        //String android_id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
-
-
+        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        
         Database db = new Database();
-
-
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already
             Log.d("Attendee Exists", String.format("Attendee Exists, ID: %s ", android_id));
             exists = true;
 
         }
-        String id2 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
 
         if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
-            String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+            //String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
             //create attendee profile
             Attendee a = new Attendee();
@@ -86,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("ID", id);
             editor.apply();
         }
+
+        SharedPreferences.Editor editor = preferences.edit();
+        //editor.putString("ID", "");
+        editor.apply();
 
         // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {

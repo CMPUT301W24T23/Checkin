@@ -57,6 +57,8 @@ public class Database {
         data.put("Phone", a.getPhoneNumber());
         data.put("Tracking", a.trackingEnabled());
         data.put("ProfilePic", a.getProfilePicture());
+        DocumentReference picRef = attendeeRef.document("ProfilePic");
+
 
         //Upload check in counts
         Map<String, Long> checkins = a.getCheckIns();
@@ -145,6 +147,7 @@ public class Database {
         a.setHomepage(doc.getString("Homepage"));
         a.setPhoneNumber(doc.getString("Phone"));
         a.setEmail(doc.getString("Email"));
+        a.setProfilePicture(doc.getString("ProfilePic"));
 
         //set the tracking status of the attendee
         //the empty constructor has tracking as true by default

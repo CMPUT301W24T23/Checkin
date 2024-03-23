@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +65,7 @@ public class UserProfileFragment extends Fragment {
 //     public UserProfileFragment() {
 //         // Required empty public constructor
 //     }
-  
+
     private final Database db = new Database();
     // Instance of the an attendee.
     //private Attendee currentUser = db.getAttendee(Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID));
@@ -210,12 +212,20 @@ public class UserProfileFragment extends Fragment {
             removePictureButton.setVisibility(View.VISIBLE); // Show the 'Remove Picture' button
         }
     }
+    private String BitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
 
     /**
      * Saves the user's profile information and picture.
      * Citing: Took the help of Chat gpt in order to understand and learn new concepts about Bitmap and
      * how to work with it.
      */
+    private Bitmap originalBitmap; // Store the original Bitmap here
+
     private void saveUserProfile() {
         // Get user-entered information
         String name = nameEdit.getText().toString();
@@ -224,7 +234,6 @@ public class UserProfileFragment extends Fragment {
         String phone = phoneEdit.getText().toString();
         boolean locationPermission = locationBox.isChecked();
 
-      
         // Validate email format
         if (!isValidEmail(email)) {
             emailEdit.setError("Invalid email format");
@@ -233,29 +242,45 @@ public class UserProfileFragment extends Fragment {
 
         // Check if an image is uploaded
         if (imageUri != null) {
-            // Show the 'Remove Picture' button
-            Button removePictureButton = getView().findViewById(R.id.removePictureButton);
-            removePictureButton.setVisibility(View.VISIBLE);
-
-            // Check if the ImageView is visible
-            if (myImageView.getVisibility() != View.VISIBLE) {
-                Log.d("ImageViewVisibility", "ImageView is not visible");
-            } else {
-                Log.d("ImageViewVisibility", "ImageView is visible");
+            try {
+                originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                myImageView.setImageBitmap(originalBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         } else {
             // Generate a temporary image with initials
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
             Bitmap bitmap = generateImageWithInitials(name);
             myImageView.setImageBitmap(bitmap);
+            originalBitmap = bitmap;
             imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
 
             // Upload the generated image here
             uploadGeneratedImage(bitmap);
 
+            // Show the 'Edit Picture' button
+            Button editPictureButton = getView().findViewById(R.id.editPictureButton);
+            editPictureButton.setVisibility(View.VISIBLE);
+
             // Log the visibility of the ImageView
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
         }
+
+        String imageBase64 = BitmapToBase64(originalBitmap);
+
+        /*
+        // Decode the Base64 string back to a Bitmap for checking
+        Bitmap decodedBitmap = base64ToBitmap(imageBase64);
+
+        // Check if the original Bitmap and the decoded Bitmap are the same
+        if (originalBitmap.sameAs(decodedBitmap)) {
+            Log.d("ImageCheck", "Image conversion successful");
+        } else {
+            Log.d("ImageCheck", "Image conversion failed");
+        }
+
+         */
 
         // Updating/Saving the new/changed user information of the current Attendee.
         //currentUser.updateProfile(name, email, homepage, country, locationPermission);
@@ -266,14 +291,21 @@ public class UserProfileFragment extends Fragment {
         if(!(currentUser.trackingEnabled() == locationPermission)){
             currentUser.toggleTracking();
         }
+
+        currentUser.setProfilePicture(imageBase64);
+
         db.updateAttendee(currentUser);
 
         savePrefs();        //Save user info to local preferences
 
-
         String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
                 "\nPhone: " + phone + "\nLocation Permission: " + locationPermission;
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private Bitmap base64ToBitmap(String base64String) {
+        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
     /**
      * Uploads the generated image to a desired location.
@@ -298,7 +330,7 @@ public class UserProfileFragment extends Fragment {
             e.printStackTrace();
         }
     }
-  
+
     /**
      * Clears the selected picture from the ImageView.
      *
@@ -310,7 +342,7 @@ public class UserProfileFragment extends Fragment {
         Button removePictureButton = getView().findViewById(R.id.removePictureButton);
         removePictureButton.setVisibility(View.GONE); // Hide the 'Remove Picture' button
     }
-  
+
     /**
      * Generates an image with the initials of the given name.
      *
@@ -366,14 +398,14 @@ public class UserProfileFragment extends Fragment {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return Pattern.matches(emailRegex, email);
     }
-  
+
     /**
      * Validates a URL.
      *
      * @param url The URL to validate.
      * @return True if the URL is valid, false otherwise.
      */
-  
+
     private boolean isValidUrl(String url) {
         String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         return Pattern.matches(urlRegex, url);
@@ -477,4 +509,3 @@ public class UserProfileFragment extends Fragment {
 
 
 }
-

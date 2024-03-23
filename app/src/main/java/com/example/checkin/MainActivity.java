@@ -62,12 +62,10 @@ public class MainActivity extends AppCompatActivity {
             exists = true;
 
         }
-
-
         if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
             //String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-
+            Log.d("Not in Database", String.format("Generating Organizer and Attendee, ID: %s ", android_id));
             //create attendee profile
             Attendee a = new Attendee();
             a.setUserId(id);

@@ -51,20 +51,26 @@ public class Database {
 
         //Upload User info
         Map<String, Object> data = new HashMap<>();
+
         data.put("Name", a.getName());
+        Log.d("Firebase Upload", "Attendee: " + a.getName());
         data.put("Homepage", a.getHomepage());
+        Log.d("Firebase Upload", "Attendee: " + a.getHomepage());
         data.put("Email", a.getEmail());
+        Log.d("Firebase Upload", "Attendee: " + a.getEmail());
         data.put("Phone", a.getPhoneNumber());
+        Log.d("Firebase Upload", "Attendee: " + a.getPhoneNumber());
         data.put("Tracking", a.trackingEnabled());
+        Log.d("Firebase Upload", "Attendee: " + a.trackingEnabled());
+
         data.put("ProfilePic", a.getProfilePicture());
-        DocumentReference picRef = attendeeRef.document("ProfilePic");
-
-
+        //DocumentReference picRef = attendeeRef.document("ProfilePic");
         //Upload check in counts
         Map<String, Long> checkins = a.getCheckIns();
         data.put("Checkins", checkins);
 
         attendeeRef.document(a.getUserId()).set(data);
+
         Log.d("New Attendee", String.format("Added Attendee to Firebase, ID: %s", a.getUserId()));
     }
 
@@ -142,11 +148,22 @@ public class Database {
      */
     public Attendee getAttendee(DocumentSnapshot doc){
         Attendee a = new Attendee();
+
         a.setUserId(doc.getId());
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getId() + ": " + a.getUserId());
+
         a.setName(doc.getString("Name"));
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Name") + ": " + a.getName());
+
         a.setHomepage(doc.getString("Homepage"));
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Homepage") + ": " + a.getHomepage());
+
         a.setPhoneNumber(doc.getString("Phone"));
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Phone") + ": " + a.getPhoneNumber());
+
         a.setEmail(doc.getString("Email"));
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Email") + ": " + a.getEmail());
+
         a.setProfilePicture(doc.getString("ProfilePic"));
 
         //set the tracking status of the attendee

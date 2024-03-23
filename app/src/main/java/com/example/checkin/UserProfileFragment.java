@@ -32,6 +32,7 @@ import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import com.example.checkin.Attendee;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,6 +55,7 @@ public class UserProfileFragment extends Fragment {
     private ImageView myImageView;
     private Uri imageUri;
     //private UserProfileViewModel viewModel;
+    boolean newImage = false;
 
     private final Database db = new Database();
     private final ImageEncoder imgEncode = new ImageEncoder();
@@ -104,6 +106,11 @@ public class UserProfileFragment extends Fragment {
         phoneEdit.setText(currentUser.getPhoneNumber());
         locationBox.setChecked(currentUser.trackingEnabled());
 
+        if(!(currentUser.getProfilePicture() == "")){
+            Bitmap avi = imgEncode.base64ToBitmap(currentUser.getProfilePicture());
+            myImageView.setImageBitmap(avi);
+        }
+
 
         Button saveButton = view.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +155,7 @@ public class UserProfileFragment extends Fragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
                 && data != null && data.getData() != null) {
             imageUri = data.getData();
-
+            newImage = true;
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 myImageView.setImageBitmap(bitmap);
@@ -169,6 +176,7 @@ public class UserProfileFragment extends Fragment {
             Bitmap bitmap = generateImageWithInitials(name);
             myImageView.setImageBitmap(bitmap);
             imageUri = null; // Set the imageUri to null
+            newImage = false;
             Button removePictureButton = getView().findViewById(R.id.removePictureButton);
             removePictureButton.setVisibility(View.VISIBLE); // Show the 'Remove Picture' button
         }
@@ -196,35 +204,51 @@ public class UserProfileFragment extends Fragment {
             return;
         }
 
+        String imageBase64 = currentUser.getProfilePicture();;
+
+        if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
+            imageBase64 = currentUser.getProfilePicture();
+        }
+
         // Check if an image is uploaded
-        if (imageUri != null) {
+        if (imageUri != null && newImage) {
             try {
                 originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 myImageView.setImageBitmap(originalBitmap);
+                imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+                currentUser.setProfilePicture(imageBase64);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            // Generate a temporary image with initials
-            Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
-            Bitmap bitmap = generateImageWithInitials(name);
-            myImageView.setImageBitmap(bitmap);
-            originalBitmap = bitmap;
-            imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
+        } else if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
+            imageBase64 = currentUser.getProfilePicture();
+        } else{
+                // Generate a temporary image with initials
+                Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
+                Bitmap bitmap = generateImageWithInitials(name);
+                myImageView.setImageBitmap(bitmap);
+                originalBitmap = bitmap;
+                imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
 
-            // Upload the generated image here
-            uploadGeneratedImage(bitmap);
+                // Upload the generated image here
+                uploadGeneratedImage(bitmap);
 
-            // Show the 'Edit Picture' button
-            Button editPictureButton = getView().findViewById(R.id.editPictureButton);
-            editPictureButton.setVisibility(View.VISIBLE);
+                // Show the 'Edit Picture' button
+                Button editPictureButton = getView().findViewById(R.id.editPictureButton);
+                editPictureButton.setVisibility(View.VISIBLE);
 
-            // Log the visibility of the ImageView
-            Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
+                imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+                currentUser.setProfilePicture(imageBase64);
+                // Log the visibility of the ImageView
+                Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
+
         }
 
+        //if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
+        //    imageBase64 = currentUser.getProfilePicture();
+        //}
         //Encode the image into Base64
-        String imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+        //String imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
 
         /*
         // Decode the Base64 string back to a Bitmap for checking
@@ -401,6 +425,10 @@ public class UserProfileFragment extends Fragment {
                         homeEdit.setText(currentUser.getHomepage());
                         phoneEdit.setText(currentUser.getPhoneNumber());
                         locationBox.setChecked(currentUser.trackingEnabled());
+
+                        Bitmap bitmap = imgEncode.base64ToBitmap(currentUser.getProfilePicture());
+                        myImageView.setImageBitmap(bitmap);
+
                         savePrefs();
 
                     } else {
@@ -433,6 +461,8 @@ public class UserProfileFragment extends Fragment {
         if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
             currentUser.toggleTracking();
         }
+
+        currentUser.setProfilePicture(preferences.getString("ProfilePic", ""));
     }
 
     /**
@@ -447,6 +477,7 @@ public class UserProfileFragment extends Fragment {
         editor.putString("Homepage", currentUser.getHomepage());
         editor.putString("Phone", currentUser.getPhoneNumber());
         editor.putBoolean("Tracking", currentUser.trackingEnabled());
+        editor.putString("ProfilePic", currentUser.getProfilePicture());
         editor.apply();
     }
 

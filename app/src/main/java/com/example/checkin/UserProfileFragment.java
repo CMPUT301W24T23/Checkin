@@ -77,6 +77,7 @@ public class UserProfileFragment extends Fragment {
 
         myImageView = view.findViewById(R.id.myImageView);
         Button editPictureButton = view.findViewById(R.id.editPictureButton);
+        Button removePictureButton = view.findViewById(R.id.removePictureButton);
         editPictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +110,7 @@ public class UserProfileFragment extends Fragment {
         if(!(currentUser.getProfilePicture() == "")){
             Bitmap avi = imgEncode.base64ToBitmap(currentUser.getProfilePicture());
             myImageView.setImageBitmap(avi);
+            removePictureButton.setVisibility(View.VISIBLE);
         }
 
 
@@ -120,7 +122,7 @@ public class UserProfileFragment extends Fragment {
             }
         });
 
-        Button removePictureButton = view.findViewById(R.id.removePictureButton);
+
         removePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,10 +207,12 @@ public class UserProfileFragment extends Fragment {
         }
 
         String imageBase64 = currentUser.getProfilePicture();;
-
+        /*
         if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
             imageBase64 = currentUser.getProfilePicture();
         }
+
+         */
 
         // Check if an image is uploaded
         if (imageUri != null && newImage) {
@@ -317,6 +321,9 @@ public class UserProfileFragment extends Fragment {
         imageUri = null; // Set the imageUri to null
         Button removePictureButton = getView().findViewById(R.id.removePictureButton);
         removePictureButton.setVisibility(View.GONE); // Hide the 'Remove Picture' button
+
+        //reset picture string
+        currentUser.setProfilePicture("");
     }
 
     /**

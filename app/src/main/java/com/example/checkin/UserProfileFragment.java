@@ -55,24 +55,12 @@ public class UserProfileFragment extends Fragment {
     private Uri imageUri;
     //private UserProfileViewModel viewModel;
 
-// <
-//     // Other UI elements
-//     private EditText nameEdit, emailEdit, homeEdit, countryEdit;
-//     private CheckBox locationBox;
-//     /**
-//      * Default constructor required for fragments.
-//      */
-//     public UserProfileFragment() {
-//         // Required empty public constructor
-//     }
-
     private final Database db = new Database();
-    // Instance of the an attendee.
-    //private Attendee currentUser = db.getAttendee(Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID));
-    private Attendee currentUser = new Attendee();
+    private final ImageEncoder imgEncode = new ImageEncoder();
 
-    // Other UI elements
-    private EditText nameEdit, emailEdit, homeEdit, phoneEdit;
+    private Attendee currentUser = new Attendee();    // Instance of the an attendee.
+
+    private EditText nameEdit, emailEdit, homeEdit, phoneEdit;      //Text boxes
     private CheckBox locationBox;
 
     public UserProfileFragment() {
@@ -137,33 +125,6 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * Load stored local data into view
-     */
-    private void loadPrefs(){
-        //Restore saved local data for quick access
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        currentUser.setName(preferences.getString("Name", ""));
-        currentUser.setEmail(preferences.getString("Email", ""));
-        currentUser.setHomepage(preferences.getString("Homepage", ""));
-        currentUser.setPhoneNumber(preferences.getString("Phone", ""));
-        if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
-            currentUser.toggleTracking();
-        }
-    }
-
-    private void savePrefs(){
-        //save data locally so it can be displayed instantly when this fragment is opened again
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("Name", currentUser.getName());
-        editor.putString("Email", currentUser.getEmail());
-        editor.putString("Homepage", currentUser.getHomepage());
-        editor.putString("Phone", currentUser.getPhoneNumber());
-        editor.putBoolean("Tracking", currentUser.trackingEnabled());
-        editor.apply();
-    }
-
-    /**
      * Opens a file chooser for selecting an image.
      */
     private void openFileChooser() {
@@ -212,12 +173,7 @@ public class UserProfileFragment extends Fragment {
             removePictureButton.setVisibility(View.VISIBLE); // Show the 'Remove Picture' button
         }
     }
-    private String BitmapToBase64(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
-    }
+
 
     /**
      * Saves the user's profile information and picture.
@@ -267,7 +223,8 @@ public class UserProfileFragment extends Fragment {
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
         }
 
-        String imageBase64 = BitmapToBase64(originalBitmap);
+        //Encode the image into Base64
+        String imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
 
         /*
         // Decode the Base64 string back to a Bitmap for checking
@@ -279,7 +236,6 @@ public class UserProfileFragment extends Fragment {
         } else {
             Log.d("ImageCheck", "Image conversion failed");
         }
-
          */
 
         // Updating/Saving the new/changed user information of the current Attendee.
@@ -303,10 +259,6 @@ public class UserProfileFragment extends Fragment {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    private Bitmap base64ToBitmap(String base64String) {
-        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-    }
     /**
      * Uploads the generated image to a desired location.
      *
@@ -388,6 +340,7 @@ public class UserProfileFragment extends Fragment {
 
         return bitmap;
     }
+
     /**
      * Validates an email address.
      *
@@ -405,13 +358,17 @@ public class UserProfileFragment extends Fragment {
      * @param url The URL to validate.
      * @return True if the URL is valid, false otherwise.
      */
-
     private boolean isValidUrl(String url) {
         String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         return Pattern.matches(urlRegex, url);
     }
 
 
+    /**
+     * Makes a query to firebase and retrieves the current user, updating the textboxes in the process
+     * @param id
+     * The id of the current user
+     */
     public void retrieveAttendee(String id){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
@@ -437,21 +394,22 @@ public class UserProfileFragment extends Fragment {
                         }*/
                         Database fireBase = new Database();
                         currentUser = fireBase.getAttendee(document);
+
+                        //Set textboxes to the updated information
                         nameEdit.setText(currentUser.getName());
                         emailEdit.setText(currentUser.getEmail());
                         homeEdit.setText(currentUser.getHomepage());
                         phoneEdit.setText(currentUser.getPhoneNumber());
-                        //countryEdit.setText(currentUser.getCountry());
                         locationBox.setChecked(currentUser.trackingEnabled());
                         savePrefs();
 
                     } else {
                         Log.d("Firebase", "No such document");
+                        //Database file is empty
                         nameEdit.setText("");
                         emailEdit.setText("");
                         homeEdit.setText("");
                         phoneEdit.setText("");
-                        //countryEdit.setText("");
                         locationBox.setChecked(false);
                         savePrefs();
                     }
@@ -460,6 +418,36 @@ public class UserProfileFragment extends Fragment {
                 }
             }
         });
+    }
+
+    /**
+     * Load stored local data into view
+     */
+    private void loadPrefs(){
+        //Restore saved local data for quick access
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        currentUser.setName(preferences.getString("Name", ""));
+        currentUser.setEmail(preferences.getString("Email", ""));
+        currentUser.setHomepage(preferences.getString("Homepage", ""));
+        currentUser.setPhoneNumber(preferences.getString("Phone", ""));
+        if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
+            currentUser.toggleTracking();
+        }
+    }
+
+    /**
+     * Save the user information to local preferences
+     */
+    private void savePrefs(){
+        //save data locally so it can be displayed instantly when this fragment is opened again
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("Name", currentUser.getName());
+        editor.putString("Email", currentUser.getEmail());
+        editor.putString("Homepage", currentUser.getHomepage());
+        editor.putString("Phone", currentUser.getPhoneNumber());
+        editor.putBoolean("Tracking", currentUser.trackingEnabled());
+        editor.apply();
     }
 
 

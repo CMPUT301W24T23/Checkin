@@ -18,6 +18,8 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,10 @@ public class CreateEventFragment extends Fragment {
     private EditText eventdetails;
     private ImageView ivEventPoster;
     private Button btnAddPoster;
+    private Button btnMap;
+
+    private Button btnCreateEvent;
+
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -63,6 +69,45 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        btnMap = view.findViewById(R.id.btnMap);
+
+        btnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MapActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnBack = view.findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        btnCreateEvent = view.findViewById(R.id.btnCreateEvent);
+
+        btnCreateEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createEvent();
+            }
+        });
+
         return view;
+    }
+
+    private void createEvent() {
+        String eventName = eventname.getText().toString();
+        String eventDetails = eventdetails.getText().toString();
+        boolean isGeoTrackingEnabled = checkBoxGeoTracking.isChecked();
+
+        // Log the event details or save them to a database
+        Log.d("CreateEvent", "Event Name: " + eventName + ", Event Details: " + eventDetails + ", GeoTracking: " + isGeoTrackingEnabled);
+
+        // Navigate back to the previous fragment or activity
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 }

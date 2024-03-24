@@ -1,6 +1,6 @@
 package com.example.checkin;
 
-public class Message {
+public class Alert extends Message{
 
     private String title;
     private String body;
@@ -9,15 +9,10 @@ public class Message {
 
     private String eventid;
 
-    public Message() {
-        // Default constructor required for Firebase
-    }
-
-    public Message(String title, String body) {
+    public Alert(String title, String body) {
         this.title = title;
         this.body = body;
     }
-
 
     public String getType() {
         return type;
@@ -51,3 +46,4 @@ public class Message {
         this.eventid = eventid;
     }
 }
+

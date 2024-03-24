@@ -11,7 +11,7 @@
         android:id="@+id/eventpage_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select an Event To Send Message"
+        android:text="Select an Event"
         android:layout_centerHorizontal="true"
         android:textColor="@color/black"
         android:layout_marginTop="45dp"

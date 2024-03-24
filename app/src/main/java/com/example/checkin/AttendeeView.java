@@ -17,6 +17,17 @@ public class AttendeeView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attenndee_view);
 
+        boolean openAnnouncements = getIntent().getBooleanExtra("open_announcements_fragment", true);
+
+        if (openAnnouncements) {
+            // Replace the fragment container with the Announcements fragment
+          //  getSupportFragmentManager().beginTransaction()
+                    // .replace(R.id.atten_view, new Announcements())
+           // .commit();
+        }
+
+
+
         // create homepage and announcements fragments
         AttendeeFragment1 att_frg1 = new AttendeeFragment1();
         Announcements ann_frg1 = new Announcements();
@@ -26,6 +37,8 @@ public class AttendeeView extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.atten_view, att_frg1)
                 .commit();
+
+
 
         // Set bottom navigation bar
         BottomNavigationView bottomnav = findViewById(R.id.bottomnavbar2);

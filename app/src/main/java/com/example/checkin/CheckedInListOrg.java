@@ -1,6 +1,7 @@
 package com.example.checkin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -24,7 +25,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
 
 // Shows list of checked in attendees for an event
 public class CheckedInListOrg extends Fragment {
@@ -34,6 +37,8 @@ public class CheckedInListOrg extends Fragment {
     Event myevent;
     private FirebaseFirestore db;
     Button backbutton;
+
+
 
 
     @Override
@@ -78,8 +83,14 @@ public class CheckedInListOrg extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         // Retrieve subscribers from the document
-                        Map<String, String> subscribersMap = (Map<String, String>) document.get("Subscribers");
+                        Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
                         if (subscribersMap != null) {
+                            int attendeeCount = subscribersMap.size();
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putInt("attendeeCount", attendeeCount);
+                            editor.apply();
+                            checkMilestone(attendeeCount);
                             for (String attendeeId : subscribersMap.keySet()) {
                                 // Fetch each attendee document and create Attendee objects
                                 fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
@@ -95,6 +106,29 @@ public class CheckedInListOrg extends Fragment {
         });
 
         return view;
+    }
+
+
+
+    private void checkMilestone(int attendeeCount) {
+        ArrayList<Integer> milestones = new ArrayList<>();
+
+        milestones.add(1);
+        milestones.add(10);
+        milestones.add(50);
+        milestones.add(100);
+        for (int milestone : milestones) {
+            if (attendeeCount == milestone) {
+                sendMilestoneNotification(myevent.getEventname()+ ": Milestone Reached!", "Attendee count: " + attendeeCount);
+                break; // No need to continue checking other milestones
+            }
+        }
+    }
+
+    private void sendMilestoneNotification(String title, String body) {
+        // Create an intent and call the MileStone class's method to send a notification
+        Intent intent = new Intent(getContext(), OrganizerView.class); // Replace YourActivity with the appropriate activity
+        MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent);
     }
 
     private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees) {

@@ -159,12 +159,12 @@ public class SelectEventMessages extends Fragment {
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Announcements announcements_frag = new Announcements();
+                MessagesOption message_frag = new MessagesOption();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
-                announcements_frag.setArguments(args);
+                message_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, announcements_frag).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, message_frag).addToBackStack(null).commit();
 
 
             }

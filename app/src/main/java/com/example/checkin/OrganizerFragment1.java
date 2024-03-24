@@ -59,6 +59,10 @@ public class OrganizerFragment1 extends Fragment {
         addeventbutton = view.findViewById(R.id.addeventbtn);
         p = view.findViewById(R.id.progress);
         maincontent = view.findViewById(R.id.maincontent);
+
+        SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int attendeeCount = preferences2.getInt("attendeeCount", 0);
+
         //EventList allevents  = new EventList();
         Bundle bundle = this.getArguments();
        // if (bundle != null) {
@@ -97,6 +101,7 @@ public class OrganizerFragment1 extends Fragment {
                     if (document.exists()) {
                         // Convert the document snapshot to an Organizer object using Database class method
                         organizer = database.getOrganizer(document);
+                        database.updateOrganizer(organizer);
                         // Proceed with setting up the UI using the retrieved organizer object
                     } else {
                         Log.d("document", "No such document");
@@ -123,6 +128,7 @@ public class OrganizerFragment1 extends Fragment {
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);
                                 allevents.addEvent(event);
+
                             }
                             EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, allevents.getEvents()) {
                                 @Override
@@ -203,4 +209,6 @@ public class OrganizerFragment1 extends Fragment {
         });
         return view;
     }
+
 }
+

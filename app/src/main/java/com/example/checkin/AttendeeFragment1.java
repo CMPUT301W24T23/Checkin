@@ -109,23 +109,13 @@ public class AttendeeFragment1 extends Fragment {
                             maincontent.setVisibility(View.VISIBLE);
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);
-                                datalist.add(event);
+                                allevents.addEvent(event);
                             }
-                            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
-                                @Override
-                                public View getView(int position, View convertView, ViewGroup parent) {
-                                    View view = convertView;
-                                    if (view == null) {
-                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                        view = inflater.inflate(R.layout.content, null);
-                                    }
-                                    TextView textView = view.findViewById(R.id.event_text);
-                                    textView.setText(datalist.get(position).getEventname());
-                                    return view;
-                                }
-                            };
-                            eventslist.setAdapter(EventAdapter);
 
+                            if (allevents!= null) {
+                                EventAdapter = new EventArrayAdapter(requireContext(), allevents.getEvents());
+                                eventslist.setAdapter(EventAdapter);
+                            }
 
                         }}
                 });
@@ -140,20 +130,8 @@ public class AttendeeFragment1 extends Fragment {
         });
 
         // if eventlist is not null set EventAdapter to custom EventArrayAdapter
-        if (datalist != null) {
-            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View view = convertView;
-                    if (view == null) {
-                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        view = inflater.inflate(R.layout.content, null);
-                    }
-                    TextView textView = view.findViewById(R.id.event_text);
-                    textView.setText(datalist.get(position).getEventname());
-                    return view;
-                }
-            };
+        if (allevents!= null) {
+            EventAdapter = new EventArrayAdapter(requireContext(), allevents.getEvents());
             eventslist.setAdapter(EventAdapter);
         }
 
@@ -163,7 +141,7 @@ public class AttendeeFragment1 extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 EventDetailAtten event_frag1= new EventDetailAtten();
                 Bundle args = new Bundle();
-                args.putSerializable("event", datalist.get(i));
+                args.putSerializable("event", allevents.getEvents().get(i));
                 event_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, event_frag1).addToBackStack(null).commit();

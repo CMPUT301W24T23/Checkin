@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:id="@+id/announce_frag">
+    android:id="@+id/display_milestones">
 
     <TextView
         android:id="@+id/announcements_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Announcements"
+        android:text="Milestones"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:textColor="@color/black"
@@ -19,7 +19,7 @@
 
 
     <ListView
-        android:id="@+id/announcements_list"
+        android:id="@+id/milestones_list"
         android:layout_width="match_parent"
         android:layout_marginTop="110dp"
         android:layout_height="wrap_content" />

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     //boolean attendExists = false;                 //User exists as Attendee in the database
     //boolean organizerExists;                 //User exists as Attendee in the database
     boolean exists = false;
-    Organizer o;
+
 
 
     @Override
@@ -62,9 +62,28 @@ public class MainActivity extends AppCompatActivity {
         //String android_id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
-
+        Log.d("android id", android_id);
 
         Database db = new Database();
+
+        String id3 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        System.out.println("id is" + id3);
+
+        //if (android_id.equals(id3)){
+            //create attendee profile
+           // Attendee a = new Attendee();
+          //  a.setUserId(id3);
+         //   db.updateAttendee(a);
+
+            //create organizer profile
+           // Organizer o = new Organizer();
+         //   o.setUserId(id3);
+          //  db.updateOrganizer(o);
+
+       // }
+
+
+
 
 
         if(!(android_id == "")){
@@ -78,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         String id2 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
 
+        System.out.println(android_id);
         if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
             String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
@@ -88,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             db.updateAttendee(a);
 
             //create organizer profile
-            o = new Organizer();
+            Organizer o = new Organizer();
             o.setUserId(id);
             db.updateOrganizer(o);
 
@@ -173,8 +193,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), OrganizerView.class);
-                Bundle args = new Bundle();
-                args.putSerializable("organizer", o);
                 startActivity(intent);
             }
         });

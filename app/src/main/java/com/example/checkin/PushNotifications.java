@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
@@ -14,11 +15,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.ArrayList;
 
 
 public class PushNotifications extends FirebaseMessagingService {
@@ -36,16 +40,31 @@ public class PushNotifications extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         String title = message.getNotification().getTitle();
         String body = message.getNotification().getBody();
+        DisplayRemoteNotification(title, body);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int attendeeCount = preferences.getInt("attendeeCount", 0);
 
+        // Check for milestones and send notifications
+        //checkMilestone(attendeeCount);
 
+        if (isMilestoneNotification(message)) {
+            checkMilestone(attendeeCount);
+        } else {
+            DisplayRemoteNotification(title, body);
+        }
 
+        super.onMessageReceived(message);
 
+    }
+
+    private void DisplayRemoteNotification(String title, String body){
         String CHANNEL_ID = "message";
         CharSequence name;
 
-        Intent intent = new Intent(this, NotificationHandleActivity.class);
+        Intent intent = new Intent(this, AttendeeView.class);
         intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra("open_announcements_fragment", true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -64,7 +83,8 @@ public class PushNotifications extends FirebaseMessagingService {
                 .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
 
         NotificationManagerCompat notifications = NotificationManagerCompat.from(this);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -79,8 +99,75 @@ public class PushNotifications extends FirebaseMessagingService {
         }
         notifications.notify(0, builder.build());
 
-        super.onMessageReceived(message);
 
+    }
+
+    private void DisplayMileStoneNotification(String title, String body){
+        String CHANNEL_ID = "milestone";
+        CharSequence name;
+
+        Intent intent = new Intent(this, AttendeeView.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra("open_announcements_fragment", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Milestone", NotificationManager.IMPORTANCE_HIGH);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
+        NotificationManagerCompat notifications = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notifications.notify(0, builder.build());
+
+
+    }
+
+    private boolean isMilestoneNotification(RemoteMessage message) {
+        // Check if the message payload contains a specific field that indicates it's a milestone notification
+        // For example, you might have a key called "type" in the message data, and its value could be "milestone"
+        String messageType = message.getData().get("Type");
+        return messageType != null && messageType.equals("Milestone");
+    }
+
+    private void checkMilestone(int attendeeCount) {
+        ArrayList<Integer> milestones = new ArrayList<>();
+        milestones.add(1);
+        milestones.add(10);
+        milestones.add(50);
+        milestones.add(100);
+
+        for (int milestone : milestones) {
+            if (attendeeCount == milestone) {
+                String milestoneTitle = "Milestone Reached!";
+                String milestoneBody = "Attendee count: " + attendeeCount;
+                DisplayMileStoneNotification(milestoneTitle, milestoneBody);
+                break; // No need to continue checking other milestones
+            }
+        }
     }
 
 

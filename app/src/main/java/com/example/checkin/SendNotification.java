@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -38,16 +39,18 @@ import java.util.Map;
 
 public class SendNotification extends Fragment {
 
-
     private RequestQueue mrequest;
-    private String URL = "https://fcm.googleapis.com/fcm/send";
     private String URL2 = "https://fcm.googleapis.com/v1/projects/checkin-6a54e/messages:send";
     Button sendbtn;
     EditText titlemessage;
     EditText bodymessage;
 
+    Button backbutton;
+
     Database d = new Database();
     Message m = new Message();
+
+    String topic;
 
     Event myevent;
     private FirebaseFirestore db;
@@ -60,24 +63,38 @@ public class SendNotification extends Fragment {
         mrequest = Volley.newRequestQueue(getContext());
         titlemessage = view.findViewById(R.id.title_msg);
         bodymessage = view.findViewById(R.id.body_msg);
+        backbutton = view.findViewById(R.id.backbtn);
 
         Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
-        String topic = myevent.getEventId();
+        if (bundle != null) {
+            myevent = (Event) bundle.getSerializable("event");
+            topic = myevent.getEventId();
+        }
+
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         sendbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String token = "fF1-N2eFRhSXdSmUBpe9VI:APA91bHydxfMLCklsISAfOTBvE1WFZ3lrS60Ho5wzs9Ec0PxP0iLyxFEKdoRI_F9tv_8_txBFCteJ7YZjMgKihF5JOFwO4w-sfCXEt-G-sQK4W4IsS96iS44SutO5dNlWTxSgxO_5Svs";
-
+                
                 try {
                     sendNotification(topic);
                     String title = titlemessage.getText().toString();
                     String body = bodymessage.getText().toString();
                     m.setTitle(title);
                     m.setBody(body);
+                    m.setEventid(myevent.getEventId());
+                    m.setType("Message");
                     d.updateMessage(m);
+                    titlemessage.setText("");
+                    bodymessage.setText("");
+                    Toast.makeText(getContext(), "Notification Sent", Toast.LENGTH_LONG).show();
+
 
 
                 } catch (JSONException | IOException e) {
@@ -163,9 +180,6 @@ public class SendNotification extends Fragment {
                 return header;
             }
         };
-
-
-
         mrequest.add(request);
 
     }

@@ -318,6 +318,8 @@ public class Database {
         Map<String, Object> data = new HashMap<>();
         data.put("Title", m.getTitle());
         data.put("Body", m.getBody());
+        data.put("Event Id", m.getEventid());
+        data.put("Type", m.getType());
 
         messageRef.add(data)
                 .addOnSuccessListener(documentReference -> {

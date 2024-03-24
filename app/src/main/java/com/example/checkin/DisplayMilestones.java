@@ -1,7 +1,5 @@
 package com.example.checkin;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -13,9 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,22 +25,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/*
-Announcements page that shows messages received by event organizers - will implement
-sending notifications in next part of project, has mock data for now
-*/
-public class Announcements extends Fragment {
-    ListView announcements;
+
+public class DisplayMilestones extends Fragment {
+
+    ListView milestones;
     private ArrayList<Message> announcelist;
     private MessageAdapter Announcements_Adapter;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_announcements, container, false);
+        View view  = inflater.inflate(R.layout.fragment_display_milestones, container, false);
 
-        announcements = view.findViewById(R.id.announcements_list);
+        milestones = view.findViewById(R.id.milestones_list);
         announcelist = new ArrayList<>();
 
         // Add example announcements
@@ -59,21 +55,22 @@ public class Announcements extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
-        DocumentReference attendeeRef = db.collection("Attendees").document(android_id);
-        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        DocumentReference OrganizerRef = db.collection("Organizers").document(android_id);
+        OrganizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Map<String, Object> data = document.getData(); // Retrieve data as a Map
-                        if (data != null && data.containsKey("Checkins")) {
-                            Map<String, Long> checkedInMap = (Map<String, Long>) data.get("Checkins"); // Cast to the appropriate type
+                        if (data != null && data.containsKey("Events")) {
+                            Map<String, String> checkedInMap = (Map<String, String>) data.get("Events"); // Cast to the appropriate type
                             List<String> eventIds = new ArrayList<>();
 
                             // Iterate over the map entries
-                            for (Map.Entry<String, Long> entry : checkedInMap.entrySet()) {
+                            for (Map.Entry<String, String> entry : checkedInMap.entrySet()) {
                                 String eventId = entry.getKey();
+                                Log.d("eventnumber" , "eventvalue" +eventId);
                                 System.out.println("key" + eventId);
                                 eventIds.add(eventId);
                                 // Fetch messages for the current event ID
@@ -96,7 +93,7 @@ public class Announcements extends Fragment {
         // Represented as strings now, will create announcement objects in next part
         if (announcelist != null) {
             Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
-            announcements.setAdapter(Announcements_Adapter);
+            milestones.setAdapter(Announcements_Adapter);
         }
 
         return view;
@@ -110,23 +107,22 @@ public class Announcements extends Fragment {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Message> eventMessages = new ArrayList<>();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-
                         Message message = document.toObject(Message.class);
-                        if (message != null) { // Check if message is not null
-                            message.setType(document.getString("Type"));}
-                        if (message.getType() != null && message.getType().equals("Message")) {
+                        message.setType(document.getString("Type"));
+                        if (message != null && message.getType() != null && message.getType().equals("Milestone")) {
+                            // If it's a milestone message, add it to the list
+
                             Message m = new Message();
                             m.setTitle(document.getString("Title"));
                             m.setBody(document.getString("Body"));
                             announcelist.add(m);
-                            System.out.println("message" + message.getTitle());
+                            System.out.println("message"+message.getTitle());
                         }
-
                     }
 
                     if (announcelist != null) {
                         Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
-                        announcements.setAdapter(Announcements_Adapter);
+                        milestones.setAdapter(Announcements_Adapter);
                     }
 
                 })
@@ -134,5 +130,7 @@ public class Announcements extends Fragment {
                     Log.e("Fetch Messages", "Error fetching messages for event: " + eventId, e);
                 });
     }
+
+
 
 }

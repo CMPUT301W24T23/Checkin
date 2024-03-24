@@ -61,6 +61,7 @@ public class EventDetailAtten extends Fragment {
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
+
         DocumentReference organizerRef = db.collection("Attendees").document(android_id);
         organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

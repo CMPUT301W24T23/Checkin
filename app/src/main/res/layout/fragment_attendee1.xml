@@ -16,7 +16,8 @@
         android:id="@+id/maincontent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone" >
+        android:visibility="gone"
+         >
 
     <TextView
         android:id="@+id/eventname"
@@ -32,7 +33,7 @@
         android:id="@+id/events"
         android:layout_width="match_parent"
         android:layout_marginTop="100dp"
-        android:layout_height="391dp" />
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/backbtn"

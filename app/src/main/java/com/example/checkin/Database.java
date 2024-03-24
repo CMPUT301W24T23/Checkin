@@ -111,6 +111,7 @@ public class Database {
         data.put("Details", e.getEventdetails());
         data.put("Poster", e.getPoster());
         data.put("Creator", e.getCreator());
+        data.put("Qr Code Id", e.getQrcodeid());
 
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
@@ -256,6 +257,7 @@ public class Database {
         e.setEventdetails(doc.getString("Details"));
         e.setPoster(doc.getString("Poster"));
         e.setCreator(doc.getString("Creator"));
+        e.setQrcodeid("Qr Code Id");
 
         Map<String, Object> data = doc.getData();
 
@@ -354,6 +356,7 @@ public class Database {
                     }
                 });
     */
+
 
 
 

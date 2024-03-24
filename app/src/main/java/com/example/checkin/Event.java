@@ -29,6 +29,8 @@ public class Event implements Serializable {
     private String poster;        //Poster uploaded to this Event
     //private QRCode code;
     private String eventname;
+
+    private String qrcodeid;
     private String eventdetails;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
@@ -247,6 +249,14 @@ public class Event implements Serializable {
 
     public String getCreator() {
         return creator;
+    }
+
+    public String getQrcodeid() {
+        return qrcodeid;
+    }
+
+    public void setQrcodeid(String qrcodeid) {
+        this.qrcodeid = qrcodeid;
     }
 
     public void setCreator(String creator) {

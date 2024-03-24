@@ -58,8 +58,10 @@ public class ShareCode extends Fragment {
         Bundle bundle = this.getArguments();
         assert bundle != null;
         myevent = (Event) bundle.getSerializable("event");
+        String text = myevent.getQrcodeid();
 
-        generateQRCode(myevent, imageCode);
+
+        generateQRCode(myevent, imageCode, text);
 
 
 
@@ -128,7 +130,7 @@ public class ShareCode extends Fragment {
      * @param myevent
      * @param imageCode
      */
-    public void generateQRCode(Event myevent, ImageView imageCode){
+    public void generateQRCode(Event myevent, ImageView imageCode, String text){
         String myText = myevent.getEventname();
 
         // use event id instead -> to retrieve event from firebase?
@@ -149,7 +151,7 @@ public class ShareCode extends Fragment {
         try {
             //https://stackoverflow.com/questions/51917881/zxing-android-qrcode-generator
             // BitMatrix class to encode entered text and set Width & Height
-            BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
+            BitMatrix matrix = writer.encode(text, BarcodeFormat.QR_CODE, 600, 600);
             BarcodeEncoder mEncoder = new BarcodeEncoder();
             Bitmap mBitmap = mEncoder.createBitmap(matrix); // Creating bitmap of code
             imageCode.setImageBitmap(mBitmap); // Setting generated QR code to imageView

@@ -53,6 +53,8 @@ public class SendNotification extends Fragment {
     String topic;
 
     Event myevent;
+
+    String eventname;
     private FirebaseFirestore db;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +71,9 @@ public class SendNotification extends Fragment {
         if (bundle != null) {
             myevent = (Event) bundle.getSerializable("event");
             topic = myevent.getEventId();
+            eventname = myevent.getEventname();
+            titlemessage.setText(eventname);
+
         }
 
         backbutton.setOnClickListener(new View.OnClickListener() {

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,6 +33,8 @@ public class DisplayMilestones extends Fragment {
     private ArrayList<Message> announcelist;
     private MessageAdapter Announcements_Adapter;
 
+    Button backbutton;
+
 
 
     @Override
@@ -42,6 +45,15 @@ public class DisplayMilestones extends Fragment {
 
         milestones = view.findViewById(R.id.milestones_list);
         announcelist = new ArrayList<>();
+        backbutton = view.findViewById(R.id.backbtn);
+
+
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         // Add example announcements
         //announcelist.add("First Message");

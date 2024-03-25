@@ -17,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,6 +44,10 @@ public class SelectEventMessages extends Fragment {
 
     private FirebaseFirestore db;
 
+    ProgressBar p;
+
+    RelativeLayout maincontent;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,6 +55,8 @@ public class SelectEventMessages extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_event_messages, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
+        p = view.findViewById(R.id.progress);
+        maincontent = view.findViewById(R.id.maincontent);
 
 
         allevents = new EventList();
@@ -98,9 +106,13 @@ public class SelectEventMessages extends Fragment {
                 .whereEqualTo("Creator", android_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
+                        p.setVisibility(View.GONE);
+                        maincontent.setVisibility(View.VISIBLE);
                         if (task.isSuccessful()) {
+
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);
                                 allevents.addEvent(event);

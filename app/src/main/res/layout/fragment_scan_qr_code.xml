@@ -8,29 +8,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="40dp"
-        android:text="messageContent"/>
 
-    <TextView
-        android:id="@+id/textFormat"
-        android:text="messageFormat"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/scanBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="450dp"
-        android:backgroundTint="@color/lightpink"
-        android:layout_centerHorizontal="true"
-        android:text="Scan QR Code"/>
 
 </RelativeLayout>

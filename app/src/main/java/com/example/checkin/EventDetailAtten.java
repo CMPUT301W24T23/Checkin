@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -108,6 +109,7 @@ public class EventDetailAtten extends Fragment {
                 myevent.userSubs(attendee);
                 database.updateEvent(myevent);
                 database.updateAttendee(attendee);
+                Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
 
             }
         });

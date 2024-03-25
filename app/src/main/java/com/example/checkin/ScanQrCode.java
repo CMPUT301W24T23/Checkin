@@ -42,6 +42,7 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
 
     private Button scanBtn;
     private TextView messageText, messageFormat;
+    private ActivityResultLauncher<Intent> qrScanLauncher;
 
     Attendee attendee;
     private FirebaseFirestore db;
@@ -64,17 +65,55 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scan_qr_code, container, false);
 
-        scanBtn = view.findViewById(R.id.scanBtn);
-        messageText = view.findViewById(R.id.textContent);
-        messageFormat = view.findViewById(R.id.textFormat);
 
         Intent intent = getActivity().getIntent();
 
+        qrScanLauncher =  registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == AppCompatActivity.RESULT_OK) {
+                        IntentResult intentResult = IntentIntegrator.parseActivityResult(
+                                result.getResultCode(),
+                                result.getData()
+                        );
+                        if (intentResult != null) {
+                            if (intentResult.getContents() == null) {
+                                Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+                            } else {
+                                System.out.println(intentResult.getContents());
+                                System.out.println(intentResult.getFormatName());
+                                messageText.setText(intentResult.getContents());
+                                messageFormat.setText(intentResult.getFormatName());
+                                String qrCodeContent = intentResult.getContents();
+                                getEventDetailsFromFirebase(qrCodeContent);
 
-        scanBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startQRScan();
+
+
+                                // check in attendee using firebase- use event id and attendee id to get
+                                // event and attendee from firebase, and update both
+
+                                EventDetailAtten eventfragment = new EventDetailAtten();
+                                Bundle args = new Bundle();
+                                args.putString("event", intentResult.getContents());
+                                eventfragment.setArguments(args);
+
+                                // --- needs to be implemented
+                                // Navigate to the EventDetailAtten Frgment
+                                // requireActivity().getSupportFragmentManager().beginTransaction()
+                                // .replace(R.id.atten_view, eventfragment)
+                                // .addToBackStack(null)
+                                //  .commit();
+
+
+                            }
+
+
+                        }
+                    }
+                }
+        );
+
+
 
                 // Add Firebase
                 //String eventId = messageText.getText().toString();
@@ -86,17 +125,17 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
                         // Use the retrieved event object here
                   //  }
                // });
-            }
-        });
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA);
             } else {
-                startQRScan();
+                //startQRScan();
             }
         }
+
 
 
 
@@ -114,59 +153,16 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
     }
 
     private void startQRScan() {
-        IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
+        IntentIntegrator integrator = IntentIntegrator.forSupportFragment(ScanQrCode.this);
         integrator.setPrompt("Scan a barcode or QR Code");
         integrator.setOrientationLocked(true);
         integrator.initiateScan();
-        
+
         qrScanLauncher.launch(integrator.createScanIntent());
     }
 
 
-    private ActivityResultLauncher<Intent> qrScanLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == AppCompatActivity.RESULT_OK) {
-                    IntentResult intentResult = IntentIntegrator.parseActivityResult(
-                            result.getResultCode(),
-                            result.getData()
-                    );
-                    if (intentResult != null) {
-                        if (intentResult.getContents() == null) {
-                            Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-                        } else {
-                            System.out.println(intentResult.getContents());
-                            System.out.println(intentResult.getFormatName());
-                            messageText.setText(intentResult.getContents());
-                            messageFormat.setText(intentResult.getFormatName());
-                            String qrCodeContent = intentResult.getContents();
-                            getEventDetailsFromFirebase(qrCodeContent);
 
-
-
-                            // check in attendee using firebase- use event id and attendee id to get
-                            // event and attendee from firebase, and update both
-
-                            EventDetailAtten eventfragment = new EventDetailAtten();
-                            Bundle args = new Bundle();
-                            args.putString("event", intentResult.getContents());
-                            eventfragment.setArguments(args);
-
-                            // --- needs to be implemented
-                            // Navigate to the EventDetailAtten Frgment
-                           // requireActivity().getSupportFragmentManager().beginTransaction()
-                            // .replace(R.id.atten_view, eventfragment)
-                                   // .addToBackStack(null)
-                                  //  .commit();
-
-
-                        }
-
-
-                    }
-                }
-            }
-    );
 
     private void getEventDetailsFromFirebase(String qrCodeId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

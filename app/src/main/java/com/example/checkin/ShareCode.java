@@ -59,6 +59,7 @@ public class ShareCode extends Fragment {
         assert bundle != null;
         myevent = (Event) bundle.getSerializable("event");
         String text = myevent.getQrcodeid();
+        System.out.println(text);
 
 
         generateQRCode(myevent, imageCode, text);

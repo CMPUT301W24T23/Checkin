@@ -98,6 +98,9 @@ public class Announcements extends Fragment {
             Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
             announcements.setAdapter(Announcements_Adapter);
         }
+        else{
+
+        }
 
         return view;
 

@@ -113,7 +113,7 @@ public class AttendeeFragment1 extends Fragment {
                             }
 
                             if (allevents!= null) {
-                                EventAdapter = new EventArrayAdapter(requireContext(), allevents.getEvents());
+                                EventAdapter = new EventArrayAdapter(getActivity(), allevents.getEvents());
                                 eventslist.setAdapter(EventAdapter);
                             }
 
@@ -131,7 +131,7 @@ public class AttendeeFragment1 extends Fragment {
 
         // if eventlist is not null set EventAdapter to custom EventArrayAdapter
         if (allevents!= null) {
-            EventAdapter = new EventArrayAdapter(requireContext(), allevents.getEvents());
+            EventAdapter = new EventArrayAdapter(getActivity(), allevents.getEvents());
             eventslist.setAdapter(EventAdapter);
         }
 

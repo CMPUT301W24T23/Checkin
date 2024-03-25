@@ -257,7 +257,7 @@ public class Database {
         e.setEventdetails(doc.getString("Details"));
         e.setPoster(doc.getString("Poster"));
         e.setCreator(doc.getString("Creator"));
-        e.setQrcodeid("Qr Code Id");
+        e.setQrcodeid(doc.getString("Qr Code Id"));
 
         Map<String, Object> data = doc.getData();
 

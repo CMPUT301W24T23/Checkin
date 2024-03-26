@@ -36,6 +36,8 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import com.example.checkin.Attendee;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -78,19 +80,8 @@ public class UserProfileFragment extends Fragment {
         myImageView = view.findViewById(R.id.myImageView);
         Button editPictureButton = view.findViewById(R.id.editPictureButton);
         Button removePictureButton = view.findViewById(R.id.removePictureButton);
-        editPictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFileChooser();
-            }
-        });
+        Button saveButton = view.findViewById(R.id.saveButton);
 
-        //Set user information
-        currentUser.setUserId(Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID));
-
-        loadPrefs();
-        //Load from firebase in case changes made there
-        retrieveAttendee(currentUser.getUserId());
 
         // Initialize other UI elements
         nameEdit = view.findViewById(R.id.nameEdit);
@@ -99,22 +90,26 @@ public class UserProfileFragment extends Fragment {
         phoneEdit = view.findViewById(R.id.phoneEdit);
         locationBox = view.findViewById(R.id.locationBox);
 
+        //Set user information
+        currentUser.setUserId(Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID));
 
-        // Setting the contact information of the current user to the xml layout.
+        //Load user information saved in preferences
+        loadPrefs();
         nameEdit.setText(currentUser.getName());
         emailEdit.setText(currentUser.getEmail());
         homeEdit.setText(currentUser.getHomepage());
         phoneEdit.setText(currentUser.getPhoneNumber());
         locationBox.setChecked(currentUser.trackingEnabled());
-
         if(!(currentUser.getProfilePicture() == "")){
             Bitmap avi = imgEncode.base64ToBitmap(currentUser.getProfilePicture());
             myImageView.setImageBitmap(avi);
             removePictureButton.setVisibility(View.VISIBLE);
         }
 
+        retrieveAttendee(currentUser.getUserId());      //query for firebase changes
 
-        Button saveButton = view.findViewById(R.id.saveButton);
+
+        //Button for saving all settings
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +117,15 @@ public class UserProfileFragment extends Fragment {
             }
         });
 
+        //Button for modifying profile pictures
+        editPictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
 
+        //Button for removing profile picture
         removePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,68 +209,52 @@ public class UserProfileFragment extends Fragment {
             return;
         }
 
-        String imageBase64 = currentUser.getProfilePicture();;
-        /*
-        if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
-            imageBase64 = currentUser.getProfilePicture();
-        }
-
-         */
-
+        String imageBase64 = "";
         // Check if an image is uploaded
         if (imageUri != null && newImage) {
             try {
+                deleteImage();  //delete the old image from the database
+
                 originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 myImageView.setImageBitmap(originalBitmap);
+
+                //encode and save to user
                 imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
                 currentUser.setProfilePicture(imageBase64);
+
+                //update database
+                db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update image in database
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
+            //if no new image is uploaded and an image is saved locally
             imageBase64 = currentUser.getProfilePicture();
         } else{
-                // Generate a temporary image with initials
-                Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
-                Bitmap bitmap = generateImageWithInitials(name);
-                myImageView.setImageBitmap(bitmap);
-                originalBitmap = bitmap;
-                imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
+            //otherwise generate a new image
+            //first delete the original in database
+            deleteImage();
+            Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
+            Bitmap bitmap = generateImageWithInitials(name);
+            myImageView.setImageBitmap(bitmap);
+            originalBitmap = bitmap;
+            imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
 
-                // Upload the generated image here
-                uploadGeneratedImage(bitmap);
+            // Show the 'Edit Picture' button
+            Button editPictureButton = getView().findViewById(R.id.editPictureButton);
+            editPictureButton.setVisibility(View.VISIBLE);
 
-                // Show the 'Edit Picture' button
-                Button editPictureButton = getView().findViewById(R.id.editPictureButton);
-                editPictureButton.setVisibility(View.VISIBLE);
+            //save to cyurrent user
+            imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+            currentUser.setProfilePicture(imageBase64);
+            // Log the visibility of the ImageView
+            Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
 
-                imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
-                currentUser.setProfilePicture(imageBase64);
-                // Log the visibility of the ImageView
-                Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
-
+            //save on database
+            db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update the image
         }
-
-        //if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
-        //    imageBase64 = currentUser.getProfilePicture();
-        //}
-        //Encode the image into Base64
-        //String imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
-
-        /*
-        // Decode the Base64 string back to a Bitmap for checking
-        Bitmap decodedBitmap = base64ToBitmap(imageBase64);
-
-        // Check if the original Bitmap and the decoded Bitmap are the same
-        if (originalBitmap.sameAs(decodedBitmap)) {
-            Log.d("ImageCheck", "Image conversion successful");
-        } else {
-            Log.d("ImageCheck", "Image conversion failed");
-        }
-         */
 
         // Updating/Saving the new/changed user information of the current Attendee.
-        //currentUser.updateProfile(name, email, homepage, country, locationPermission);
         currentUser.setName(name);
         currentUser.setEmail(email);
         currentUser.setHomepage(homepage);
@@ -275,40 +262,14 @@ public class UserProfileFragment extends Fragment {
         if(!(currentUser.trackingEnabled() == locationPermission)){
             currentUser.toggleTracking();
         }
-
         currentUser.setProfilePicture(imageBase64);
 
-        db.updateAttendee(currentUser);
-
+        db.updateAttendee(currentUser);     //update user on firebase
         savePrefs();        //Save user info to local preferences
 
-        String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
-                "\nPhone: " + phone + "\nLocation Permission: " + locationPermission;
+        //Toast message
+        String message = "Settings successfully saved.";
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Uploads the generated image to a desired location.
-     *
-     * @param bitmap The bitmap image to upload.
-     */
-    private void uploadGeneratedImage(Bitmap bitmap) {
-        // Convert the Bitmap to a byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] imageData = baos.toByteArray();
-
-        // Upload the image data to your desired location
-        Log.d("UserProfileFragment", "Uploading generated image...");
-
-        // Simulate upload process
-        try {
-            // Simulate upload time
-            Thread.sleep(2000);
-            Log.d("UserProfileFragment", "Generated image uploaded successfully");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -322,8 +283,15 @@ public class UserProfileFragment extends Fragment {
         Button removePictureButton = getView().findViewById(R.id.removePictureButton);
         removePictureButton.setVisibility(View.GONE); // Hide the 'Remove Picture' button
 
-        //reset picture string
-        currentUser.setProfilePicture("");
+        // Generate default image
+        Log.d("UserProfileFragment", "Generating image with initials for name: " + currentUser.getName()); // Add this line
+        Bitmap bitmap = generateImageWithInitials(currentUser.getName());
+        myImageView.setImageBitmap(bitmap);
+        String imageBase64 = imgEncode.BitmapToBase64(bitmap);
+        imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
+
+        //update user profile
+        currentUser.setProfilePicture(imageBase64);
     }
 
     /**
@@ -338,15 +306,16 @@ public class UserProfileFragment extends Fragment {
         Log.d("BitmapSize", "Bitmap width: " + bitmap.getWidth() + ", height: " + bitmap.getHeight());
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.LTGRAY);
         paint.setTextSize(40);
         paint.setAntiAlias(true);
         paint.setFakeBoldText(true);
         paint.setStyle(Paint.Style.FILL);
         paint.setTextAlign(Paint.Align.CENTER);
+        paint.setColor(Color.BLACK);            //set text color
         int xPos = (canvas.getWidth() / 2);
         int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
-        canvas.drawText(String.valueOf(name.charAt(0)), xPos, yPos, paint);
+        canvas.drawText(String.valueOf(name.charAt(0)), xPos - 1, yPos, paint);
 
         // Set ImageView visibility to VISIBLE
         myImageView.setVisibility(View.VISIBLE);
@@ -394,6 +363,26 @@ public class UserProfileFragment extends Fragment {
         return Pattern.matches(urlRegex, url);
     }
 
+    /**
+     * Make a query to firebase that deletes the (old) profile picture from firebase
+     */
+    public void deleteImage(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("ProfilePics").document(currentUser.getUserId())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Image Deletion", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Image Deletion", "Error deleting document", e);
+                    }
+                });
+    }
 
     /**
      * Makes a query to firebase and retrieves the current user, updating the textboxes in the process
@@ -411,18 +400,6 @@ public class UserProfileFragment extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
-                        /*
-                        //currentUser.setUserId(document.getId());
-                        currentUser.setName(document.getString("Name"));
-                        currentUser.setHomepage(document.getString("Homepage"));
-                        currentUser.setPhoneNumber(document.getString("Phone"));
-
-                        //set the tracking status of the attendee
-                        //the empty constructor has tracking as true by default
-                        boolean track = Boolean.TRUE.equals(document.getBoolean("Tracking"));
-                        if(!(track == currentUser.trackingEnabled())){
-                            currentUser.toggleTracking();
-                        }*/
                         Database fireBase = new Database();
                         currentUser = fireBase.getAttendee(document);
 
@@ -456,10 +433,9 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * Load stored local data into view
+     * Load stored user data from local preferences
      */
     private void loadPrefs(){
-        //Restore saved local data for quick access
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         currentUser.setName(preferences.getString("Name", ""));
         currentUser.setEmail(preferences.getString("Email", ""));

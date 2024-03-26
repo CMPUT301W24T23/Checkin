@@ -38,6 +38,7 @@ public class Database {
     public Database(){
     }
     //TODO: Profile Picture storing
+    //      Poster storing
     //      QR Code Storing
 
     /**
@@ -137,9 +138,29 @@ public class Database {
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
-        attendeeRef.document(e.getEventId()).set(data);
+        attendeeRef.document(e.getEventId()).set("data");
 
     }
+
+    public void updateProfilePicture(String base64Image, String userID){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference profilePicRef = db.collection("ProfilePics");
+
+        Map<String, String> data = new HashMap<>();
+        //data.put("User", userID);
+        data.put("Image", base64Image);
+
+
+        //Temporarily replace the '/' symbols in the string with "~"
+        //'/' is an invalid character for a document name in firebase
+        //Must revert back when retrieving
+        //String docId = base64Image.replace("/", "~");
+
+        Log.d("UpdateProfilePic", String.format("Upload ProfilePic(%s)", userID));
+        profilePicRef.document(userID).set(data);
+    }
+
+    //Functions for dealing with retrieving users ==================================================
 
     /**
      * For use within a snapshot listener to return an attendee
@@ -241,6 +262,20 @@ public class Database {
 
         Log.d("Retrieved Organizer", String.format("Organizer ID: %s ", o.getUserId()));
         return o;
+    }
+
+    public UserImage getProfilePicture(DocumentSnapshot doc){
+        UserImage avi = new UserImage();
+
+        avi.setID(doc.getId());
+        avi.setImageB64(doc.getString("Image"));
+
+        //String image = doc.getId();
+        //Revert the '~' symbols to '/'
+        //image = image.replace("~", "/");
+        //avi.setImageB64(image);
+
+        return avi;
     }
 
     //template snapshot listener function content for retrieving an organizer

@@ -50,11 +50,11 @@ public class UserProfileFragmentTest {
      * Test method for setting the country in UserProfileFragment.
      */
     @Test
-    public void testSetCountry() {
-        String testCountry = "USA";
-        onView(withId(R.id.phoneEdit)).perform(ViewActions.replaceText(testCountry));
+    public void testSetPhone() {
+        String testPhone = "123";
+        onView(withId(R.id.phoneEdit)).perform(ViewActions.replaceText(testPhone));
         onView(withId(R.id.saveButton)).perform(click());
-        onView(withId(R.id.phoneEdit)).check(matches(withText(testCountry)));
+        onView(withId(R.id.phoneEdit)).check(matches(withText(testPhone)));
     }
     /**
      * Test method for setting the homepage in UserProfileFragment.

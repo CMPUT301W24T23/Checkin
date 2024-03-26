@@ -30,7 +30,7 @@ public class PersistentDataTest {
         onView(withId(R.id.attendeebtn)).perform(click());
         onView(withId(R.id.profile)).perform(click());
         //set name
-        String testName = "Persistent_Test_1";
+        String testName = "John Doe";
         onView(withId(R.id.nameEdit)).perform(ViewActions.replaceText(testName));
         editor.putString("Name", testName);
         //set email
@@ -38,17 +38,23 @@ public class PersistentDataTest {
         onView(withId(R.id.emailEdit)).perform(ViewActions.replaceText(testEmail));
         editor.putString("Email", testEmail);
         //set homepage
-        String testHomepage = "https://test.com";
+        String testHomepage = "https://example.com";
         onView(withId(R.id.homeEdit)).perform(ViewActions.replaceText(testHomepage));
         editor.putString("Homepage", testHomepage);
+        //set phone
+        String testPhone = "123";
+        onView(withId(R.id.phoneEdit)).perform(ViewActions.replaceText(testPhone));
+        editor.putString("Phone", testPhone);
+
         editor.apply();
         onView(withId(R.id.saveButton)).perform(click());
 
         onView(withId(R.id.home2)).perform(click());
 
         onView(withId(R.id.profile)).perform(click());
-        onView(withId(R.id.nameEdit)).check(matches((withText("Persistent_Test_1"))));
-        onView(withId(R.id.emailEdit)).check(matches((withText("me@ualberta.ca"))));
-        onView(withId(R.id.homeEdit)).check(matches((withText("https://test.com"))));
+        onView(withId(R.id.nameEdit)).check(matches((withText(testName))));
+        onView(withId(R.id.emailEdit)).check(matches((withText(testEmail))));
+        onView(withId(R.id.homeEdit)).check(matches((withText(testHomepage))));
+        onView(withId(R.id.phoneEdit)).check(matches((withText(testPhone))));
     }
 }

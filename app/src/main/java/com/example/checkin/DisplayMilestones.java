@@ -1,5 +1,5 @@
 package com.example.checkin;
-
+// shows list of milestones reached for events
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -32,10 +32,7 @@ public class DisplayMilestones extends Fragment {
     ListView milestones;
     private ArrayList<Message> announcelist;
     private MessageAdapter Announcements_Adapter;
-
     Button backbutton;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +59,7 @@ public class DisplayMilestones extends Fragment {
         // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
 
 
+        // retrieve organizer's events from firebase
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -76,14 +74,12 @@ public class DisplayMilestones extends Fragment {
                     if (document.exists()) {
                         Map<String, Object> data = document.getData(); // Retrieve data as a Map
                         if (data != null && data.containsKey("Events")) {
-                            Map<String, String> checkedInMap = (Map<String, String>) data.get("Events"); // Cast to the appropriate type
+                            Map<String, String> checkedInMap = (Map<String, String>) data.get("Events");
                             List<String> eventIds = new ArrayList<>();
 
                             // Iterate over the map entries
                             for (Map.Entry<String, String> entry : checkedInMap.entrySet()) {
                                 String eventId = entry.getKey();
-                                Log.d("eventnumber" , "eventvalue" +eventId);
-                                System.out.println("key" + eventId);
                                 eventIds.add(eventId);
                                 // Fetch messages for the current event ID
                                 fetchMessagesForEvent(db, eventId);
@@ -112,6 +108,11 @@ public class DisplayMilestones extends Fragment {
 
     }
 
+    /**
+     * Retrive milestone messages from firebase
+     * @param db
+     * @param eventId
+     */
     private void fetchMessagesForEvent(FirebaseFirestore db, String eventId) {
         CollectionReference messagesRef = db.collection("Messages");
         messagesRef.whereEqualTo("Event Id", eventId)

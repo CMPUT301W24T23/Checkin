@@ -42,13 +42,8 @@ public class AttendeeFragment1 extends Fragment {
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
     Button backbutton;
-
-    Organizer organizer;
-
     private FirebaseFirestore db;
-
     ProgressBar p;
-
     RelativeLayout maincontent;
 
     @Override
@@ -70,35 +65,12 @@ public class AttendeeFragment1 extends Fragment {
         allevents.addEvent(event1);
         datalist.add(event1);
 
+
+
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference organizerRef = db.collection("Organizers").document(android_id);
-        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Convert the document snapshot to an Organizer object using Database class method
-                        organizer = database.getOrganizer(document);
-                        // Proceed with setting up the UI using the retrieved organizer object
-                    } else {
-                        Log.d("document", "No such document");
-                    }
-                } else {
-                    Log.d("error", "get failed with ", task.getException());
-                }
-            }
-        });
-
-        // Replace "organizerId" with the actual ID of the organizer
-
-
-        // Query events collection based on organizer ID
+        // Query all events from firebase
         db.collection("Events")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

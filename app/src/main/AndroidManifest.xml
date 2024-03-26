@@ -20,12 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Checkin"
         tools:targetApi="31">
-        <activity
-            android:name=".QrCodeScanningActivity"
-            android:exported="false" />
-        <activity
-            android:name=".NotificationHandleActivity"
-            android:exported="false" />
+
 
         <meta-data
             android:name="com.google.android.actions"

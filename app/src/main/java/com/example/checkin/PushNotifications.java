@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+// recieves notification sent through firebase
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -45,14 +46,7 @@ public class PushNotifications extends FirebaseMessagingService {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         int attendeeCount = preferences.getInt("attendeeCount", 0);
 
-        // Check for milestones and send notifications
-        //checkMilestone(attendeeCount);
 
-        if (isMilestoneNotification(message)) {
-            checkMilestone(attendeeCount);
-        } else {
-            DisplayRemoteNotification(title, body);
-        }
 
         super.onMessageReceived(message);
 

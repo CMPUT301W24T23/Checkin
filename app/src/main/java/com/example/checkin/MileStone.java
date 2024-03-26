@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+// represents milestone recieved by organizer for events
 import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.app.NotificationChannel;
@@ -54,7 +55,7 @@ public class MileStone {
 
         Message message = new Message(title, body);
         Alert alert = new Alert(title,body);
-        message.setEventid(eventid); // Set the event ID as needed
+        message.setEventid(eventid);
         message.setType("Milestone");
         db.updateMessage(message);
     }

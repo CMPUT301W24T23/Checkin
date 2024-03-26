@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+// represents message with a title and body
 public class Message {
 
     private String title;

@@ -66,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         Database db = new Database();
 
-        String id3 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-        System.out.println("id is" + id3);
+
 
         //if (android_id.equals(id3)){
             //create attendee profile

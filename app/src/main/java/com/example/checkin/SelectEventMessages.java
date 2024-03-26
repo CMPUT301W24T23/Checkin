@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+// displays events to select from and send message or view milestones for
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;

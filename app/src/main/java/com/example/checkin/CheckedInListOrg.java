@@ -38,7 +38,7 @@ public class CheckedInListOrg extends Fragment {
     private FirebaseFirestore db;
     Button backbutton;
 
-
+    TextView totalcheckin;
 
 
     @Override
@@ -49,6 +49,7 @@ public class CheckedInListOrg extends Fragment {
 
         attendeesList = view.findViewById(R.id.attendees_list);
         backbutton = view.findViewById(R.id.backbtn);
+        totalcheckin = view.findViewById(R.id.total_checkins);
 
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,13 +68,11 @@ public class CheckedInListOrg extends Fragment {
 
 
 
-        String eventid = myevent.getEventId();
 
-
-        Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
+        // retrieve events from firebase
         db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -104,6 +103,8 @@ public class CheckedInListOrg extends Fragment {
                 }
             }
         });
+        String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
+        totalcheckin.setText(text);
 
         return view;
     }
@@ -116,6 +117,7 @@ public class CheckedInListOrg extends Fragment {
         milestones.add(1);
         milestones.add(10);
         milestones.add(50);
+        milestones.add(75);
         milestones.add(100);
         for (int milestone : milestones) {
             if (attendeeCount == milestone) {

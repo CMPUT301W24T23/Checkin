@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+// provides options to either send notification or view milestones
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;

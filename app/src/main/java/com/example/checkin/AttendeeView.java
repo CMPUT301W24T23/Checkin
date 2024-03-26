@@ -33,10 +33,7 @@ public class AttendeeView extends AppCompatActivity {
 
         //onNewIntent(getIntent());
 
-
-
-
-
+        // navigate to announcements fragment when notiifcation is clicked
 
         boolean openAnnouncements = getIntent().getBooleanExtra("open_announcements_fragment", true);
 
@@ -156,6 +153,10 @@ public class AttendeeView extends AppCompatActivity {
         }*/
    // }
 
+    /**
+     * retrieve event to get the scanned qr code from firebase
+     * @param qrCodeId
+     */
     private void getEventDetailsFromFirebase(String qrCodeId) {
         Database database = new Database();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -168,13 +169,9 @@ public class AttendeeView extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Event details retrieved successfully
+                            // retrieve event
                             Event event = database.getEvent(document);
-                            // Proceed with event check-in or any other operations
-
-                            // Now, let's fetch the attendee details
-
-
+                            // fetch the attendee details
                             DocumentReference attendeeRef = db.collection("Attendees").document(androidId);
                             attendeeRef.get().addOnCompleteListener(attendeeTask -> {
                                 if (attendeeTask.isSuccessful()) {
@@ -235,6 +232,11 @@ public class AttendeeView extends AppCompatActivity {
         }
     }
 
+    /**
+     * start qr scan when scan qr code option is selected
+     */
+
+    //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
     private void startQRScan() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);

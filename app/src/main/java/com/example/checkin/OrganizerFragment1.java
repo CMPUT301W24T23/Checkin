@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 // Shows the Organizer Home page, which includes list of events
 public class OrganizerFragment1 extends Fragment {
@@ -94,6 +95,7 @@ public class OrganizerFragment1 extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
+        // retreive organizer from firebase
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference organizerRef = db.collection("Organizers").document(android_id);
         organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -115,8 +117,6 @@ public class OrganizerFragment1 extends Fragment {
             }
         });
 
-        // Replace "organizerId" with the actual ID of the organizer
-
 
         // Query events collection based on organizer ID
         db.collection("Events")
@@ -133,6 +133,15 @@ public class OrganizerFragment1 extends Fragment {
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);
                                 allevents.addEvent(event);
+                                Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
+                                if (subscribersMap != null) {
+                                    int attendeeCount = subscribersMap.size();
+                                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.putInt("attendeeCount", attendeeCount);
+                                    editor.apply();
+                                    checkMilestone(attendeeCount, event);
+                                }
 
                             }
                             EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, allevents.getEvents()) {
@@ -213,6 +222,31 @@ public class OrganizerFragment1 extends Fragment {
             }
         });
         return view;
+
+
+
+    }
+
+    private void checkMilestone(int attendeeCount, Event myevent) {
+        ArrayList<Integer> milestones = new ArrayList<>();
+
+        milestones.add(1);
+        milestones.add(10);
+        milestones.add(50);
+        milestones.add(75);
+        milestones.add(100);
+        for (int milestone : milestones) {
+            if (attendeeCount == milestone) {
+                sendMilestoneNotification(myevent.getEventname()+ ": Milestone Reached!", "Attendee count: " + attendeeCount, myevent);
+                break; // No need to continue checking other milestones
+            }
+        }
+    }
+
+    private void sendMilestoneNotification(String title, String body, Event myevent) {
+        // Create an intent and call the MileStone class's method to send a notification
+        Intent intent = new Intent(getContext(), OrganizerView.class);
+        MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent);
     }
 
 }

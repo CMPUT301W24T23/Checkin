@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+// send notification to attendees usinf firebase messaging
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -112,20 +113,12 @@ public class SendNotification extends Fragment {
         return view;
     }
 
+    // https://infyom.com/blog/send-device-to-device-push-notification-using-firebase-cloud-messaging
+    // https://firebase.google.com/docs/cloud-messaging/migrate-v1
+    // https://www.youtube.com/watch?v=e9llz2TXBz8
+
     private void sendNotification(String topic) throws JSONException, IOException {
         // json object
-
-        JSONObject notification = new JSONObject();
-        JSONObject notificationbody = new JSONObject();
-        notificationbody.put("title", titlemessage.getText().toString());
-        notificationbody.put("body", bodymessage.getText().toString());
-
-        JSONObject message = new JSONObject();
-        message.put("to", "fF1-N2eFRhSXdSmUBpe9VI:APA91bHydxfMLCklsISAfOTBvE1WFZ3lrS60Ho5wzs9Ec0PxP0iLyxFEKdoRI_F9tv_8_txBFCteJ7YZjMgKihF5JOFwO4w-sfCXEt-G-sQK4W4IsS96iS44SutO5dNlWTxSgxO_5Svs");
-        message.put("notification", notificationbody);
-
-        JSONObject mainObject = new JSONObject();
-        mainObject.put("message", message);
 
         JSONObject notificationbody2 = new JSONObject();
         notificationbody2.put("title", titlemessage.getText().toString());
@@ -145,15 +138,14 @@ public class SendNotification extends Fragment {
 
         byte[] buffer = new byte[size];
 
-        //is.read(buffer);
-
 
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
         StrictMode.setThreadPolicy(policy);
+
         json = new String(buffer, "UTF-8");
 
+        // get api key
         String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
         String[] SCOPES = { MESSAGING_SCOPE };
         GoogleCredentials googleCredentials = GoogleCredentials
@@ -163,6 +155,7 @@ public class SendNotification extends Fragment {
         String token = googleCredentials.getAccessToken().getTokenValue();
         is.close();
 
+        // create request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL2, mainObject2,  new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -185,6 +178,7 @@ public class SendNotification extends Fragment {
                 return header;
             }
         };
+        // add request to send message 
         mrequest.add(request);
 
     }

@@ -44,6 +44,7 @@ public class Announcements extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_announcements, container, false);
 
+        // initialize announcements page
         announcements = view.findViewById(R.id.announcements_list);
         announcelist = new ArrayList<>();
 
@@ -51,14 +52,12 @@ public class Announcements extends Fragment {
         //announcelist.add("First Message");
         //announcelist.add("Second Message");
 
-        // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
 
 
+        // retrieve attendee from firebase and get the checkinlist for each attendee
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
-
         DocumentReference attendeeRef = db.collection("Attendees").document(android_id);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -93,7 +92,6 @@ public class Announcements extends Fragment {
         });
 
         // if list of announcements is not null, then add messages to Announcements
-        // Represented as strings now, will create announcement objects in next part
         if (announcelist != null) {
             Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
             announcements.setAdapter(Announcements_Adapter);
@@ -101,11 +99,14 @@ public class Announcements extends Fragment {
         else{
 
         }
-
         return view;
-
     }
 
+    /**
+     * Gets messages for events that attendee is checked into
+     * @param db
+     * @param eventId
+     */
     private void fetchMessagesForEvent(FirebaseFirestore db, String eventId) {
         CollectionReference messagesRef = db.collection("Messages");
         messagesRef.whereEqualTo("Event Id", eventId)

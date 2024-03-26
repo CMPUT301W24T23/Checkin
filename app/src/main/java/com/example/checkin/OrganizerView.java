@@ -13,7 +13,6 @@ import com.google.android.material.navigation.NavigationBarView;
 // Organizer perspective of the app
 public class OrganizerView extends AppCompatActivity {
 
-
     OrganizerFragment1 org_frag1;
     Organizer organizer;
 

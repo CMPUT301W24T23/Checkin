@@ -204,7 +204,8 @@ public class UserProfileFragment extends Fragment {
         boolean locationPermission = locationBox.isChecked();
 
         // Validate email format
-        if (!isValidEmail(email)) {
+        //only if something is input for email
+        if (!(email.isEmpty()) && !isValidEmail(email)) {
             emailEdit.setError("Invalid email format");
             return;
         }

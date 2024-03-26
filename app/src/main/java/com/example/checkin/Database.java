@@ -138,7 +138,7 @@ public class Database {
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
-        attendeeRef.document(e.getEventId()).set("data");
+        attendeeRef.document(e.getEventId()).set(data);
 
     }
 
@@ -147,14 +147,7 @@ public class Database {
         CollectionReference profilePicRef = db.collection("ProfilePics");
 
         Map<String, String> data = new HashMap<>();
-        //data.put("User", userID);
         data.put("Image", base64Image);
-
-
-        //Temporarily replace the '/' symbols in the string with "~"
-        //'/' is an invalid character for a document name in firebase
-        //Must revert back when retrieving
-        //String docId = base64Image.replace("/", "~");
 
         Log.d("UpdateProfilePic", String.format("Upload ProfilePic(%s)", userID));
         profilePicRef.document(userID).set(data);
@@ -269,11 +262,6 @@ public class Database {
 
         avi.setID(doc.getId());
         avi.setImageB64(doc.getString("Image"));
-
-        //String image = doc.getId();
-        //Revert the '~' symbols to '/'
-        //image = image.replace("~", "/");
-        //avi.setImageB64(image);
 
         return avi;
     }

@@ -177,16 +177,16 @@ public class Attendee implements User, Serializable {
     public void CheckIn(Event event) {
         //increment user check in count
         if (this.CheckInHist.isEmpty()) {
-            // If the CheckInHist map is empty, initialize the count to 1
-            CheckInHist.put(String.valueOf(event.getEventId()), 1L);
-            checkInValue = 1L;
+            // If the CheckInHist map is empty, initialize the count to 0
+            CheckInHist.put(String.valueOf(event.getEventId()), 0L);
+            checkInValue = 0L;
         } else {
             // If the map is not empty, retrieve the current count and increment it by 1
             Long checkInCount = CheckInHist.get(String.valueOf(event.getEventId()));
             if (checkInCount != null) {
-                long count = checkInCount + 1;
-                checkInValue = count;
-                CheckInHist.put(String.valueOf(event.getEventId()), count);
+                checkInCount = checkInCount + 1;
+                checkInValue = checkInCount;
+                CheckInHist.put(String.valueOf(event.getEventId()), checkInCount);
             } else {
                 // If the value for the event ID is null, initialize it to 1
                 CheckInHist.put(String.valueOf(event.getEventId()), 1L);

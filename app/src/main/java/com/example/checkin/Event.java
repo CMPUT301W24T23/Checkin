@@ -162,11 +162,11 @@ public class Event implements Serializable {
 
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
-            a.CheckIn(this);
-            CheckInList.removeAttendee(a);
+            //a.CheckIn(this);
+            //CheckInList.removeAttendee(a);
         } else{
             //otherwise the user is checking in
-            a.CheckIn(this);
+            //a.CheckIn(this);
             CheckInList.addAttendee(a);
         }
 

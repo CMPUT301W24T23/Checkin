@@ -114,12 +114,25 @@ public class SignedInList extends Fragment {
                         Attendee attendee = new Database().getAttendee(document);
                         // Add the attendee to the list
                         attendees.addAttendee(attendee);
-                        // Update the UI with the attendees list
 
-                        if (attendeedatalist!= null) {
-                            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
-                            attendeesList.setAdapter(AttendeesAdapter);
+                        if (attendeedatalist != null) {
+                            AttendeesAdapter = new ArrayAdapter<Attendee>(getActivity(), R.layout.content2, attendeedatalist.getAttendees()) {
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent) {
+                                    View view = convertView;
+                                    if (view == null) {
+                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                        view = inflater.inflate(R.layout.content2, null);
+                                    }
+                                    TextView textView = view.findViewById(R.id.attendee_name);
+                                    textView.setText(attendeedatalist.getAttendees().get(position).getName());
+                                    TextView textView2 = view.findViewById(R.id.checkin_times);
+                                    textView2.setVisibility(View.GONE);
+                                    return view;
+                                }
+                            };
                         }
+                            attendeesList.setAdapter(AttendeesAdapter);
                     } else {
                         Log.d("Firestore", "No such document");
                     }

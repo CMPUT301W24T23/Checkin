@@ -65,6 +65,7 @@ public class CheckedInListOrg extends Fragment {
         String eventid = myevent.getEventId();
 
 
+
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
@@ -78,7 +79,7 @@ public class CheckedInListOrg extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         // Retrieve subscribers from the document
-                        Map<String, String> subscribersMap = (Map<String, String>) document.get("Subscribers");
+                        Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
                         if (subscribersMap != null) {
                             for (String attendeeId : subscribersMap.keySet()) {
                                 // Fetch each attendee document and create Attendee objects
@@ -112,12 +113,12 @@ public class CheckedInListOrg extends Fragment {
                         if (checkIns != null) {
                             // Retrieve the check-in count for the specified eventId
                             Long checkInValue = checkIns.get(eventId);
+                            System.out.println("checkin"+checkInValue);
                             if (checkInValue != null) {
                                 // Set the check-in count for the attendee
                                 attendee.setCheckInValue(checkInValue);
                                 // Add the attendee to the list
                                 attendees.addAttendee(attendee);
-                                // Update the UI with the attendees list
 
                                 if (attendeedatalist != null) {
                                     AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());

@@ -15,6 +15,7 @@ public class OrganizerView extends AppCompatActivity {
 
 
     OrganizerFragment1 org_frag1;
+    Organizer organizer;
 
     Fragment open;
 
@@ -30,9 +31,9 @@ public class OrganizerView extends AppCompatActivity {
         // create home page and attendees list fragments
 
 
-
         org_frag1 = new OrganizerFragment1();
         AttendeesOptions list_frag = new AttendeesOptions();
+
 
 
 
@@ -41,13 +42,15 @@ public class OrganizerView extends AppCompatActivity {
                 .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
                 .commit();
 
-
+        // set navbar
+        // // URL: https://www.geeksforgeeks.org/how-to-implement-bottom-navigation-with-activities-in-android/
         bottomnav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 if (item.getItemId() == R.id.home) {
-
+                    Bundle args = new Bundle();
+                    org_frag1.setArguments(args);
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.org_view, org_frag1, "OrganizerFragment1")

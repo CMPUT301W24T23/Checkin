@@ -1,11 +1,20 @@
+/*
+An Android Fragment serving as the attendee home page.
+It displays events in a ListView, uses a back button to return to `MainActivity`,
+and handles event selection, transitioning to an `EventDetailAtten` fragment for detailed information.
+ */
 package com.example.checkin;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +23,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -24,6 +40,10 @@ public class AttendeeFragment1 extends Fragment {
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
     Button backbutton;
+
+    Organizer organizer;
+
+    private FirebaseFirestore db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +61,65 @@ public class AttendeeFragment1 extends Fragment {
         Event event1 = new Event("Show", "Starts at 7", attendees1);
         allevents.addEvent(event1);
         datalist.add(event1);
+
+        db = FirebaseFirestore.getInstance();
+        Database database = new Database();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String android_id = preferences.getString("ID", "");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference organizerRef = db.collection("Organizers").document(android_id);
+        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Organizer object using Database class method
+                        organizer = database.getOrganizer(document);
+                        // Proceed with setting up the UI using the retrieved organizer object
+                    } else {
+                        Log.d("document", "No such document");
+                    }
+                } else {
+                    Log.d("error", "get failed with ", task.getException());
+                }
+            }
+        });
+
+        // Replace "organizerId" with the actual ID of the organizer
+
+
+        // Query events collection based on organizer ID
+        db.collection("Events")
+                .whereEqualTo("Creator", android_id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Event event = database.getEvent(document);
+                                datalist.add(event);
+                            }
+                            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent) {
+                                    View view = convertView;
+                                    if (view == null) {
+                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                        view = inflater.inflate(R.layout.content, null);
+                                    }
+                                    TextView textView = view.findViewById(R.id.event_text);
+                                    textView.setText(datalist.get(position).getEventname());
+                                    return view;
+                                }
+                            };
+                            eventslist.setAdapter(EventAdapter);
+
+
+                        }}
+                });
 
         // back button that goes to homepage
         backbutton.setOnClickListener(new View.OnClickListener() {

@@ -28,7 +28,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-// generates QR code and shares it
+// generates QR code and shares it to the other apps
 public class ShareCode extends Fragment {
     Event myevent;
     Button sharebutton;
@@ -38,8 +38,8 @@ public class ShareCode extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.fragment_share_code, container, false);
-       backbutton = view.findViewById(R.id.backbtn);
+        View view = inflater.inflate(R.layout.fragment_share_code, container, false);
+        backbutton = view.findViewById(R.id.backbtn);
 
         // move back to previous fragment
         backbutton.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +63,7 @@ public class ShareCode extends Fragment {
 
 
 
-            // ------- Sharing QR Code --------
+        // ------- Sharing QR Code --------
         sharebutton = view.findViewById(R.id.sharebtn);
         sharebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +93,13 @@ public class ShareCode extends Fragment {
         startActivity(Intent.createChooser(intent, "Share Via"));
     }
 
+    /**
+     *
+     * @param bitmap
+     * @param context
+     * @return
+     */
+
     // URL: https://www.geeksforgeeks.org/how-to-share-image-of-your-app-with-another-app-in-android/
     private Uri getImageShare(Bitmap bitmap, Context context) {
 
@@ -117,12 +124,15 @@ public class ShareCode extends Fragment {
     }
 
     /**
-     * Generates Qr code 
+     * Generates Qr code
      * @param myevent
      * @param imageCode
      */
     public void generateQRCode(Event myevent, ImageView imageCode){
         String myText = myevent.getEventname();
+
+        // use event id instead -> to retrieve event from firebase?
+        // String myText = myevent.getEventId();
 
         // Appending timestamp
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");

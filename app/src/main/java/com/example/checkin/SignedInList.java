@@ -1,6 +1,8 @@
 package com.example.checkin;
 
+// shows signed in list of attendees to an event
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -22,35 +24,35 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-// Shows list of checked in attendees for an event
-public class CheckedInListOrg extends Fragment {
+
+public class SignedInList extends Fragment {
+
     private AttendeeList attendeedatalist;
     private ListView attendeesList;
     private ArrayAdapter<Attendee> AttendeesAdapter;
     Event myevent;
-    private FirebaseFirestore db;
+
+    Organizer organizer;
     Button backbutton;
+
+    private FirebaseFirestore db;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_checked_in_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_signed_in_list, container, false);
 
-        attendeesList = view.findViewById(R.id.attendees_list);
         backbutton = view.findViewById(R.id.backbtn);
+        attendeesList = view.findViewById(R.id.signedin_attendees_list);
 
-        backbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
+        attendeedatalist = new AttendeeList();
 
         ArrayList<Attendee> attendees = new ArrayList<>();
 
@@ -58,17 +60,20 @@ public class CheckedInListOrg extends Fragment {
         if (bundle != null) {
             myevent = (Event) bundle.getSerializable("event");
         }
-        attendeedatalist = new AttendeeList();
-
-
-
         String eventid = myevent.getEventId();
+
 
 
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -111,7 +116,7 @@ public class CheckedInListOrg extends Fragment {
                         attendees.addAttendee(attendee);
                         // Update the UI with the attendees list
 
-                        if (attendeedatalist != null) {
+                        if (attendeedatalist!= null) {
                             AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
                             attendeesList.setAdapter(AttendeesAdapter);
                         }
@@ -124,10 +129,4 @@ public class CheckedInListOrg extends Fragment {
             }
         });
     }
-
-
-
-
-
-
 }

@@ -1,10 +1,18 @@
-
+/*
+A class managing event details, attendee subscriptions, and check-ins in an event-check-in system.
+It includes methods for subscribing/unsubscribing attendees for notifications, checking them in/out,
+and checking subscription and check-in status.
+The class supports QR code and poster management.
+ */
 package com.example.checkin;
 
 import android.media.Image;
 
+import com.example.checkin.AttendeeList;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Event implements Serializable {
     //TODO:
@@ -12,23 +20,23 @@ public class Event implements Serializable {
     //      - remove QR CODE
     //      - assign poster
     //      - remove poster
-    //      - event ID generation
     //      - Geolocation integration
     //              - has: physical boundaries? i'm not sure how geolocation would work
     //      - Firebase Integration
 
-    private int EventId;//unique identifier for event
-    private Image poster;       //event poster
+    private String EventId;//unique identifier for event
+    //private Image poster;       //event poster
+    private String poster;        //Poster uploaded to this Event
     //private QRCode code;
     private String eventname;
-
     private String eventdetails;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
-    //TODO: Firebase Integration
+    private String creator;     //The organizer who created this event
+
     private AttendeeList CheckInList = new AttendeeList();
-    //attendees CURRENTLY checked in to the event TODO: Firebase Integration
+    //attendees CURRENTLY checked in to the event
 
     public Event(String eventname, String eventdetails, ArrayList<Attendee> checkInList) {
         this.eventname = eventname;
@@ -36,26 +44,58 @@ public class Event implements Serializable {
         checkInList = new ArrayList<>();
     }
 
-
-
+    /*
     public Event(String eventname, String eventdetails) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
     }
+    */
 
-    private int generateEventId(){
-        //TODO: Generate the EventId for a new event
-        //      Integration with firebase needed in order to have unique IDs
-        //      idea: increment from zero, check if ID is in use, when
-        //            vacant ID is found, assign that to this user
-        return 1;
+
+    //TODO: ID generation
+    private String generateEventId(){
+        Random rand = new Random();
+        return Integer.toString(rand.nextInt(1000));
+    }
+
+    /*
+    public Event() {
+        this.eventname = "";
+        this.eventdetails = "";
+        this.creator = "";
+        this.EventId = generateEventId();
+        this.Subscribers = new AttendeeList();
+        this.CheckInList = new AttendeeList();
+        this.poster = "";
+    }*/
+
+    /**
+     * Creates an event, requires a name and a creator at bare minimum
+     * @param name
+     */
+    public Event(String name, String creatorID){
+        this.eventname = name;
+        this.eventdetails = "";
+        this.creator = creatorID;
+        this.EventId = generateEventId();       //TODO: Generate event ID (CreatorID + Year + Month + Day + Minute + Second)
+        this.Subscribers = new AttendeeList();
+        this.CheckInList = new AttendeeList();
+        this.poster = "";
     }
 
     /**
-     * Creates a new Event
+     * Restore from id
+     * @param id
+     * the identifier for this event
      */
-    public Event() {
-        this.EventId = generateEventId();
+    public Event(String id) {
+        this.EventId = id;
+        this.eventname = "";
+        this.eventdetails = "";
+        this.creator = "";
+        this.Subscribers = new AttendeeList();
+        this.CheckInList = new AttendeeList();
+        this.poster = "";
     }
     //Poster Image===============================================================
 
@@ -96,6 +136,7 @@ public class Event implements Serializable {
      * @param a
      * a valid Attendee object
      * @return
+     * returns whether user is subscribed
      */
     public boolean IsSubscribed(Attendee a){
         for (Attendee user: Subscribers.getAttendees()){
@@ -111,12 +152,14 @@ public class Event implements Serializable {
     /**
      * Checks a user a into the event
      * @param a
+     * a valid attendee object
      */
     public void userCheckIn (Attendee a){
 
         if (CheckInList == null) {
             CheckInList = new AttendeeList();
         }
+
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             a.CheckIn(this);
@@ -152,6 +195,7 @@ public class Event implements Serializable {
     /**
      * Return the array of attendees who are subscribed to the event
      * @return
+     * Attendee List of subscribers
      */
     public AttendeeList getSubscribers() {
         return Subscribers;
@@ -165,11 +209,11 @@ public class Event implements Serializable {
         return CheckInList;
     }
 
-    public int getEventId() {
+    public String getEventId() {
         return EventId;
     }
 
-    public void setEventId(int eventId) {
+    public void setEventId(String eventId) {
         EventId = eventId;
     }
 
@@ -193,6 +237,19 @@ public class Event implements Serializable {
         CheckInList = checkInList;
     }
 
+    public String getPoster() {
+        return poster;
+    }
 
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 }
-

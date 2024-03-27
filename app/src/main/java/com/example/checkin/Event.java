@@ -157,18 +157,21 @@ public class Event implements Serializable {
      * a valid attendee object
      */
     public void userCheckIn (Attendee a){
+        System.out.println(getCheckInList().getAttendees().size());
 
-        if (CheckInList == null) {
-            CheckInList = new AttendeeList();
+        for (int i = 0; i < getCheckInList().getAttendees().size(); i++) {
+            System.out.println("attendee"+getCheckInList().getAttendees().get(i).getUserId());
+
         }
+
 
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
-            a.CheckIn(this);
-            CheckInList.removeAttendee(a);
+            //a.CheckIn(this);
+            //CheckInList.removeAttendee(a);
         } else{
             //otherwise the user is checking in
-            a.CheckIn(this);
+            //a.CheckIn(this);
             CheckInList.addAttendee(a);
         }
 

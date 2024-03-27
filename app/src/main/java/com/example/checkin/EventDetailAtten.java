@@ -85,32 +85,44 @@ public class EventDetailAtten extends Fragment {
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attendee.CheckIn(myevent);
-                myevent.userCheckIn(attendee);
-
-                FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
+                fetchAttendee(new OnSuccessListener<Attendee>() {
                     @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Subscribe", "subscribe to event");
+                    public void onSuccess(Attendee attendee) {
+                        attendee.CheckIn(myevent);
+                        myevent.userCheckIn(attendee);
+
+                        FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Log.d("Subscribe", "subscribe to event");
+                            }
+                        });
+
+                        Database database = new Database();
+                        database.updateEvent(myevent);
+                        database.updateAttendee(attendee);
                     }
                 });
-                database.updateEvent(myevent);
-                database.updateAttendee(attendee);
-
-
             }
         });
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attendee.setName("testname");
-                attendee.EventSub(myevent);
-                myevent.userSubs(attendee);
-                database.updateEvent(myevent);
-                database.updateAttendee(attendee);
-                Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
+                fetchAttendee(new OnSuccessListener<Attendee>() {
+                    @Override
+                    public void onSuccess(Attendee attendee) {
+                        attendee.setName("testname");
+                        attendee.EventSub(myevent);
+                        myevent.userSubs(attendee);
 
+                        Database database = new Database();
+                        database.updateEvent(myevent);
+                        database.updateAttendee(attendee);
+
+                        Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -142,5 +154,31 @@ public class EventDetailAtten extends Fragment {
         eventdetails.setText(myevent.getEventdetails());
 
         return view;
+    }
+
+    private void fetchAttendee(OnSuccessListener<Attendee> onSuccessListener) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String android_id = preferences.getString("ID", "");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Database database = new Database();
+        DocumentReference attendeeRef = db.collection("Attendees").document(android_id);
+        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Attendee object using Database class method
+                        Attendee attendee = database.getAttendee(document);
+                        onSuccessListener.onSuccess(attendee);
+                    } else {
+                        Log.d("document", "No such document");
+                    }
+                } else {
+                    Log.d("error", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 }

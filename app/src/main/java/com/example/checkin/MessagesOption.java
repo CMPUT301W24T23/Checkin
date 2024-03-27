@@ -39,11 +39,11 @@ public class MessagesOption extends Fragment {
         sendmessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SendNotification sendfrag = new SendNotification();
+                SelectEventMessages selectmssg_frag= new SelectEventMessages();
                 Bundle args = new Bundle();
                 args.putSerializable("event", myevent);
-                sendfrag.setArguments(args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, sendfrag).addToBackStack(null).commit();
+                selectmssg_frag.setArguments(args);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, selectmssg_frag).addToBackStack(null).commit();
 
             }
         });

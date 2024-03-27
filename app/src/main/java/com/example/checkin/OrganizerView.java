@@ -33,7 +33,7 @@ public class OrganizerView extends AppCompatActivity {
         org_frag1 = new OrganizerFragment1();
         AttendeesOptions list_frag = new AttendeesOptions();
         SendNotification sendmssg_frag = new SendNotification();
-        SelectEventMessages eventmessage_frag = new SelectEventMessages();
+        MessagesOption messageopt_frag = new MessagesOption();
 
 
 
@@ -65,7 +65,7 @@ public class OrganizerView extends AppCompatActivity {
                 else if (item.getItemId() == R.id.messages){
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.org_view, eventmessage_frag)
+                            .replace(R.id.org_view, messageopt_frag)
                             .commit();
                     return true;
                 }

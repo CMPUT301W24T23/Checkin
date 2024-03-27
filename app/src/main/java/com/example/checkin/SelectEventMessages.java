@@ -33,6 +33,8 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
+import kotlinx.coroutines.channels.Send;
+
 public class SelectEventMessages extends Fragment {
 
     private ArrayList<Event> datalist;
@@ -172,12 +174,12 @@ public class SelectEventMessages extends Fragment {
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MessagesOption message_frag = new MessagesOption();
+                SendNotification send_frag = new SendNotification();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
-                message_frag.setArguments(args);
+                send_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, message_frag).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, send_frag).addToBackStack(null).commit();
 
 
             }

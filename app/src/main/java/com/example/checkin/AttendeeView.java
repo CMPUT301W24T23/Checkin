@@ -1,5 +1,7 @@
 package com.example.checkin;
 
+
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +10,7 @@ import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,13 +28,14 @@ import com.google.zxing.integration.android.IntentResult;
 
 // Represents the Attendee Perspective of the app
 public class AttendeeView extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CAMERA = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attenndee_view);
 
-        //onNewIntent(getIntent());
+
 
         // navigate to announcements fragment when notiifcation is clicked
 
@@ -49,7 +53,7 @@ public class AttendeeView extends AppCompatActivity {
         // create homepage and announcements fragments
         AttendeeFragment1 att_frg1 = new AttendeeFragment1();
         Announcements ann_frg1 = new Announcements();
-        ScanQrCode scan_frag = new ScanQrCode();
+
 
 
         // move to home page fragment
@@ -75,10 +79,6 @@ public class AttendeeView extends AppCompatActivity {
                     return true;
                 }
                 else if (item.getItemId() == R.id.qrcodes2){
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.atten_view, scan_frag)
-                            .commit();
                     startQRScan();
                     return true;
                 }
@@ -220,16 +220,18 @@ public class AttendeeView extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Announcements ann_frg1 = new Announcements();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            if (extras.containsKey("open_announcements_fragment")) {
+
+
+        String data = intent.getStringExtra("open_announcements_fragment");
+            if (data!=null) {
+                Log.d("AttendeeView", "onNewIntent called");
+                Announcements ann_frg1 = new Announcements();
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.atten_view, ann_frg1)
                         .commit();
             }
-        }
+
     }
 
     /**
@@ -243,6 +245,19 @@ public class AttendeeView extends AppCompatActivity {
         integrator.setOrientationLocked(true);
         integrator.setPrompt("Scan a QR code");
         integrator.initiateScan();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CAMERA) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startQRScan();
+            } else {
+                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
     }
 
 

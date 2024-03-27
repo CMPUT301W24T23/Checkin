@@ -34,6 +34,8 @@ public class ShareCode extends Fragment {
     Button sharebutton;
     Button backbutton;
 
+    String text;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,9 +58,10 @@ public class ShareCode extends Fragment {
         ImageView imageCode = view.findViewById(R.id.imageCode);
 
         Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
-        String text = myevent.getQrcodeid();
+        if (bundle != null){
+            myevent = (Event) bundle.getSerializable("event");
+            text = myevent.getQrcodeid();
+        }
         System.out.println(text);
 
 

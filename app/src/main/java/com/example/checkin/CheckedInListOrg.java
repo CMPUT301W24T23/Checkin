@@ -89,7 +89,6 @@ public class CheckedInListOrg extends Fragment {
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putInt("attendeeCount", attendeeCount);
                             editor.apply();
-                            checkMilestone(attendeeCount);
                             for (String attendeeId : subscribersMap.keySet()) {
                                 // Fetch each attendee document and create Attendee objects
                                 fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
@@ -103,35 +102,12 @@ public class CheckedInListOrg extends Fragment {
                 }
             }
         });
-        String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
-        totalcheckin.setText(text);
+
 
         return view;
     }
 
 
-
-    private void checkMilestone(int attendeeCount) {
-        ArrayList<Integer> milestones = new ArrayList<>();
-
-        milestones.add(1);
-        milestones.add(10);
-        milestones.add(50);
-        milestones.add(75);
-        milestones.add(100);
-        for (int milestone : milestones) {
-            if (attendeeCount == milestone) {
-                sendMilestoneNotification(myevent.getEventname()+ ": Milestone Reached!", "Attendee count: " + attendeeCount);
-                break; // No need to continue checking other milestones
-            }
-        }
-    }
-
-    private void sendMilestoneNotification(String title, String body) {
-        // Create an intent and call the MileStone class's method to send a notification
-        Intent intent = new Intent(getContext(), OrganizerView.class); // Replace YourActivity with the appropriate activity
-        MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent);
-    }
 
     private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees) {
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
@@ -145,7 +121,10 @@ public class CheckedInListOrg extends Fragment {
                         Attendee attendee = new Database().getAttendee(document);
                         // Add the attendee to the list
                         attendees.addAttendee(attendee);
-                        // Update the UI with the attendees list
+
+
+                        String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
+                        totalcheckin.setText(text);
 
                         if (attendeedatalist != null) {
                             AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());

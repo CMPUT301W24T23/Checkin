@@ -58,14 +58,15 @@ public class PushNotifications extends FirebaseMessagingService {
 
         Intent intent = new Intent(this, AttendeeView.class);
         intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra("open_announcements_fragment", "true");
+        intent.putExtra("open_announcements_fragment", "open");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this,
                 0,
                 intent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
         );
 
 

@@ -128,8 +128,9 @@ public class DisplayMilestones extends Fragment {
                             Message m = new Message();
                             m.setTitle(document.getString("Title"));
                             m.setBody(document.getString("Body"));
-                            announcelist.add(m);
-                            System.out.println("message"+message.getTitle());
+                            if (!checkmilestoneexists(m, announcelist)) {
+                                announcelist.add(m);
+                            }
                         }
                     }
 
@@ -145,5 +146,15 @@ public class DisplayMilestones extends Fragment {
     }
 
 
+    public boolean checkmilestoneexists(Message message, ArrayList<Message> announcelist){
+
+        for (Message existingMessage : announcelist) {
+            if (existingMessage.getTitle().equals(message.getTitle()) && existingMessage.getBody().equals(message.getBody())) {
+                return true;
+            }
+        }
+        return false;
+
+    }
 
 }

@@ -136,10 +136,6 @@ public class OrganizerFragment1 extends Fragment {
                                 Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
                                 if (subscribersMap != null) {
                                     int attendeeCount = subscribersMap.size();
-                                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-                                    SharedPreferences.Editor editor = preferences.edit();
-                                    editor.putInt("attendeeCount", attendeeCount);
-                                    editor.apply();
                                     checkMilestone(attendeeCount, event);
                                 }
 
@@ -223,13 +219,10 @@ public class OrganizerFragment1 extends Fragment {
         });
         return view;
 
-
-
     }
 
     private void checkMilestone(int attendeeCount, Event myevent) {
         ArrayList<Integer> milestones = new ArrayList<>();
-
         milestones.add(1);
         milestones.add(10);
         milestones.add(50);
@@ -246,7 +239,16 @@ public class OrganizerFragment1 extends Fragment {
     private void sendMilestoneNotification(String title, String body, Event myevent) {
         // Create an intent and call the MileStone class's method to send a notification
         Intent intent = new Intent(getContext(), OrganizerView.class);
-        MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        String notificationKey = "milestone_" + myevent.getEventId();
+
+        // Check if the notification for this milestone has already been sent
+        boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
+        if (!notificationSent) {
+            int notificationId = Integer.parseInt(myevent.getEventId());
+            MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent, notificationId);
+            sharedPreferences.edit().putBoolean(notificationKey, true).apply();
+        }
     }
 
 }

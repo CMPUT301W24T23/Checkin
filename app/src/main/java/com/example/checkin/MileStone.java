@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,8 @@ public class MileStone {
     private static final String CHANNEL_ID = "milestone";
     static Database db = new Database();
 
-    public static void sendMilestoneNotification(Context context, String title, String body, String eventid, Intent targetIntent) {
+    public static void sendMilestoneNotification(Context context, String title, String body, String eventid, Intent targetIntent, int notificationid) {
+
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
                 0,
@@ -50,7 +53,7 @@ public class MileStone {
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            notificationManagerCompat.notify(0, builder.build());
+            notificationManagerCompat.notify(notificationid, builder.build());
         }
 
         Message message = new Message(title, body);

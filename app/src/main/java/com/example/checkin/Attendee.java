@@ -49,7 +49,6 @@ public class Attendee implements User, Serializable {
     private String country;
 
 
-
     public Attendee(String name) {
         this.name = name;
     }

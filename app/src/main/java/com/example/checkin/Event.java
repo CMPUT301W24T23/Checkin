@@ -41,7 +41,7 @@ public class Event implements Serializable {
     public Event(String eventname, String eventdetails, ArrayList<Attendee> checkInList) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
-        checkInList = new ArrayList<>();
+
     }
 
     /*
@@ -156,18 +156,16 @@ public class Event implements Serializable {
      */
     public void userCheckIn (Attendee a){
 
-        if (CheckInList == null) {
-            CheckInList = new AttendeeList();
-        }
 
-        if (CheckInList.contains(a)){
+        if (!CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             //a.CheckIn(this);
+            CheckInList.addAttendee(a);
             //CheckInList.removeAttendee(a);
         } else{
             //otherwise the user is checking in
             //a.CheckIn(this);
-            CheckInList.addAttendee(a);
+            //CheckInList.addAttendee(a);
         }
 
 

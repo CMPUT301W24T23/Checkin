@@ -1,5 +1,8 @@
 package com.example.checkin;
 
+import android.graphics.Bitmap;
+import android.media.Image;
+
 /**
  * A class for the purpose of being used to retrieve user image data from firebase and
  * allowing for the user's id to remain attached to the information
@@ -14,6 +17,19 @@ public class UserImage {
         imageB64 = "";
         ID = "";
     }
+
+    /**
+     * Get the bitmap of the image stored in imageB64
+     * @return
+     * Returns the bitmap of the image
+     */
+    public Bitmap imageBitmap(){
+        ImageEncoder encoder = new ImageEncoder();
+        return encoder.base64ToBitmap(this.imageB64);
+    }
+
+
+    //Getter Setter========================================================================
 
     public void setImageB64(String imageB64) {
         this.imageB64 = imageB64;

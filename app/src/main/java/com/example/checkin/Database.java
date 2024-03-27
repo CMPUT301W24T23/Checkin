@@ -153,6 +153,17 @@ public class Database {
         profilePicRef.document(userID).set(data);
     }
 
+    public void updatePoster(String base64Image, String eventID){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference profilePicRef = db.collection("Posters");
+
+        Map<String, String> data = new HashMap<>();
+        data.put("Image", base64Image);
+
+        Log.d("UpdatePoster", String.format("Upload Poster(%s)", eventID));
+        profilePicRef.document(eventID).set(data);
+    }
+
     //Functions for dealing with retrieving users ==================================================
 
     /**
@@ -257,6 +268,13 @@ public class Database {
         return o;
     }
 
+    /**
+     * Function to retrieve the information of a profile picture stored in the database
+     * @param doc
+     * a successfully retrieved document from firebase
+     * @return
+     * a UserImage object containing the base64 string of the image and the user it belongs to
+     */
     public UserImage getProfilePicture(DocumentSnapshot doc){
         UserImage avi = new UserImage();
 
@@ -264,6 +282,22 @@ public class Database {
         avi.setImageB64(doc.getString("Image"));
 
         return avi;
+    }
+
+    /**
+     * Function to retrieve the information of a poster stored in the database
+     * @param doc
+     * a successfully retrieved document from firebase
+     * @return
+     * a UserImage object containing the base64 string of the image and the event it belongs to
+     */
+    public UserImage getPoster(DocumentSnapshot doc){
+        UserImage poster = new UserImage();
+
+        poster.setID(doc.getId());
+        poster.setImageB64(doc.getString("Image"));
+
+        return poster;
     }
 
     //template snapshot listener function content for retrieving an organizer

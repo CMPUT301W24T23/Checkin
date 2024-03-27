@@ -104,6 +104,8 @@ public class AttendeeView extends AppCompatActivity {
 
 
 
+
+
     }
 
     @Override
@@ -220,17 +222,23 @@ public class AttendeeView extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        System.out.println("Intent");
 
 
-        String data = intent.getStringExtra("open_announcements_fragment");
-            if (data!=null) {
-                Log.d("AttendeeView", "onNewIntent called");
-                Announcements ann_frg1 = new Announcements();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.atten_view, ann_frg1)
-                        .commit();
-            }
+        String action = intent.getAction();
+        if (action != null && action.equals("OPEN_ANNOUNCEMENTS_FRAGMENT")) {
+            // Perform a fragment transaction to open the Announcements fragment
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar2);
+
+            Announcements announce_frg = new Announcements();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.atten_view, announce_frg)
+                    .commit();
+            bottomNavigationView.setSelectedItemId(R.id.messages2);
+
+
+        }
 
     }
 

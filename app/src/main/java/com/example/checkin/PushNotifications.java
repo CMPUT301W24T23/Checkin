@@ -57,8 +57,8 @@ public class PushNotifications extends FirebaseMessagingService {
         CharSequence name;
 
         Intent intent = new Intent(this, AttendeeView.class);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra("open_announcements_fragment", "open");
+        intent.setAction("OPEN_ANNOUNCEMENTS_FRAGMENT");
+        intent.putExtra("open fragment", "announcements");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -119,7 +119,7 @@ public class PushNotifications extends FirebaseMessagingService {
         notificationManager.createNotificationChannel(channel);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.img_3)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)

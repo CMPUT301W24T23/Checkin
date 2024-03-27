@@ -31,11 +31,16 @@ public class MileStone {
 
     public static void sendMilestoneNotification(Context context, String title, String body, String eventid, Intent targetIntent, int notificationid) {
 
+        Intent intent = new Intent(context, OrganizerView.class);
+        intent.setAction("OPEN_MILESTONES_FRAGMENT");
+        intent.putExtra("open fragment", "milestones");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
                 0,
                 targetIntent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Milestone", NotificationManager.IMPORTANCE_HIGH);
@@ -45,7 +50,7 @@ public class MileStone {
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.img_3)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
@@ -57,7 +62,6 @@ public class MileStone {
         }
 
         Message message = new Message(title, body);
-        Alert alert = new Alert(title,body);
         message.setEventid(eventid);
         message.setType("Milestone");
         db.updateMessage(message);

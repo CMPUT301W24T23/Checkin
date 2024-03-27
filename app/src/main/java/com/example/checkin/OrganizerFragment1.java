@@ -224,6 +224,7 @@ public class OrganizerFragment1 extends Fragment {
     private void checkMilestone(int attendeeCount, Event myevent) {
         ArrayList<Integer> milestones = new ArrayList<>();
         milestones.add(1);
+        milestones.add(2);
         milestones.add(10);
         milestones.add(50);
         milestones.add(75);

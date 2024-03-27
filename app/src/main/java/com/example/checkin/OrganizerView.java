@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -36,8 +37,6 @@ public class OrganizerView extends AppCompatActivity {
         MessagesOption messageopt_frag = new MessagesOption();
 
 
-
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
@@ -58,18 +57,15 @@ public class OrganizerView extends AppCompatActivity {
                             .commit();
                     return true;
 
-                }
-                else if (item.getItemId() == R.id.qrcodes){
+                } else if (item.getItemId() == R.id.qrcodes) {
                     // implement when fragment is added
-                }
-                else if (item.getItemId() == R.id.messages){
+                } else if (item.getItemId() == R.id.messages) {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.org_view, messageopt_frag)
                             .commit();
                     return true;
-                }
-                else if (item.getItemId() == R.id.attendees){
+                } else if (item.getItemId() == R.id.attendees) {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.org_view, org_frag1)
@@ -80,5 +76,27 @@ public class OrganizerView extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+
+        String action = intent.getAction();
+        if (action != null && action.equals("OPEN_MILESTONES_FRAGMENT")) {
+            // Perform a fragment transaction to open the Announcements fragment
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar);
+
+            DisplayMilestones dispmile_frag = new DisplayMilestones();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.org_view, dispmile_frag)
+                    .commit();
+            bottomNavigationView.setSelectedItemId(R.id.messages);
+
+
+        }
     }
 }

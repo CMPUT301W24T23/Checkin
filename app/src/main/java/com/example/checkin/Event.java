@@ -119,7 +119,7 @@ public class Event implements Serializable {
      * a valid Attendee object
      */
     public void userSubs(Attendee a){
-        //Attendee subscribes to receiving information updates
+        //Attendee subscribes to event
         Subscribers.addAttendee(a);
     }
 
@@ -129,7 +129,7 @@ public class Event implements Serializable {
      * a valid Attendee object
      */
     public void userUnSubs (Attendee a){
-        //Attendee unsubscribes to receiving information updates
+        //Attendee unsubscribes to event
         Subscribers.removeAttendee(a);
     }
 

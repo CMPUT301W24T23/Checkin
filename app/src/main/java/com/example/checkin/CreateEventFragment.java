@@ -12,6 +12,7 @@ package com.example.checkin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +42,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
+
 public class CreateEventFragment extends Fragment {
 
     private CheckBox checkBoxGeoTracking;
@@ -48,7 +52,10 @@ public class CreateEventFragment extends Fragment {
     private ImageView ivEventPoster;
     private Button btnAddPoster;
     private Organizer organizer;
+    private Bitmap poster;          //bitmap of the poster
+    private ImageEncoder encoder = new ImageEncoder();      //image encoder for converting image
 
+    private boolean posterAdded = false;
     Button backbutton;
 
     private Button addeventbutton;
@@ -59,13 +66,23 @@ public class CreateEventFragment extends Fragment {
 
     Event event;
 
+    /**
+     * Get the image from the user
+     */
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
                 public void onActivityResult(Uri uri) {
                     if (uri != null) {
-                        ivEventPoster.setImageURI(uri);
+                        //ivEventPoster.setImageURI(uri);
+                        try {
+                            poster = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                            ivEventPoster.setImageBitmap(poster);
+                            posterAdded = true;
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         ivEventPoster.setVisibility(View.VISIBLE);
                     }
                 }
@@ -83,6 +100,7 @@ public class CreateEventFragment extends Fragment {
         addeventbutton = view.findViewById(R.id.createeventbtn);
         qrcodebutton = view.findViewById(R.id.btnGenerateQR);
         backbutton = view.findViewById(R.id.backbtn);
+
 
         Database database = new Database();
         btnAddPoster.setOnClickListener(new View.OnClickListener() {
@@ -142,13 +160,33 @@ public class CreateEventFragment extends Fragment {
         addeventbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //create event with event name and ID
+                if (eventname.getText().toString().equals("")){
+                    eventname.setError("Event name required");
+                    Log.d("Event Name Required", "User did not supply event name");
+                    return;
+                }
                 event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
-                //event.setEventname(eventname.getText().toString());
+                //get details if any
                 event.setEventdetails(eventdetails.getText().toString());
+                //convert image to string and add to event
+                if (posterAdded){
+                    event.setPoster(encoder.BitmapToBase64(poster));
+                } else{
+                    //empty string if no poster is added
+                    event.setPoster("");
+                }
+
+                //Add poster to database
+                database.updatePoster(event.getPoster(), event.getEventId());
+
                 events.addEvent(event);
                 database.updateEvent(event);
+                Log.d("Event Creation", String.format("Adding organizer %s event %s to the database", organizer.getUserId(), event.getEventId()));
+
                 organizer.EventCreate(event.getEventId());
                 database.updateOrganizer(organizer);
+
                 OrganizerFragment1 organizerfrag = new OrganizerFragment1();
                 Bundle args = new Bundle();
                 args.putSerializable("organizer", organizer);
@@ -158,10 +196,6 @@ public class CreateEventFragment extends Fragment {
 
             }
         });
-        
-        
-        
-
 
         return view;
     }

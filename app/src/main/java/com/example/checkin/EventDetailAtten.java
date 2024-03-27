@@ -30,6 +30,7 @@ public class EventDetailAtten extends Fragment {
 
     Button checkinbutton;
     Button signupbutton;
+    Button posterbutton;
 
     Attendee attendee;
 
@@ -49,6 +50,9 @@ public class EventDetailAtten extends Fragment {
         eventmessagesbtn = view.findViewById(R.id.eventmessg);
         checkinbutton  = view.findViewById(R.id.checkinbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
+        posterbutton = view.findViewById(R.id.eventposterbtn);
+
+
 
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
@@ -125,6 +129,48 @@ public class EventDetailAtten extends Fragment {
         });
         eventnametxt.setText(myevent.getEventname());
         eventdetails.setText(myevent.getEventdetails());
+
+        //Display no poster available if the event does not have a poster
+        if (myevent.getPoster().equals("")){
+            //no poster for this event
+            //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
+            posterbutton.setText("No Poster Available");
+        }
+
+        //move to poster fragment
+        posterbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (myevent.getPoster().equals("")){
+                    //no poster for this event
+                    //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
+                    return;
+                }
+
+                //Create fragment
+                EventPosterFrag posterShareFrag = new EventPosterFrag();
+
+                UserImage poster = new UserImage();
+                poster.setImageB64(myevent.getPoster());
+                poster.setID(myevent.getEventId());
+
+                Bundle args = new Bundle();
+                args.putSerializable("Poster", poster);
+
+                posterShareFrag.setArguments(args);
+                //ShareCode code_frag = new ShareCode();
+                //Bundle args = new Bundle();
+                //args.putSerializable("event", myevent);
+                //code_frag.setArguments(args);
+                getParentFragmentManager().setFragmentResult("Poster",args);
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, posterShareFrag).addToBackStack(null).commit();
+
+
+
+                //getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         return view;
     }

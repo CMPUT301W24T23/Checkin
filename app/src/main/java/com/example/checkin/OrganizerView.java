@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -15,9 +17,8 @@ import com.google.android.material.navigation.NavigationBarView;
 public class OrganizerView extends AppCompatActivity {
 
     OrganizerFragment1 org_frag1;
-    Organizer organizer;
 
-    Fragment open;
+    private static final int PERMISSION_REQUEST_NOTIFICATION = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,10 @@ public class OrganizerView extends AppCompatActivity {
         // URL: https://www.geeksforgeeks.org/how-to-implement-bottom-navigation-with-activities-in-android/
         BottomNavigationView bottomnav = findViewById(R.id.bottomnavbar);
         bottomnav.setSelectedItemId(R.id.home);
+
+        if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_NOTIFICATION);
+        }
 
         // create home page and attendees list fragments
 
@@ -97,6 +102,17 @@ public class OrganizerView extends AppCompatActivity {
             bottomNavigationView.setSelectedItemId(R.id.messages);
 
 
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_NOTIFICATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                Toast.makeText(this, "Notification permission is required", Toast.LENGTH_LONG).show();
+                finish();
+            }
         }
     }
 }

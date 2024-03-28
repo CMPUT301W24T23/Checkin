@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,25 +30,20 @@ import com.google.zxing.integration.android.IntentResult;
 // Represents the Attendee Perspective of the app
 public class AttendeeView extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 1;
+    private static final int PERMISSION_REQUEST_NOTIFICATION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attenndee_view);
 
-
-
-        // navigate to announcements fragment when notiifcation is clicked
-
-        boolean openAnnouncements = getIntent().getBooleanExtra("open_announcements_fragment", true);
-
-        if (openAnnouncements) {
-            // Replace the fragment container with the Announcements fragment
-          //  getSupportFragmentManager().beginTransaction()
-                    // .replace(R.id.atten_view, new Announcements())
-           // .commit();
+        if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_NOTIFICATION);
         }
 
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_NOTIFICATION);
+        }
 
 
         // create homepage and announcements fragments
@@ -102,10 +98,6 @@ public class AttendeeView extends AppCompatActivity {
             }
         });
 
-
-
-
-
     }
 
     @Override
@@ -118,7 +110,6 @@ public class AttendeeView extends AppCompatActivity {
         if (intentResult.getContents() == null) {
             Toast.makeText(getBaseContext(), "Cancelled", Toast.LENGTH_SHORT).show();
         } else {
-            System.out.println("Worked");
             // if the intentResult is not null we'll set
             // the content and format of scan message
             String qrCodeContent = intentResult.getContents();
@@ -140,20 +131,6 @@ public class AttendeeView extends AppCompatActivity {
     }
 }
 
-   // @Override
-    /*protected void onResume() {
-        super.onResume();
-
-        Intent notifyIntent = getIntent();
-        String extras = getIntent().getStringExtra("open_announcements_fragment");
-        if (extras != null && extras.equals("true")) {
-            Announcements ann_frg1 = new Announcements(); // Instantiate Announcements fragment here
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.atten_view, ann_frg1)
-                    .commit();
-        }*/
-   // }
 
     /**
      * retrieve event to get the scanned qr code from firebase
@@ -266,6 +243,16 @@ public class AttendeeView extends AppCompatActivity {
                 finish();
             }
         }
+        else if (requestCode == PERMISSION_REQUEST_NOTIFICATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                Toast.makeText(this, "Notification permission is required", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+
+
+
     }
 
 

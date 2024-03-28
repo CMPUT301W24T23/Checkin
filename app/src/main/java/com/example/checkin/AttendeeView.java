@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.CollectionReference;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -118,6 +120,7 @@ public class AttendeeView extends AppCompatActivity {
 
 
 
+
             // check in attendee using firebase- use event id and attendee id to get
             // event and attendee from firebase, and update both
 
@@ -160,14 +163,20 @@ public class AttendeeView extends AppCompatActivity {
                                         Attendee attendee = database.getAttendee(attendeeDocument);
                                         System.out.println("device id" +attendee.getUserId());
 
-                                        // Now you have both the event and the attendee
-                                        // You can proceed with the check-in process
+                                        // get both the event and the attendee
                                         if (attendee != null) {
                                             attendee.CheckIn(event);
                                             event.userCheckIn(attendee);
                                             System.out.println("Checked In Attendee");
                                             database.updateEvent(event);
                                             database.updateAttendee(attendee);
+
+                                            FirebaseMessaging.getInstance().subscribeToTopic(event.getEventId()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Log.d("Subscribe", "subscribe to event");
+                                                }
+                                            });
 
                                             EventDetailAtten eventfragment = new EventDetailAtten();
                                             Bundle args = new Bundle();

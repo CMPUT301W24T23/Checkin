@@ -22,14 +22,14 @@ public class Event implements Serializable {
     //      - remove poster
     //      - Geolocation integration
     //              - has: physical boundaries? i'm not sure how geolocation would work
-    //      - Firebase Integration
 
     private String EventId;//unique identifier for event
-    //private Image poster;       //event poster
     private String poster;        //Poster uploaded to this Event
     //private QRCode code;
     private String eventname;
     private String eventdetails;
+    private String eventdate;
+    private String eventtime;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
@@ -61,6 +61,8 @@ public class Event implements Serializable {
     /*
     public Event() {
         this.eventname = "";
+        this.eventtime = "";
+        this.eventdate = "";
         this.eventdetails = "";
         this.creator = "";
         this.EventId = generateEventId();
@@ -75,6 +77,8 @@ public class Event implements Serializable {
      */
     public Event(String name, String creatorID){
         this.eventname = name;
+        this.eventdate = "";
+        this.eventtime = "";
         this.eventdetails = "";
         this.creator = creatorID;
         this.EventId = generateEventId();       //TODO: Generate event ID (CreatorID + Year + Month + Day + Minute + Second)
@@ -91,6 +95,8 @@ public class Event implements Serializable {
     public Event(String id) {
         this.EventId = id;
         this.eventname = "";
+        this.eventdate = "";
+        this.eventtime = "";
         this.eventdetails = "";
         this.creator = "";
         this.Subscribers = new AttendeeList();
@@ -225,12 +231,28 @@ public class Event implements Serializable {
         this.eventname = eventname;
     }
 
-    public String getEventdetails() {
+    public String getEventDate() {
+        return eventdate;
+    }
+
+    public void setEventDate(String eventDate) {
+        this.eventdate = eventDate;
+    }
+
+    public String getEventTime() {
+        return eventtime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventtime = eventTime;
+    }
+
+    public String getEventDetails() {
         return eventdetails;
     }
 
-    public void setEventdetails(String eventdetails) {
-        this.eventdetails = eventdetails;
+    public void setEventDetails(String eventDetails) {
+        this.eventdetails = eventDetails;
     }
 
     public void setCheckInList(AttendeeList checkInList) {

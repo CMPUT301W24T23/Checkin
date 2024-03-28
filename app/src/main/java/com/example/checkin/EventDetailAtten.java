@@ -124,7 +124,7 @@ public class EventDetailAtten extends Fragment {
             }
         });
         eventnametxt.setText(myevent.getEventname());
-        eventdetails.setText(myevent.getEventdetails());
+        eventdetails.setText(myevent.getEventDetails());
 
         return view;
     }

@@ -63,24 +63,6 @@ public class EventDetailAtten extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
-        DocumentReference organizerRef = db.collection("Attendees").document(android_id);
-        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Convert the document snapshot to an Organizer object using Database class method
-                        attendee = database.getAttendee(document);
-                        // Proceed with setting up the UI using the retrieved organizer object
-                    } else {
-                        Log.d("document", "No such document");
-                    }
-                } else {
-                    Log.d("error", "get failed with ", task.getException());
-                }
-            }
-        });
 
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,10 +70,8 @@ public class EventDetailAtten extends Fragment {
                 fetchAttendee(new OnSuccessListener<Attendee>() {
                     @Override
                     public void onSuccess(Attendee attendee) {
-                        Log.d("numbers1","attendees before" +myevent.getCheckInList().getAttendees().size());
                         attendee.CheckIn(myevent);
                         myevent.userCheckIn(attendee);
-                        Log.d("numbers2", "attendees after" +myevent.getCheckInList().getAttendees().size());
 
 
                         FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {

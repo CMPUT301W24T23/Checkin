@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already
             //attendExists = true;

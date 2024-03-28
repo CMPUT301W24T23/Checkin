@@ -50,6 +50,11 @@ public class EventDetailAtten extends Fragment {
         checkinbutton  = view.findViewById(R.id.checkinbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
 
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            myevent = (Event) bundle.getSerializable("event");
+        }
+
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -100,9 +105,7 @@ public class EventDetailAtten extends Fragment {
 
 
         // get event object from previous fragment
-        Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
+
 
 
         // move to announcements page when see announcements button is clicked

@@ -114,7 +114,7 @@ public class OrganizerFragment1 extends Fragment {
                                 Event event = database.getEvent(document);
                                 allevents.addEvent(event);
                             }
-                            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, allevents.getEvents()) {
+                            EventAdapter = new ArrayAdapter<Event>(getContext(), R.layout.content, allevents.getEvents()) {
                                 @Override
                                 public View getView(int position, View convertView, ViewGroup parent) {
                                     View view = convertView;

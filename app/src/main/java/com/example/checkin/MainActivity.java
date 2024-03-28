@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
         
-       
+
 
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already

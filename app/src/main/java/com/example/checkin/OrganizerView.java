@@ -68,6 +68,7 @@ public class OrganizerView extends AppCompatActivity {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.org_view, messageopt_frag)
+                            .addToBackStack(null)
                             .commit();
                     return true;
                 } else if (item.getItemId() == R.id.attendees) {

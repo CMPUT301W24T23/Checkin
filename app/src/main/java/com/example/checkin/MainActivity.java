@@ -43,11 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     Button organizerbutton;
     Button attendeebutton;
-    static String AttendId;         //User's Attendee ID
-    static String OrgId;            //User's Organizer ID
-
-    //boolean attendExists = false;                 //User exists as Attendee in the database
-    //boolean organizerExists;                 //User exists as Attendee in the database
     boolean exists = false;
 
 
@@ -59,9 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
         organizerbutton = findViewById(R.id.organizerbtn);
         attendeebutton = findViewById(R.id.attendeebtn);
-        //String android_id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
+
         Log.d("android id", android_id);
 
         Database db = new Database();
@@ -86,22 +82,27 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        
+       
+
         if(!(android_id == "")){
             //if ID is stored locally, then user exists already
-            //attendExists = true;
-            //organizerExists = true;
             Log.d("Attendee Exists", String.format("Attendee Exists, ID: %s ", android_id));
             exists = true;
 
         }
+
         String id2 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
 
         System.out.println(android_id);
+
         if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
-            String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-
+            //String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+            Log.d("Not in Database", String.format("Generating Organizer and Attendee, ID: %s ", android_id));
             //create attendee profile
             Attendee a = new Attendee();
             a.setUserId(id);
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("ID", id);
             editor.apply();
         }
+
 
 
         FirebaseMessaging.getInstance().subscribeToTopic("event").addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -179,6 +181,11 @@ public class MainActivity extends AppCompatActivity {
         //getEvent();
 
 
+        SharedPreferences.Editor editor = preferences.edit();
+        //editor.putString("ID", "");
+        editor.apply();
+
+
         // move to attendee screen when attendee button is clicked
         attendeebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,61 +207,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*
-    public void getOrg(){
-        String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-        FirebaseFirestore fireb = FirebaseFirestore.getInstance();
-        DocumentReference docRef = fireb.collection("Organizers").document(id);
-        Database db = new Database();
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
-                        Organizer o = db.getOrganizer(document);
-                        for(String QR: o.getQRCodes()){
-                            Log.d("QR CODE", String.format("CODE: %s", QR));
-                        }
-
-                    } else {
-                        Log.d("Firebase", String.format("No such document: %s", id));
-                    }
-                } else {
-                    Log.d("Firebase get failed", "get failed with ", task.getException());
-                }
-            }
-        });}
-        */
-    /*
-    public void getEvent(){
-        FirebaseFirestore fireb = FirebaseFirestore.getInstance();
-        DocumentReference docRef = fireb.collection("Events").document("983");
-        Database db = new Database();
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
-                        Event e = db.getEvent(document);
-                        for(Attendee a: e.getSubscribers().getAttendees()){
-                            Log.d("Successful Event Retrieve", String.format("Retrieved user %s", a.getUserId()));
-                        }
-
-                    } else {
-                        Log.d("Firebase", String.format("No such document: %s", "983"));
-                    }
-                } else {
-                    Log.d("Firebase get failed", "get failed with ", task.getException());
-                }
-            }
-        });}
-        */
 
 
 }

@@ -22,10 +22,8 @@ public class Event implements Serializable {
     //      - remove poster
     //      - Geolocation integration
     //              - has: physical boundaries? i'm not sure how geolocation would work
-    //      - Firebase Integration
 
     private String EventId;//unique identifier for event
-    //private Image poster;       //event poster
     private String poster;        //Poster uploaded to this Event
     //private QRCode code;
     private String eventname;

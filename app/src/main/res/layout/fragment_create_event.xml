@@ -3,17 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
-
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"/>
+    android:padding="16dp"
+    android:id="@+id/createfragment">
 
     <TextView
         android:id="@+id/tvCreateEvent"
@@ -23,7 +14,6 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/btnBack"
         android:layout_marginTop="16dp"/>
 
     <EditText
@@ -62,7 +52,14 @@
         android:layout_marginTop="8dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/event_poster"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-400dp"
+        android:text="Back" />
 
     <Button
         android:id="@+id/btnGenerateQR"
@@ -86,41 +83,33 @@
         android:orientation="horizontal"
         android:layout_below="@id/btnUseExistingQR"
         android:layout_marginTop="8dp"
-        android:gravity="center_vertical">
+        android:paddingStart="16dp">
 
         <TextView
-            android:layout_width="116dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Geolocation\nTracking"
-            android:layout_marginStart="16dp"
+            android:textSize="24sp"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:layout_gravity="center_vertical"/>
 
         <CheckBox
             android:id="@+id/checkbox_geo_tracking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:buttonTint="@android:color/darker_gray"
+            android:layout_marginStart="10dp"
             android:scaleX="1.5"
-            android:scaleY="1.5" />
-
-        <Button
-            android:id="@+id/btnMap"
-            android:layout_width="108dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
-            android:text="Map"
-            android:textSize="20sp" />
-
+            android:scaleY="1.5"
+            android:layout_gravity="center_vertical"/>
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnCreateEvent"
-        android:layout_width="match_parent"
+        android:id="@+id/createeventbtn"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Create Event"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="500dp"/>
 
 </RelativeLayout>

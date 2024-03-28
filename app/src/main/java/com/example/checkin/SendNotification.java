@@ -132,7 +132,7 @@ public class SendNotification extends Fragment {
         mainObject2.put("message", message2);
 
         String json = null;
-        InputStream is = getContext().getAssets().open("admin.json");
+        InputStream is = getContext().getAssets().open("checkin.json");
 
         int size = is.available();
 
@@ -153,13 +153,14 @@ public class SendNotification extends Fragment {
                 .createScoped(Arrays.asList(SCOPES));
         googleCredentials.refresh();
         String token = googleCredentials.getAccessToken().getTokenValue();
+        System.out.println(token);
         is.close();
 
         // create request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL2, mainObject2,  new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("NotificationSuccess", "Error sending notification: ");
+                Log.d("NotificationSuccess", "Success ");
 
             }
         }, new Response.ErrorListener() {

@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 // Shows event information for an organizer
 public class EventsDetailOrg extends Fragment {
@@ -37,12 +39,17 @@ public class EventsDetailOrg extends Fragment {
         detailscodebutton = view.findViewById(R.id.codebtn);
         posterbutton = view.findViewById(R.id.posterbtn);
 
-
-
         // get event object from previous fragment
         Bundle bundle = this.getArguments();
         assert bundle != null;
         myevent = (Event) bundle.getSerializable("event");
+
+        if (myevent.getPoster().equals("")){
+            //no poster for this event
+            //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
+            posterbutton.setText("No Poster Available");
+        }
+
 
 
         // move back to pevious fragment when clicked
@@ -84,6 +91,42 @@ public class EventsDetailOrg extends Fragment {
 
             }
         });
+
+        //move to poster fragment
+        posterbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (myevent.getPoster().equals("")){
+                    //no poster for this event
+                    //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
+                    return;
+                }
+
+                //Create fragment
+                EventPosterFrag posterShareFrag = new EventPosterFrag();
+
+                UserImage poster = new UserImage();
+                poster.setImageB64(myevent.getPoster());
+                poster.setID(myevent.getEventId());
+
+                Bundle args = new Bundle();
+                args.putSerializable("Poster", poster);
+
+                posterShareFrag.setArguments(args);
+                //ShareCode code_frag = new ShareCode();
+                //Bundle args = new Bundle();
+                //args.putSerializable("event", myevent);
+                //code_frag.setArguments(args);
+                getParentFragmentManager().setFragmentResult("Poster",args);
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, posterShareFrag).addToBackStack(null).commit();
+
+
+
+                //getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
         eventnametxt.setText(myevent.getEventname());
         eventdetails.setText(myevent.getEventdetails());
 

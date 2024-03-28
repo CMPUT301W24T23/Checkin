@@ -34,9 +34,6 @@ public class EventDetailAtten extends Fragment {
     Button checkinbutton;
     Button signupbutton;
 
-    Attendee attendee;
-
-
     private FirebaseFirestore db;
 
 
@@ -59,10 +56,7 @@ public class EventDetailAtten extends Fragment {
         String eventid = myevent.getEventId();
 
         db = FirebaseFirestore.getInstance();
-        Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
-
 
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override

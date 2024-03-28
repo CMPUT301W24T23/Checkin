@@ -88,8 +88,11 @@ public class EventDetailAtten extends Fragment {
                 fetchAttendee(new OnSuccessListener<Attendee>() {
                     @Override
                     public void onSuccess(Attendee attendee) {
+                        Log.d("numbers1","attendees before" +myevent.getCheckInList().getAttendees().size());
                         attendee.CheckIn(myevent);
                         myevent.userCheckIn(attendee);
+                        Log.d("numbers2", "attendees after" +myevent.getCheckInList().getAttendees().size());
+
 
                         FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -101,6 +104,7 @@ public class EventDetailAtten extends Fragment {
                         Database database = new Database();
                         database.updateEvent(myevent);
                         database.updateAttendee(attendee);
+
                     }
                 });
             }

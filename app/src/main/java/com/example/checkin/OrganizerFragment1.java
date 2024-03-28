@@ -224,7 +224,6 @@ public class OrganizerFragment1 extends Fragment {
     private void checkMilestone(int attendeeCount, Event myevent) {
         ArrayList<Integer> milestones = new ArrayList<>();
         milestones.add(1);
-        milestones.add(2);
         milestones.add(10);
         milestones.add(50);
         milestones.add(75);
@@ -239,16 +238,20 @@ public class OrganizerFragment1 extends Fragment {
 
     private void sendMilestoneNotification(String title, String body, Event myevent) {
         // Create an intent and call the MileStone class's method to send a notification
-        Intent intent = new Intent(getContext(), OrganizerView.class);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        String notificationKey = "milestone_" + myevent.getEventId();
+        if (getContext() != null) {
+            Intent intent = new Intent(getContext(), OrganizerView.class);
 
-        // Check if the notification for this milestone has already been sent
-        boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
-        if (!notificationSent) {
-            int notificationId = Integer.parseInt(myevent.getEventId());
-            MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent, notificationId);
-            sharedPreferences.edit().putBoolean(notificationKey, true).apply();
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+            String notificationKey = "milestone_" + myevent.getEventId();
+
+            // Check if the notification for this milestone has already been sent
+            boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
+
+            if (!notificationSent) {
+                int notificationId = Integer.parseInt(myevent.getEventId());
+                MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent, notificationId);
+                sharedPreferences.edit().putBoolean(notificationKey, true).apply();
+            }
         }
     }
 

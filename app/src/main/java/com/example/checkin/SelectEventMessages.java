@@ -42,7 +42,7 @@ public class SelectEventMessages extends Fragment {
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
     Button backbutton;
-    Button addeventbutton;
+
     Organizer organizer;
 
     private FirebaseFirestore db;
@@ -146,8 +146,7 @@ public class SelectEventMessages extends Fragment {
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), OrganizerView.class);
-                startActivity(intent);
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 

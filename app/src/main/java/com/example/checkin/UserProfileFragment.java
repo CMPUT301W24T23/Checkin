@@ -1,7 +1,9 @@
 package com.example.checkin;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +11,7 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +21,22 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.provider.Settings.Secure;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import com.example.checkin.Attendee;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -54,8 +64,9 @@ public class UserProfileFragment extends Fragment {
 //         // Required empty public constructor
 //     }
   
-
+    private final Database db = new Database();
     // Instance of the an attendee.
+    //private Attendee currentUser = db.getAttendee(Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID));
     private Attendee currentUser = new Attendee();
 
     // Other UI elements
@@ -80,6 +91,13 @@ public class UserProfileFragment extends Fragment {
                 openFileChooser();
             }
         });
+
+        //Set user information
+        currentUser.setUserId(Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID));
+
+        loadPrefs();
+        //Load from firebase in case changes made there
+        retrieveAttendee(currentUser.getUserId());
 
         // Initialize other UI elements
         nameEdit = view.findViewById(R.id.nameEdit);
@@ -114,6 +132,33 @@ public class UserProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    /**
+     * Load stored local data into view
+     */
+    private void loadPrefs(){
+        //Restore saved local data for quick access
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        currentUser.setName(preferences.getString("Name", ""));
+        currentUser.setEmail(preferences.getString("Email", ""));
+        currentUser.setHomepage(preferences.getString("Homepage", ""));
+        //TODO: discuss country vs phone
+        if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
+            currentUser.toggleTracking();
+        }
+    }
+
+    private void savePrefs(){
+        //save data locally so it can be displayed instantly when this fragment is opened again
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("Name", currentUser.getName());
+        editor.putString("Email", currentUser.getEmail());
+        editor.putString("Homepage", currentUser.getHomepage());
+        //TODO: discuss country vs phone
+        editor.putBoolean("Tracking", currentUser.trackingEnabled());
+        editor.apply();
     }
 
     /**
@@ -180,9 +225,6 @@ public class UserProfileFragment extends Fragment {
         boolean locationPermission = locationBox.isChecked();
 
       
-        // Updating/Saving the new/changed user information of the current Attendee.
-        currentUser.updateProfile(name, email, homepage, country, locationPermission);
-      
         // Validate email format
         if (!isValidEmail(email)) {
             emailEdit.setError("Invalid email format");
@@ -214,6 +256,20 @@ public class UserProfileFragment extends Fragment {
             // Log the visibility of the ImageView
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
         }
+
+        // Updating/Saving the new/changed user information of the current Attendee.
+        //currentUser.updateProfile(name, email, homepage, country, locationPermission);
+        currentUser.setName(name);
+        currentUser.setEmail(email);
+        currentUser.setHomepage(homepage);
+        //currentUser.setCountry();
+        if(!(currentUser.trackingEnabled() == locationPermission)){
+            currentUser.toggleTracking();
+        }
+        db.updateAttendee(currentUser);
+
+        savePrefs();        //Save user info to local preferences
+
 
         String message = "Name: " + name + "\nEmail: " + email + "\nHomepage: " + homepage +
                 "\nCountry: " + country + "\nLocation Permission: " + locationPermission;
@@ -321,6 +377,55 @@ public class UserProfileFragment extends Fragment {
     private boolean isValidUrl(String url) {
         String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         return Pattern.matches(urlRegex, url);
+    }
+
+
+    public void retrieveAttendee(String id){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Attendees").document(id);
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
+                        /*
+                        //currentUser.setUserId(document.getId());
+                        currentUser.setName(document.getString("Name"));
+                        currentUser.setHomepage(document.getString("Homepage"));
+                        currentUser.setPhoneNumber(document.getString("Phone"));
+
+                        //set the tracking status of the attendee
+                        //the empty constructor has tracking as true by default
+                        boolean track = Boolean.TRUE.equals(document.getBoolean("Tracking"));
+                        if(!(track == currentUser.trackingEnabled())){
+                            currentUser.toggleTracking();
+                        }*/
+                        Database fireBase = new Database();
+                        currentUser = fireBase.getAttendee(document);
+                        nameEdit.setText(currentUser.getName());
+                        emailEdit.setText(currentUser.getEmail());
+                        homeEdit.setText(currentUser.getHomepage());
+                        countryEdit.setText(currentUser.getCountry());
+                        locationBox.setChecked(currentUser.trackingEnabled());
+                        savePrefs();
+
+                    } else {
+                        Log.d("Firebase", "No such document");
+                        nameEdit.setText("");
+                        emailEdit.setText("");
+                        homeEdit.setText("");
+                        countryEdit.setText("");
+                        locationBox.setChecked(false);
+                        savePrefs();
+                    }
+                } else {
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
 

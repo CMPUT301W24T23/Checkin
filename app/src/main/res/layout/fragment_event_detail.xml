@@ -38,6 +38,26 @@
         android:text="Event Poster" />
 
     <Button
+        android:id="@+id/signupbtn"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventinfo"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="400dp"
+        android:layout_marginBottom="-105dp"
+        android:text="Sign Up" />
+
+    <Button
+        android:id="@+id/checkinbtn"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eventinfo"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="400dp"
+        android:layout_marginBottom="-165dp"
+        android:text="Check In" />
+
+    <Button
 
         android:id="@+id/eventmessg"
         android:layout_width="200dp"

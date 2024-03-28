@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:text=" Checked In Attendees"
         android:textColor="@color/black"
         android:textSize="40dp" />
@@ -21,7 +21,14 @@
         android:id="@+id/attendees_list"
         android:layout_width="match_parent"
         android:layout_height="391dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="110dp"
         android:layout_marginBottom="-150dp" />
+
+    <Button
+        android:id="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-400dp"
+        android:text="Back" />
 
 </RelativeLayout>

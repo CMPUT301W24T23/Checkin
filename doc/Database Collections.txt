@@ -1,0 +1,39 @@
+Database Collections:
+
+Attendee:
+Name
+Homepage
+Email
+Phone
+Geotracking : Boolean
+Checkedin: Array
+			EventID 
+ProfilePicture
+
+Organizer:
+Events : Array
+		: EventID
+Geotracking : Boolean
+QRCodes : Array
+		QRCodeID
+IsAdmin : Boolean
+
+Event:
+Poster
+Name
+Details
+OrganizerID
+
+Announcement:
+Title
+Message
+
+ProfilePictures:
+UserID
+
+Posters:
+EventID
+
+QRCodes:
+EvendID
+OrganizerID

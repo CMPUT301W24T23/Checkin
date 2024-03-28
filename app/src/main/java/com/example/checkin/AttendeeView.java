@@ -20,6 +20,7 @@ public class AttendeeView extends AppCompatActivity {
         // create homepage and announcements fragments
         AttendeeFragment1 att_frg1 = new AttendeeFragment1();
         Announcements ann_frg1 = new Announcements();
+        ScanQrCode scan_frag = new ScanQrCode();
         // move to home page fragment
         getSupportFragmentManager()
                 .beginTransaction()
@@ -41,7 +42,11 @@ public class AttendeeView extends AppCompatActivity {
                     return true;
                 }
                 else if (item.getItemId() == R.id.qrcodes2){
-                    //implement when fragment created
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.atten_view, scan_frag)
+                            .commit();
+                    return true;
                 }
                 else if (item.getItemId() == R.id.messages2){
                     getSupportFragmentManager()

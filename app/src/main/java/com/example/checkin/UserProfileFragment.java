@@ -65,6 +65,7 @@ public class UserProfileFragment extends Fragment {
     private Attendee currentUser = new Attendee();    // Instance of the an attendee.
 
     private EditText nameEdit, emailEdit, homeEdit, phoneEdit;      //Text boxes
+    Button editPictureButton, removePictureButton, saveButton;
     private CheckBox locationBox;
 
     public UserProfileFragment() {
@@ -78,9 +79,9 @@ public class UserProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
         myImageView = view.findViewById(R.id.myImageView);
-        Button editPictureButton = view.findViewById(R.id.editPictureButton);
-        Button removePictureButton = view.findViewById(R.id.removePictureButton);
-        Button saveButton = view.findViewById(R.id.saveButton);
+        editPictureButton = view.findViewById(R.id.editPictureButton);
+        removePictureButton = view.findViewById(R.id.removePictureButton);
+        saveButton = view.findViewById(R.id.saveButton);
 
 
         // Initialize other UI elements
@@ -164,6 +165,7 @@ public class UserProfileFragment extends Fragment {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 myImageView.setImageBitmap(bitmap);
+                removePictureButton.setVisibility(View.VISIBLE);
 
                 // Check if the image is loaded into the ImageView
                 if (myImageView.getDrawable() != null && myImageView.getVisibility() == View.VISIBLE) {
@@ -264,6 +266,7 @@ public class UserProfileFragment extends Fragment {
             currentUser.toggleTracking();
         }
         currentUser.setProfilePicture(imageBase64);
+        removePictureButton.setVisibility(View.VISIBLE);
 
         db.updateAttendee(currentUser);     //update user on firebase
         savePrefs();        //Save user info to local preferences

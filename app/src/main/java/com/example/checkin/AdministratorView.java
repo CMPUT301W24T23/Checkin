@@ -26,6 +26,7 @@ public class AdministratorView extends Fragment {
         Button adminposters = view.findViewById(R.id.adminposter);
 
 
+        // Displays the new fragment showing the list of attendees.
         adminprofiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,10 +34,14 @@ public class AdministratorView extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 AdministratorAttendeeList fragment = new AdministratorAttendeeList();
                 fragmentTransaction.replace(R.id.adminFrame, fragment);
+
+                // Commit the transaction
+                fragmentTransaction.commit();
             }
         });
 
-        adminimages.setOnClickListener(new View.OnClickListener() {
+        // Displays the new fragment showing the list of events.
+        adminevents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();

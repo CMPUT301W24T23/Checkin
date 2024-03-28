@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -33,7 +34,7 @@ android {
 
 dependencies {
 
-    implementation("com.google.android.gms:play-services-maps:17.0.1")
+    implementation("com.google.android.gms:play-services-maps:17.0.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.journeyapps:zxing-android-embedded:4.1.0")
@@ -51,5 +52,4 @@ dependencies {
     androidTestImplementation("com.jayway.android.robotium:robotium-solo:5.3.1")
     testImplementation("org.mockito:mockito-core:5.11.0")
     implementation("androidx.preference:preference:1.2.1")
-
 }

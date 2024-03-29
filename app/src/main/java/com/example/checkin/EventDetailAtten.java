@@ -62,15 +62,18 @@ public class EventDetailAtten extends Fragment {
 
 
 
+
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             myevent = (Event) bundle.getSerializable("event");
         }
+
         String eventid = myevent.getEventId();
 
         db = FirebaseFirestore.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
+        System.out.println("checkincount first "+ myevent.getCheckInList().getAttendees().size());
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +86,7 @@ public class EventDetailAtten extends Fragment {
                             public void onSuccess(Attendee attendee) {
                                 attendee.CheckIn(myevent);
                                 myevent.userCheckIn(attendee);
+                                System.out.println("checkincount second "+ myevent.getCheckInList().getAttendees().size());
 
                                 FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -93,13 +97,14 @@ public class EventDetailAtten extends Fragment {
 
                                 Database database = new Database();
                                 database.updateAttendee(attendee);
-                                database.updateEvent(myevent);
+                                //database.updateEvent(myevent);
                             }
                         });
                     }
                 });
             }
         });
+
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +118,7 @@ public class EventDetailAtten extends Fragment {
 
                         Database database = new Database();
                         database.updateAttendee(attendee);
-                        database.updateEvent(myevent);
+                        //database.updateEvent(myevent);
 
 
                         Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
@@ -121,6 +126,7 @@ public class EventDetailAtten extends Fragment {
                 });
             }
         });
+       // database.updateEvent(myevent);
 
 
 

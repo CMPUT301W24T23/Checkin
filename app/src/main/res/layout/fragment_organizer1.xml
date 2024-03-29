@@ -30,16 +30,11 @@
         android:textSize="45dp"
         />
 
-    <ListView
-        android:id="@+id/events"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_above="@id/addeventbtn"
-        android:layout_below="@id/eventpage_text"
-        android:layout_marginTop="4dp"
-        android:fadeScrollbars="false"
-
-         />
+        <ListView
+            android:id="@+id/events"
+            android:layout_width="match_parent"
+            android:layout_marginTop="100dp"
+            android:layout_height="391dp" />
 
     <Button
         android:id="@+id/backbtn"
@@ -48,14 +43,16 @@
         android:layout_marginBottom="-400dp"
         android:text="Back" />
 
-    <Button
-        android:id="@+id/addeventbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Event"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="200dp" />
+        <Button
+            android:id="@+id/addeventbtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Add Event"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="530dp"
+
+
+            />
 
     </RelativeLayout>
 

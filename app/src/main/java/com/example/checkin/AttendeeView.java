@@ -117,6 +117,7 @@ public class AttendeeView extends AppCompatActivity {
             String qrCodeContent = intentResult.getContents();
             System.out.println("content"+ qrCodeContent);
             getEventDetailsFromFirebase(qrCodeContent);
+            Toast.makeText(this, "Check In Successful", Toast.LENGTH_LONG).show();
 
 
 

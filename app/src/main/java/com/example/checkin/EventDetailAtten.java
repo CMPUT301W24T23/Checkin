@@ -74,37 +74,32 @@ public class EventDetailAtten extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         System.out.println("checkincount first "+ myevent.getCheckInList().getAttendees().size());
+
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
+                fetchAttendee(new OnSuccessListener<Attendee>() {
                     @Override
-                    public void onSuccess(Event event) {
-                        myevent = event; // Update the event object with the retrieved event
-                        fetchAttendee(new OnSuccessListener<Attendee>() {
+                    public void onSuccess(Attendee attendee) {
+                        attendee.CheckIn(myevent);
+                        myevent.userCheckIn(attendee);
+
+
+                        FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
-                            public void onSuccess(Attendee attendee) {
-                                attendee.CheckIn(myevent);
-                                myevent.userCheckIn(attendee);
-                                System.out.println("checkincount second "+ myevent.getCheckInList().getAttendees().size());
-
-                                FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d("Subscribe", "subscribe to event");
-                                    }
-                                });
-
-                                Database database = new Database();
-                                database.updateAttendee(attendee);
-                                //database.updateEvent(myevent);
+                            public void onSuccess(Void unused) {
+                                Log.d("Subscribe", "subscribe to event");
                             }
                         });
+
+                        Database database = new Database();
+                        database.updateEvent(myevent);
+                        database.updateAttendee(attendee);
+
                     }
                 });
             }
         });
-
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,9 +112,8 @@ public class EventDetailAtten extends Fragment {
                         myevent.userSubs(attendee);
 
                         Database database = new Database();
+                        database.updateEvent(myevent);
                         database.updateAttendee(attendee);
-                        //database.updateEvent(myevent);
-
 
                         Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
                     }
@@ -135,15 +129,6 @@ public class EventDetailAtten extends Fragment {
 
 
         // move to announcements page when see announcements button is clicked
-        eventmessagesbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Announcements announce_frag1= new Announcements();
-
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, announce_frag1).commit();
-
-            }
-        });
 
         // move back to previous fragment when clicked
         backbutton.setOnClickListener(new View.OnClickListener() {

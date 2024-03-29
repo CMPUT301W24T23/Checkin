@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -139,11 +140,12 @@ public class Database {
 
 
 
+        eventRef.document(e.getEventId()).update("UserCheckIn",checkedIn);
         data.put("UserCheckIn", checkedIn);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
-        eventRef.document(e.getEventId()).set(data);
+        eventRef.document(e.getEventId()).set(data, SetOptions.merge());
 
     }
 

@@ -164,7 +164,6 @@ public class CreateEventFragment extends Fragment {
         });
 
 
-
         // choose event qr code to be generated
 
 
@@ -187,33 +186,33 @@ public class CreateEventFragment extends Fragment {
                     event.setQrcodeid(qrcodevalue);
                 }
 
-                    //convert image to string and add to event
-                    if (posterAdded) {
-                        event.setPoster(encoder.BitmapToBase64(poster));
-                    } else {
-                        //empty string if no poster is added
-                        event.setPoster("");
-                    }
-
-                    //Add poster to database
-                    database.updatePoster(event.getPoster(), event.getEventId());
-
-
-                    events.addEvent(event);
-                    database.updateEvent(event);
-                    Log.d("Event Creation", String.format("Adding organizer %s event %s to the database", organizer.getUserId(), event.getEventId()));
-
-                    organizer.EventCreate(event.getEventId());
-                    database.updateOrganizer(organizer);
-
-                    OrganizerFragment1 organizerfrag = new OrganizerFragment1();
-                    Bundle args = new Bundle();
-                    args.putSerializable("organizer", organizer);
-                    args.putSerializable("eventslist", events);
-                    organizerfrag.setArguments(args);
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
-
+                //convert image to string and add to event
+                if (posterAdded) {
+                    event.setPoster(encoder.BitmapToBase64(poster));
+                } else {
+                    //empty string if no poster is added
+                    event.setPoster("");
                 }
+
+                //Add poster to database
+                database.updatePoster(event.getPoster(), event.getEventId());
+
+
+                events.addEvent(event);
+                database.updateEvent(event);
+                Log.d("Event Creation", String.format("Adding organizer %s event %s to the database", organizer.getUserId(), event.getEventId()));
+
+                organizer.EventCreate(event.getEventId());
+                database.updateOrganizer(organizer);
+
+                OrganizerFragment1 organizerfrag = new OrganizerFragment1();
+                Bundle args = new Bundle();
+                args.putSerializable("organizer", organizer);
+                args.putSerializable("eventslist", events);
+                organizerfrag.setArguments(args);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
+
+            }
 
         });
 
@@ -229,16 +228,14 @@ public class CreateEventFragment extends Fragment {
 
             }
         });
-        
-        
-        
 
 
         return view;
     }
 
 
-    public String generateQRCode(Event myevent, ImageView imageCode){
+
+    public String generateQRCode(Event myevent, ImageView imageCode) {
         String myText = myevent.getEventId();
 
         // use event id instead -> to retrieve event from firebase?
@@ -251,7 +248,7 @@ public class CreateEventFragment extends Fragment {
 
         // Appending user's ID
         //String userid = "123456"; // Change 123456 to user's ID
-      //  myText += "_" + userid;
+        //  myText += "_" + userid;
 
         // Initializing MultiFormatWriter for QR code
 
@@ -273,8 +270,8 @@ public class CreateEventFragment extends Fragment {
         return myText;
 
 
-
     }
+
 }
 
 

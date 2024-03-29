@@ -124,10 +124,7 @@ public class AttendeeView extends AppCompatActivity {
             // check in attendee using firebase- use event id and attendee id to get
             // event and attendee from firebase, and update both
 
-            EventDetailAtten eventfragment = new EventDetailAtten();
-            Bundle args = new Bundle();
-            args.putString("event", intentResult.getContents());
-            eventfragment.setArguments(args);
+
         }
     } else {
         super.onActivityResult(requestCode, resultCode, data);
@@ -205,7 +202,7 @@ public class AttendeeView extends AppCompatActivity {
                     }
                 });
 
-        eventsRef.whereEqualTo("Unique QR Code", qrCodeId)
+        eventsRef.whereEqualTo("Unique QR Code Id", qrCodeId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -253,6 +250,30 @@ public class AttendeeView extends AppCompatActivity {
 
         }
 
+    }
+
+    private boolean isEventQRCode(String qrCodeContent) {
+        // Return true if it's an event QR code, false otherwise
+        Database database = new Database();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String androidId = preferences.getString("ID", "");
+        CollectionReference eventsRef = db.collection("Events");
+
+        eventsRef.whereEqualTo("Event Qr Code Id", qrCodeContent)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // retrieve event
+                            Event event = database.getEvent(document);
+                            //return true;
+                        }
+                    }
+                   // return false;
+                });
+
+        return false; // Default return value if the task is not successful or no event is found
     }
 
     /**

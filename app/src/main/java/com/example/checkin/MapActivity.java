@@ -9,7 +9,6 @@
 // https://developers.google.com/maps/documentation/android-sdk/start
 
 package com.example.checkin;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;

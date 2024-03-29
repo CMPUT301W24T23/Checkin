@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -71,7 +72,8 @@ public class CreateEventFragment extends Fragment {
     private Button addeventbutton;
     private Button qrcodebutton;
     private Button btnMap;
-    boolean createqr;
+    private Button btnUseExistingQR;
+    private boolean qrCodeOptionSelected = false;
     private EventList events;
     private Event event;
 
@@ -109,7 +111,7 @@ public class CreateEventFragment extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
         btnMap = view.findViewById(R.id.btnMap);
         qrcodeimage = view.findViewById(R.id.qrcodeimage);
-
+        btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
 
         Database database = new Database();
         btnAddPoster.setOnClickListener(v -> mGetContent.launch("image/*"));
@@ -142,7 +144,16 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        qrcodebutton.setOnClickListener(view12 -> qrcodebutton.setBackgroundColor(Color.GRAY));
+        qrcodebutton.setOnClickListener(view12 -> {
+            qrCodeOptionSelected = true;
+            qrcodebutton.setBackgroundColor(Color.GRAY);
+            // Your existing code for generating QR code
+        });
+
+        btnUseExistingQR.setOnClickListener(view12 -> {
+            qrCodeOptionSelected = true;
+            // Your code for using an existing QR code
+        });
 
         addeventbutton.setOnClickListener(view13 -> {
             String eventName = eventname.getText().toString().trim();
@@ -150,23 +161,38 @@ public class CreateEventFragment extends Fragment {
             String eventTimeStr = eventTime.getText().toString().trim();
             String eventDetailsStr = eventDetails.getText().toString().trim();
 
+            boolean hasError = false;
+
             if (eventName.isEmpty()) {
-                eventname.setError("Event name is required");
-                return;
+                eventname.setError("Required");
+                hasError = true;
             }
+
             if (eventDateStr.isEmpty()) {
-                eventDate.setError("Event date is required");
-                return;
+                eventDate.setError("Required");
+                hasError = true;
             }
+
             if (eventTimeStr.isEmpty()) {
-                eventTime.setError("Event time is required");
-                return;
+                eventTime.setError("Required");
+                hasError = true;
             }
+
             if (eventDetailsStr.isEmpty()) {
-                eventDetails.setError("Event details are required");
+                eventDetails.setError("Required");
+                hasError = true;
+            }
+
+            if (!qrCodeOptionSelected) {
+                Toast.makeText(getContext(), "Please select a QR code option", Toast.LENGTH_SHORT).show();
+                hasError = true;
+            }
+
+            if (hasError) {
                 return;
             }
 
+            // Proceed with event creation
             event = new Event(eventName, Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
             event.setEventDate(eventDateStr);
             event.setEventTime(eventTimeStr);
@@ -226,6 +252,4 @@ public class CreateEventFragment extends Fragment {
         }
         return myText;
     }
-
-
 }

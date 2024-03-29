@@ -51,7 +51,7 @@ public class Announcements extends Fragment {
         announcements = view.findViewById(R.id.announcements_list);
         backbutton = view.findViewById(R.id.backbtn);
         announcelist = new ArrayList<>();
-        
+
 
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override

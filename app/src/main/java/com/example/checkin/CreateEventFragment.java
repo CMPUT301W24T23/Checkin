@@ -185,7 +185,7 @@ public class CreateEventFragment extends Fragment {
                 if (createqr == true) {
                     String qrcodevalue = generateQRCode(event, qrcodeimage);
                     event.setQrcodeid(qrcodevalue);
-
+                }
 
                     //convert image to string and add to event
                     if (posterAdded) {
@@ -214,7 +214,7 @@ public class CreateEventFragment extends Fragment {
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
 
                 }
-            }
+
         });
 
 

@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +23,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.Map;
 
 // Event details page for Attendee
 public class EventDetailAtten extends Fragment {
@@ -51,18 +56,17 @@ public class EventDetailAtten extends Fragment {
         checkinbutton  = view.findViewById(R.id.checkinbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
+        Database database = new Database();
 
 
 
-        Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
-        String eventid = myevent.getEventId();
+
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             myevent = (Event) bundle.getSerializable("event");
         }
+        String eventid = myevent.getEventId();
 
         db = FirebaseFirestore.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -70,24 +74,28 @@ public class EventDetailAtten extends Fragment {
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fetchAttendee(new OnSuccessListener<Attendee>() {
+                fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
                     @Override
-                    public void onSuccess(Attendee attendee) {
-                        attendee.CheckIn(myevent);
-                        myevent.userCheckIn(attendee);
-
-
-                        FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    public void onSuccess(Event event) {
+                        myevent = event; // Update the event object with the retrieved event
+                        fetchAttendee(new OnSuccessListener<Attendee>() {
                             @Override
-                            public void onSuccess(Void unused) {
-                                Log.d("Subscribe", "subscribe to event");
+                            public void onSuccess(Attendee attendee) {
+                                attendee.CheckIn(myevent);
+                                myevent.userCheckIn(attendee);
+
+                                FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d("Subscribe", "subscribe to event");
+                                    }
+                                });
+
+                                Database database = new Database();
+                                database.updateEvent(myevent);
+                                database.updateAttendee(attendee);
                             }
                         });
-
-                        Database database = new Database();
-                        database.updateEvent(myevent);
-                        database.updateAttendee(attendee);
-
                     }
                 });
             }
@@ -210,4 +218,55 @@ public class EventDetailAtten extends Fragment {
             }
         });
     }
+    private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees, String eventId) {
+        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
+        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Attendee object using Database class method
+                        Attendee attendee = new Database().getAttendee(document);
+                        attendee.CheckIn(myevent);
+                        myevent.userCheckIn(attendee);
+
+
+                    } else {
+                        Log.d("Firestore", "No such document");
+                    }
+                } else {
+                    Log.d("Firestore", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+
+
+    public void fetchEvent(String eventId, OnSuccessListener<Event> onSuccessListener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference eventRef = db.collection("Events").document(eventId);
+        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Event object using Database class method
+                        Event event = new Database().getEvent(document);
+                        onSuccessListener.onSuccess(event);
+                    } else {
+                        Log.d("Firestore", "No such document");
+                    }
+                } else {
+                    Log.d("Firestore", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+
+
+
 }

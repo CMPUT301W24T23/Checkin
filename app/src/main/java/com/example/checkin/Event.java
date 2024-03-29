@@ -12,6 +12,8 @@ import com.example.checkin.AttendeeList;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Random;
 
 public class Event implements Serializable {
@@ -30,6 +32,8 @@ public class Event implements Serializable {
 
     private String qrcodeid;
     private String eventdetails;
+
+
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
@@ -163,22 +167,6 @@ public class Event implements Serializable {
             }
 
 
-            if (CheckInList.contains(a)) {
-                //if in list, the user is checking out of the event
-                //a.CheckIn(this);
-
-                //CheckInList.removeAttendee(a);
-            } else {
-                //otherwise the user is checking in
-                //a.CheckIn(this);
-
-                //CheckInList.addAttendee(a);
-
-                CheckInList.addAttendee(a);
-
-            }
-
-
         }
 
     /**
@@ -267,8 +255,10 @@ public class Event implements Serializable {
     public void setCreator(String creator) {
         this.creator = creator;
     }
-}
+
 
     public AttendeeList getCheckInList() {
         return CheckInList;
     }
+
+}

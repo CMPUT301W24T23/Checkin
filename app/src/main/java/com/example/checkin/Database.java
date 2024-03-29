@@ -103,7 +103,7 @@ public class Database {
      */
     public void updateEvent(Event e){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference attendeeRef = db.collection("Events");
+        CollectionReference eventRef = db.collection("Events");
 
         //Upload Event info
         Map<String, Object> data = new HashMap<>();
@@ -129,7 +129,7 @@ public class Database {
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
-        attendeeRef.document(e.getEventId()).set(data);
+        eventRef.document(e.getEventId()).set(data);
 
     }
 

@@ -69,30 +69,10 @@ public class AttendeeFragment1 extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference organizerRef = db.collection("Organizers").document(android_id);
-        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Convert the document snapshot to an Organizer object using Database class method
-                        organizer = database.getOrganizer(document);
-                        // Proceed with setting up the UI using the retrieved organizer object
-                    } else {
-                        Log.d("document", "No such document");
-                    }
-                } else {
-                    Log.d("error", "get failed with ", task.getException());
-                }
-            }
-        });
-
-        // Replace "organizerId" with the actual ID of the organizer
 
 
         // Query events collection based on organizer ID
         db.collection("Events")
-                .whereEqualTo("Creator", android_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

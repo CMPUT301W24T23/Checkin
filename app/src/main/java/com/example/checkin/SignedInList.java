@@ -60,7 +60,26 @@ public class SignedInList extends Fragment {
         if (bundle != null) {
             myevent = (Event) bundle.getSerializable("event");
         }
+
+
+        // if event exists, get checked in list of attendees
+        if (myevent !=null) {
+            attendeedatalist = myevent.getSubscribers();
+        }
+
+
+
+
+
+
+        // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
+        if (attendeedatalist!= null) {
+            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendeedatalist.getAttendees());
+            attendeesList.setAdapter(AttendeesAdapter);
+        }
+
         String eventid = myevent.getEventId();
+
 
 
 

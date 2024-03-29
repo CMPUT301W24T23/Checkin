@@ -22,6 +22,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,10 +42,9 @@ public class AttendeeFragment1 extends Fragment {
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
     Button backbutton;
-
-    Organizer organizer;
-
     private FirebaseFirestore db;
+    ProgressBar p;
+    RelativeLayout maincontent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +53,8 @@ public class AttendeeFragment1 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_attendee1, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
+        p = view.findViewById(R.id.progress);
+        maincontent = view.findViewById(R.id.maincontent);
 
         allevents = new EventList();
         datalist = new ArrayList<>();
@@ -62,61 +65,29 @@ public class AttendeeFragment1 extends Fragment {
         allevents.addEvent(event1);
         datalist.add(event1);
 
+
+
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference organizerRef = db.collection("Organizers").document(android_id);
-        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Convert the document snapshot to an Organizer object using Database class method
-                        organizer = database.getOrganizer(document);
-                        // Proceed with setting up the UI using the retrieved organizer object
-                    } else {
-                        Log.d("document", "No such document");
-                    }
-                } else {
-                    Log.d("error", "get failed with ", task.getException());
-                }
-            }
-        });
-
-        // Replace "organizerId" with the actual ID of the organizer
-
-
-        // Query events collection based on organizer ID
+        // Query all events from firebase
         db.collection("Events")
-                .whereEqualTo("Creator", android_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            p.setVisibility(View.GONE);
+                            maincontent.setVisibility(View.VISIBLE);
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);
-                                datalist.add(event);
+                                allevents.addEvent(event);
                             }
-                            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
-                                @Override
-                                public View getView(int position, View convertView, ViewGroup parent) {
-                                    View view = convertView;
-                                    if (view == null) {
-                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                        view = inflater.inflate(R.layout.content, null);
-                                    }
-                                    TextView textView = view.findViewById(R.id.event_text);
-                                    textView.setText(datalist.get(position).getEventname());
-                                    return view;
-                                }
-                            };
-                            eventslist.setAdapter(EventAdapter);
 
+                            if (allevents!= null) {
+                                EventAdapter = new EventArrayAdapter(getActivity(), allevents.getEvents());
+                                eventslist.setAdapter(EventAdapter);
+                            }
 
                         }}
                 });
@@ -131,20 +102,8 @@ public class AttendeeFragment1 extends Fragment {
         });
 
         // if eventlist is not null set EventAdapter to custom EventArrayAdapter
-        if (datalist != null) {
-            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, datalist) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View view = convertView;
-                    if (view == null) {
-                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        view = inflater.inflate(R.layout.content, null);
-                    }
-                    TextView textView = view.findViewById(R.id.event_text);
-                    textView.setText(datalist.get(position).getEventname());
-                    return view;
-                }
-            };
+        if (allevents!= null) {
+            EventAdapter = new EventArrayAdapter(getActivity(), allevents.getEvents());
             eventslist.setAdapter(EventAdapter);
         }
 
@@ -154,7 +113,7 @@ public class AttendeeFragment1 extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 EventDetailAtten event_frag1= new EventDetailAtten();
                 Bundle args = new Bundle();
-                args.putSerializable("event", datalist.get(i));
+                args.putSerializable("event", allevents.getEvents().get(i));
                 event_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, event_frag1).addToBackStack(null).commit();

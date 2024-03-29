@@ -112,7 +112,7 @@ public class Database {
      */
     public void updateEvent(Event e){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference attendeeRef = db.collection("Events");
+        CollectionReference eventRef = db.collection("Events");
 
         //Upload Event info
         Map<String, Object> data = new HashMap<>();
@@ -120,6 +120,7 @@ public class Database {
         data.put("Details", e.getEventdetails());
         data.put("Poster", e.getPoster());
         data.put("Creator", e.getCreator());
+        data.put("Qr Code Id", e.getQrcodeid());
 
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
@@ -134,11 +135,14 @@ public class Database {
         for (Attendee a: e.getCheckInList().getAttendees()){
             checkedIn.put(a.getUserId(), "");
         }
+
+
+
         data.put("UserCheckIn", checkedIn);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
-        attendeeRef.document(e.getEventId()).set(data);
+        eventRef.document(e.getEventId()).set(data);
 
     }
 
@@ -334,6 +338,7 @@ public class Database {
         e.setEventdetails(doc.getString("Details"));
         e.setPoster(doc.getString("Poster"));
         e.setCreator(doc.getString("Creator"));
+        e.setQrcodeid(doc.getString("Qr Code Id"));
 
         Map<String, Object> data = doc.getData();
 
@@ -386,6 +391,30 @@ public class Database {
         return e;
     }
 
+
+
+    public void updateMessage(Message m){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference messageRef = db.collection("Messages");
+
+     // Create a new message object
+        Map<String, Object> data = new HashMap<>();
+        data.put("Title", m.getTitle());
+        data.put("Body", m.getBody());
+        data.put("Event Id", m.getEventid());
+        data.put("Type", m.getType());
+
+        messageRef.add(data)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("Upload Message", "Message uploaded successfully with ID: " + documentReference.getId());
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Upload Message", "Error uploading message", e);
+                });
+
+
+    }
+
     //use/modify this code if you need to load all the attendees for whatever reason
     //Firebase data pulls must be done asynchronously through listeners
     //https://firebase.google.com/docs/firestore/query-data/get-data#java_2
@@ -408,6 +437,7 @@ public class Database {
                     }
                 });
     */
+
 
 
 

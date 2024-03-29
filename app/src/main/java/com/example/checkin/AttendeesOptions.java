@@ -19,7 +19,6 @@ public class AttendeesOptions extends Fragment {
     Button checkedinlistbtn;
     Event myevent;
     Button backbutton;
-
     Button signedinlistbtn;
 
     @Override
@@ -69,8 +68,6 @@ public class AttendeesOptions extends Fragment {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
-
-
         return view;
     }
 }

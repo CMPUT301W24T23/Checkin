@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -139,7 +140,7 @@ public class Database {
             checkedIn.put(a.getUserId(), "");
         }
 
-        eventRef.document(e.getEventId()).update("UserCheckIn",checkedIn);
+
         data.put("UserCheckIn", checkedIn);
 
 

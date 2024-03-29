@@ -1,6 +1,7 @@
 package com.example.checkin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -24,7 +25,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
 
 // Shows list of checked in attendees for an event
 public class CheckedInListOrg extends Fragment {
@@ -35,6 +38,8 @@ public class CheckedInListOrg extends Fragment {
     private FirebaseFirestore db;
     Button backbutton;
 
+    TextView totalcheckin;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +49,7 @@ public class CheckedInListOrg extends Fragment {
 
         attendeesList = view.findViewById(R.id.attendees_list);
         backbutton = view.findViewById(R.id.backbtn);
+        totalcheckin = view.findViewById(R.id.total_checkins);
 
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,14 +68,12 @@ public class CheckedInListOrg extends Fragment {
 
 
 
-        String eventid = myevent.getEventId();
 
 
-
-        Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
+        // retrieve events from firebase
         db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -81,9 +85,14 @@ public class CheckedInListOrg extends Fragment {
                         // Retrieve subscribers from the document
                         Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
                         if (subscribersMap != null) {
+                            int attendeeCount = subscribersMap.size();
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putInt("attendeeCount", attendeeCount);
+                            editor.apply();
                             for (String attendeeId : subscribersMap.keySet()) {
                                 // Fetch each attendee document and create Attendee objects
-                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist, eventid);
+                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist, myevent.getEventId());
                             }
                         }
                     } else {
@@ -95,10 +104,14 @@ public class CheckedInListOrg extends Fragment {
             }
         });
 
+
         return view;
     }
 
+
     private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees, String eventId) {
+
+
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -108,6 +121,13 @@ public class CheckedInListOrg extends Fragment {
                     if (document.exists()) {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
+
+                        // Add the attendee to the list
+                        attendees.addAttendee(attendee);
+
+
+                        String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
+                        totalcheckin.setText(text);
 
                         Map<String, Long> checkIns = (Map<String, Long>) document.get("Checkins");
                         if (checkIns != null) {

@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+// displays events to select from and send message or view milestones for
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,57 +24,42 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.Map;
+import org.checkerframework.checker.units.qual.A;
 
-// Shows the Organizer Home page, which includes list of events
-public class OrganizerFragment1 extends Fragment {
+import java.util.ArrayList;
+
+import kotlinx.coroutines.channels.Send;
+
+public class SelectEventMessages extends Fragment {
+
     private ArrayList<Event> datalist;
     private ListView eventslist;
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
     Button backbutton;
-    Button addeventbutton;
-    boolean update;
-    Organizer organizer;
 
-    ProgressBar p;
+    Organizer organizer;
 
     private FirebaseFirestore db;
 
+    ProgressBar p;
+
     RelativeLayout maincontent;
 
-
-    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_organizer1, container, false);
+        View view = inflater.inflate(R.layout.fragment_select_event_messages, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
-        addeventbutton = view.findViewById(R.id.addeventbtn);
         p = view.findViewById(R.id.progress);
         maincontent = view.findViewById(R.id.maincontent);
-        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
-        bottomNavigationView.setVisibility(View.GONE);
-
-        SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getContext());
-        int attendeeCount = preferences2.getInt("attendeeCount", 0);
-
-        //EventList allevents  = new EventList();
-        Bundle bundle = this.getArguments();
-       // if (bundle != null) {
-        //    allevents = (EventList) bundle.getSerializable("eventslist");
-     //   } else {
-          //  allevents = new EventList(); // Initialize only if bundle is null
-      //  }
 
 
         allevents = new EventList();
@@ -95,7 +81,6 @@ public class OrganizerFragment1 extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
-        // retreive organizer from firebase
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference organizerRef = db.collection("Organizers").document(android_id);
         organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -106,7 +91,6 @@ public class OrganizerFragment1 extends Fragment {
                     if (document.exists()) {
                         // Convert the document snapshot to an Organizer object using Database class method
                         organizer = database.getOrganizer(document);
-                        database.updateOrganizer(organizer);
                         // Proceed with setting up the UI using the retrieved organizer object
                     } else {
                         Log.d("document", "No such document");
@@ -117,30 +101,26 @@ public class OrganizerFragment1 extends Fragment {
             }
         });
 
+        // Replace "organizerId" with the actual ID of the organizer
+
 
         // Query events collection based on organizer ID
         db.collection("Events")
                 .whereEqualTo("Creator", android_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         p.setVisibility(View.GONE);
                         maincontent.setVisibility(View.VISIBLE);
-                        bottomNavigationView.setVisibility(View.VISIBLE);
-
                         if (task.isSuccessful()) {
+
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);
                                 allevents.addEvent(event);
-                                Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
-                                if (subscribersMap != null) {
-                                    int attendeeCount = subscribersMap.size();
-                                    checkMilestone(attendeeCount, event);
-                                }
-
                             }
-                            EventAdapter = new ArrayAdapter<Event>(getContext(), R.layout.content, allevents.getEvents()) {
+                            EventAdapter = new ArrayAdapter<Event>(getActivity(), R.layout.content, allevents.getEvents()) {
                                 @Override
                                 public View getView(int position, View convertView, ViewGroup parent) {
                                     View view = convertView;
@@ -158,29 +138,15 @@ public class OrganizerFragment1 extends Fragment {
 
 
                         }}
-                    });
+                });
 
-        // add event button, open create event fragment
-        addeventbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CreateEventFragment createeventfrag = new CreateEventFragment();
-                Bundle args = new Bundle();
-                args.putSerializable("eventslist", allevents);
-                args.putSerializable("organizer", organizer);
-                createeventfrag.setArguments(args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, createeventfrag).addToBackStack(null).commit();
-                update = true;
 
-            }
-        });
 
         // move back to previous fragment when clicked
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
@@ -207,53 +173,17 @@ public class OrganizerFragment1 extends Fragment {
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                EventsDetailOrg eventd_frag1= new EventsDetailOrg();
+                SendNotification send_frag = new SendNotification();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
-                eventd_frag1.setArguments(args);
+                send_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, send_frag).addToBackStack(null).commit();
 
 
             }
         });
         return view;
-
-    }
-
-    private void checkMilestone(int attendeeCount, Event myevent) {
-        ArrayList<Integer> milestones = new ArrayList<>();
-        milestones.add(1);
-        milestones.add(10);
-        milestones.add(50);
-        milestones.add(75);
-        milestones.add(100);
-        for (int milestone : milestones) {
-            if (attendeeCount == milestone) {
-                sendMilestoneNotification(myevent.getEventname()+ ": Milestone Reached!", "Attendee count: " + attendeeCount, myevent);
-                break; // No need to continue checking other milestones
-            }
-        }
-    }
-
-    private void sendMilestoneNotification(String title, String body, Event myevent) {
-        // Create an intent and call the MileStone class's method to send a notification
-        if (getContext() != null) {
-            Intent intent = new Intent(getContext(), OrganizerView.class);
-
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-            String notificationKey = "milestone_" + myevent.getEventId();
-
-            // Check if the notification for this milestone has already been sent
-            boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
-
-            if (!notificationSent) {
-                int notificationId = Integer.parseInt(myevent.getEventId());
-                MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent, notificationId);
-                sharedPreferences.edit().putBoolean(notificationKey, true).apply();
-            }
-        }
     }
 
 }
-

@@ -13,12 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 // Event details page for Attendee
 public class EventDetailAtten extends Fragment {
@@ -30,9 +33,7 @@ public class EventDetailAtten extends Fragment {
 
     Button checkinbutton;
     Button signupbutton;
-
-    Attendee attendee;
-
+    Button posterbutton;
 
     private FirebaseFirestore db;
 
@@ -49,6 +50,14 @@ public class EventDetailAtten extends Fragment {
         eventmessagesbtn = view.findViewById(R.id.eventmessg);
         checkinbutton  = view.findViewById(R.id.checkinbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
+        posterbutton = view.findViewById(R.id.eventposterbtn);
+
+
+
+        Bundle bundle = this.getArguments();
+        assert bundle != null;
+        myevent = (Event) bundle.getSerializable("event");
+        String eventid = myevent.getEventId();
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -56,49 +65,51 @@ public class EventDetailAtten extends Fragment {
         }
 
         db = FirebaseFirestore.getInstance();
-        Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
-        DocumentReference organizerRef = db.collection("Attendees").document(android_id);
-        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Convert the document snapshot to an Organizer object using Database class method
-                        attendee = database.getAttendee(document);
-                        // Proceed with setting up the UI using the retrieved organizer object
-                    } else {
-                        Log.d("document", "No such document");
-                    }
-                } else {
-                    Log.d("error", "get failed with ", task.getException());
-                }
-            }
-        });
 
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attendee.CheckIn(myevent);
-                myevent.userCheckIn(attendee);
-                database.updateEvent(myevent);
-                database.updateAttendee(attendee);
+                fetchAttendee(new OnSuccessListener<Attendee>() {
+                    @Override
+                    public void onSuccess(Attendee attendee) {
+                        attendee.CheckIn(myevent);
+                        myevent.userCheckIn(attendee);
 
 
+                        FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Log.d("Subscribe", "subscribe to event");
+                            }
+                        });
+
+                        Database database = new Database();
+                        database.updateEvent(myevent);
+                        database.updateAttendee(attendee);
+
+                    }
+                });
             }
         });
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attendee.setName("testname");
-                attendee.EventSub(myevent);
-                myevent.userSubs(attendee);
-                database.updateEvent(myevent);
-                database.updateAttendee(attendee);
+                fetchAttendee(new OnSuccessListener<Attendee>() {
+                    @Override
+                    public void onSuccess(Attendee attendee) {
+                        attendee.setName("testname");
+                        attendee.EventSub(myevent);
+                        myevent.userSubs(attendee);
 
+                        Database database = new Database();
+                        database.updateEvent(myevent);
+                        database.updateAttendee(attendee);
+
+                        Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -129,6 +140,74 @@ public class EventDetailAtten extends Fragment {
         eventnametxt.setText(myevent.getEventname());
         eventdetails.setText(myevent.getEventdetails());
 
+        //Display no poster available if the event does not have a poster
+        if (myevent.getPoster().equals("")){
+            //no poster for this event
+            //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
+            posterbutton.setText("No Poster Available");
+        }
+
+        //move to poster fragment
+        posterbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (myevent.getPoster().equals("")){
+                    //no poster for this event
+                    //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
+                    return;
+                }
+
+                //Create fragment
+                EventPosterFrag posterShareFrag = new EventPosterFrag();
+
+                UserImage poster = new UserImage();
+                poster.setImageB64(myevent.getPoster());
+                poster.setID(myevent.getEventId());
+
+                Bundle args = new Bundle();
+                args.putSerializable("Poster", poster);
+
+                posterShareFrag.setArguments(args);
+                //ShareCode code_frag = new ShareCode();
+                //Bundle args = new Bundle();
+                //args.putSerializable("event", myevent);
+                //code_frag.setArguments(args);
+                getParentFragmentManager().setFragmentResult("Poster",args);
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, posterShareFrag).addToBackStack(null).commit();
+
+
+
+                //getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
         return view;
+    }
+
+    private void fetchAttendee(OnSuccessListener<Attendee> onSuccessListener) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String android_id = preferences.getString("ID", "");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Database database = new Database();
+        DocumentReference attendeeRef = db.collection("Attendees").document(android_id);
+        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Attendee object using Database class method
+                        Attendee attendee = database.getAttendee(document);
+                        onSuccessListener.onSuccess(attendee);
+                    } else {
+                        Log.d("document", "No such document");
+                    }
+                } else {
+                    Log.d("error", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 }

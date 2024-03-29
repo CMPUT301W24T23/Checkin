@@ -105,6 +105,7 @@ public class Attendee implements User, Serializable {
         this.email = mail;
         this.phoneNumber = phone;
         this.geoTracking = tracking;
+        this.profilePicture = "";
         this.CheckInHist = new Hashtable<>();
     }
 

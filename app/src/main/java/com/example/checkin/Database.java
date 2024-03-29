@@ -120,7 +120,9 @@ public class Database {
         data.put("Details", e.getEventdetails());
         data.put("Poster", e.getPoster());
         data.put("Creator", e.getCreator());
-        data.put("Qr Code Id", e.getQrcodeid());
+        data.put("Event Qr Code Id", e.getQrcodeid());
+        data.put("Unique QR Code Id", e.getUniquepromoqr());
+
 
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
@@ -136,9 +138,8 @@ public class Database {
             checkedIn.put(a.getUserId(), "");
         }
 
-
-
-        data.put("UserCheckIn", checkedIn);
+        eventRef.document(e.getEventId()).update("UserCheckIn",checkedIn);
+        //data.put("UserCheckIn", checkedIn);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
@@ -338,7 +339,8 @@ public class Database {
         e.setEventdetails(doc.getString("Details"));
         e.setPoster(doc.getString("Poster"));
         e.setCreator(doc.getString("Creator"));
-        e.setQrcodeid(doc.getString("Qr Code Id"));
+        e.setQrcodeid(doc.getString("Event Qr Code Id"));
+        e.setUniquepromoqr(doc.getString("Unique QR Code Id"));
 
         Map<String, Object> data = doc.getData();
 

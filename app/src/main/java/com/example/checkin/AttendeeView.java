@@ -146,7 +146,7 @@ public class AttendeeView extends AppCompatActivity {
         String androidId = preferences.getString("ID", "");
         CollectionReference eventsRef = db.collection("Events");
 
-        eventsRef.whereEqualTo("Qr Code Id", qrCodeId)
+        eventsRef.whereEqualTo("Event Qr Code Id", qrCodeId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -204,6 +204,33 @@ public class AttendeeView extends AppCompatActivity {
                         Log.e("Firebase", "Error fetching event details", task.getException());
                     }
                 });
+
+        eventsRef.whereEqualTo("Unique QR Code", qrCodeId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Retrieve event
+                            Event event = database.getEvent(document);
+
+                            // Open the fragment for unique QR code
+                            PromotionFragment promofrag = new PromotionFragment();
+                            Bundle args = new Bundle();
+                            args.putSerializable("event", event);
+                            promofrag.setArguments(args);
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.atten_view, promofrag)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    } else {
+                        // Error fetching event details
+                        Toast.makeText(this, "Error fetching event details from Firebase", Toast.LENGTH_SHORT).show();
+                        Log.e("Firebase", "Error fetching event details", task.getException());
+                    }
+                });
+
+
     }
     @Override
     protected void onNewIntent(Intent intent) {

@@ -31,7 +31,6 @@
         android:id="@+id/eventposterbtn"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/eventinfo"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="-250dp"
@@ -41,21 +40,9 @@
         android:id="@+id/signupbtn"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/eventinfo"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="400dp"
-        android:layout_marginBottom="-105dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="500dp"
         android:text="Sign Up" />
-
-    <Button
-        android:id="@+id/checkinbtn"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/eventinfo"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="400dp"
-        android:layout_marginBottom="-165dp"
-        android:text="Check In" />
 
 
     <Button

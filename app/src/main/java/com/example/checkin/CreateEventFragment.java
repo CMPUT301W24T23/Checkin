@@ -68,6 +68,8 @@ public class CreateEventFragment extends Fragment {
 
     private ImageView qrcodeimage;
 
+    private ImageView uniqueqrcodeimage;
+
 
     private boolean posterAdded = false;
 
@@ -117,6 +119,7 @@ public class CreateEventFragment extends Fragment {
         qrcodebutton = view.findViewById(R.id.btnGenerateQR);
         backbutton = view.findViewById(R.id.backbtn);
         qrcodeimage = view.findViewById(R.id.qrcodeimage);
+        uniqueqrcodeimage = view.findViewById(R.id.uniquecodeimage);
 
 
         Database database = new Database();
@@ -181,6 +184,9 @@ public class CreateEventFragment extends Fragment {
                 event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
                 //get details if any
                 event.setEventdetails(eventdetails.getText().toString());
+                String uniquecode = generateUniqueQRCode(event,uniqueqrcodeimage ,organizer);
+                event.setUniquepromoqr(uniquecode);
+
 
                 if (createqr == true) {
                     String qrcodevalue = generateQRCode(event, qrcodeimage);
@@ -252,6 +258,45 @@ public class CreateEventFragment extends Fragment {
         // Appending user's ID
         //String userid = "123456"; // Change 123456 to user's ID
       //  myText += "_" + userid;
+
+        // Initializing MultiFormatWriter for QR code
+
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            //https://stackoverflow.com/questions/51917881/zxing-android-qrcode-generator
+            // BitMatrix class to encode entered text and set Width & Height
+            BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
+            BarcodeEncoder mEncoder = new BarcodeEncoder();
+            Bitmap mBitmap = mEncoder.createBitmap(matrix); // Creating bitmap of code
+            imageCode.setImageBitmap(mBitmap); // Setting generated QR code to imageView
+
+            // To hide the keyboard
+            InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return myText;
+
+
+
+    }
+
+    public String generateUniqueQRCode(Event myevent, ImageView imageCode, Organizer organizer){
+        String myText = myevent.getEventId();
+        myText += "_" + organizer.getUserId();
+
+        // use event id instead -> to retrieve event from firebase?
+        // String myText = myevent.getEventId();
+
+        // Appending timestamp
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        myText += "_" + timestamp;
+
+        // Appending user's ID
+        //String userid = "123456"; // Change 123456 to user's ID
+        //  myText += "_" + userid;
 
         // Initializing MultiFormatWriter for QR code
 

@@ -29,6 +29,8 @@ public class Event implements Serializable {
     private String eventname;
 
     private String qrcodeid;
+
+    private String uniquepromoqr;
     private String eventdetails;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
@@ -155,21 +157,18 @@ public class Event implements Serializable {
      * a valid attendee object
      */
     public void userCheckIn (Attendee a){
-        System.out.println(getCheckInList().getAttendees().size());
 
-        for (int i = 0; i < getCheckInList().getAttendees().size(); i++) {
-            System.out.println("attendee"+getCheckInList().getAttendees().get(i).getUserId());
-
+        if (CheckInList == null) {
+            CheckInList = new AttendeeList();
         }
-
 
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
-            //a.CheckIn(this);
-            //CheckInList.removeAttendee(a);
+            a.CheckIn(this);
+            CheckInList.removeAttendee(a);
         } else{
             //otherwise the user is checking in
-            //a.CheckIn(this);
+            a.CheckIn(this);
             CheckInList.addAttendee(a);
         }
 
@@ -262,5 +261,13 @@ public class Event implements Serializable {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public String getUniquepromoqr() {
+        return uniquepromoqr;
+    }
+
+    public void setUniquepromoqr(String uniquepromoqr) {
+        this.uniquepromoqr = uniquepromoqr;
     }
 }

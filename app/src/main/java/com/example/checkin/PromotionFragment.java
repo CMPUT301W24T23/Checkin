@@ -23,15 +23,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-// Event details page for Attendee
-public class EventDetailAtten extends Fragment {
+import org.checkerframework.checker.units.qual.A;
+
+public class PromotionFragment extends Fragment {
+
     Event myevent;
     TextView eventnametxt;
     TextView eventdetails;
     Button backbutton;
-    Button eventmessagesbtn;
-
-    Button checkinbutton;
     Button signupbutton;
     Button posterbutton;
 
@@ -41,13 +40,12 @@ public class EventDetailAtten extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_event_detail, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_promotion, container, false);
 
         eventnametxt =  view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventinfo);
         backbutton = view.findViewById(R.id.backbtn);
-        checkinbutton  = view.findViewById(R.id.checkinbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
 
@@ -61,31 +59,7 @@ public class EventDetailAtten extends Fragment {
         db = FirebaseFirestore.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        checkinbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fetchAttendee(new OnSuccessListener<Attendee>() {
-                    @Override
-                    public void onSuccess(Attendee attendee) {
-                        attendee.CheckIn(myevent);
-                        myevent.userCheckIn(attendee);
 
-
-                        FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d("Subscribe", "subscribe to event");
-                            }
-                        });
-
-                        Database database = new Database();
-                        database.updateEvent(myevent);
-                        database.updateAttendee(attendee);
-
-                    }
-                });
-            }
-        });
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +84,6 @@ public class EventDetailAtten extends Fragment {
 
 
         // get event object from previous fragment
-
 
 
         // move back to previous fragment when clicked

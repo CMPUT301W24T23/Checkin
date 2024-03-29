@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,6 +39,8 @@ public class Announcements extends Fragment {
     private ArrayList<Message> announcelist;
     private MessageAdapter Announcements_Adapter;
 
+    Button backbutton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,11 +49,16 @@ public class Announcements extends Fragment {
 
         // initialize announcements page
         announcements = view.findViewById(R.id.announcements_list);
+        backbutton = view.findViewById(R.id.backbtn);
         announcelist = new ArrayList<>();
+        
 
-        // Add example announcements
-        //announcelist.add("First Message");
-        //announcelist.add("Second Message");
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
 
 

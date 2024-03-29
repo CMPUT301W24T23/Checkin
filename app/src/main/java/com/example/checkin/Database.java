@@ -21,14 +21,11 @@ import java.util.Map;
 
 /**
  * This class is for updating the other class objects to firebase
- *
- * Firebase Database: https://console.firebase.google.com/u/0/project/checkin-6a54e/firestore/data/~2FAttendees~2F10
- *
+ * Firebase Database: <a href="https://console.firebase.google.com/u/0/project/checkin-6a54e/firestore/data/~2FAttendees~2F10">...</a>
  * Guide for getting data from firebase:
- * https://firebase.google.com/docs/firestore/query-data/get-data#java_2
+ * <a href="https://firebase.google.com/docs/firestore/query-data/get-data#java_2">...</a>
  * Another example:
- * https://stackoverflow.com/a/63700530
- *
+ * <a href="https://stackoverflow.com/a/63700530">...</a>
  * I also have some sample code at the bottom that should go onto an activity in order to retrieve
  * the data
  *

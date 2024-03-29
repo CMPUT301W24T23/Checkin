@@ -10,40 +10,28 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-/*
-This Java class, named `Attendee`, represents a user participating in an event-check-in system.
-The class implements the `User` interface and is serializable.
-It includes features for managing user profiles, event subscriptions, check-ins,
-geolocation tracking, and potential integration with Firebase.
-The class also outlines methods for updating profile information,
-subscribing/unsubscribing from events, checking in/out from events,
-toggling geolocation tracking, and retrieving user details.
-Overall, the class serves as a foundation for handling user-related functionalities
-in an event management application.
+/**
+ * This Java class, named `Attendee`, represents a user participating in an event-check-in system.
+ * The class implements the `User` interface and is serializable.
+ * It includes features for managing user profiles, event subscriptions, check-ins,
+ * geolocation tracking, and potential integration with Firebase.
+ * The class also outlines methods for updating profile information,
+ * subscribing/unsubscribing from events, checking in/out from events,
+ * toggling geolocation tracking, and retrieving user details.
+ * Overall, the class serves as a foundation for handling user-related functionalities
+ * in an event management application.
  */
 public class Attendee implements User, Serializable {
     //TODO:
-    //      - profile picture adding
-    //      - profile picture removing
-    //      - deterministic profile picture generation
     //      - current geolocation
-    //      - listener for receiving notifications
-    //      - FIREBASE INTEGRATION
 
     private String userId;     //the user's ID
-
-    //private Image profilePicture;               //TODO: the user's profile picture
     private String profilePicture;              //user's profile picture as an encoded 64bit string
-
     private Map<String, Long> CheckInHist = new Hashtable<>();
-
     private boolean geoTracking;
-
-    //private Location location;                //TODO: user's current location
-
     //Optional information the user can provide
     private String name;
-    private String homepage;        //user's website?
+    private String homepage;
     private String email;
     private String phoneNumber;
     private String country;
@@ -117,19 +105,6 @@ public class Attendee implements User, Serializable {
         Random rand = new Random();
         return Integer.toString(rand.nextInt(1000));
     }
-
-    //TODO: Deterministic generation of a user's profile picture
-    //private Image generateProfilePicture(){
-    //
-    //    return image;
-    //}
-
-    //TODO: Profile picture removal
-    //private void removeProfilePicture(){
-    //    this.profilePicture = generateProfilePicture();
-    //}
-
-
 
     //Event subscription===========================================================================
 
@@ -226,11 +201,6 @@ public class Attendee implements User, Serializable {
         return geoTracking;
     }
 
-    //TODO: Location tracking
-    //public Location userLocation(){
-    //}
-
-
 
 //Variables=================================================
 
@@ -267,12 +237,6 @@ public class Attendee implements User, Serializable {
     }
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-    public String getCountry() {
-        return country;
-    }
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public String getProfilePicture() {

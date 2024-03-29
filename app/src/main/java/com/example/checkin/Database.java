@@ -122,6 +122,7 @@ public class Database {
         data.put("Creator", e.getCreator());
         data.put("Qr Code Id", e.getQrcodeid());
 
+
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
         for (Attendee a: e.getSubscribers().getAttendees()){

@@ -92,8 +92,8 @@ public class EventDetailAtten extends Fragment {
                                 });
 
                                 Database database = new Database();
-                                database.updateEvent(myevent);
                                 database.updateAttendee(attendee);
+                                database.updateEvent(myevent);
                             }
                         });
                     }
@@ -112,8 +112,9 @@ public class EventDetailAtten extends Fragment {
                         myevent.userSubs(attendee);
 
                         Database database = new Database();
-                        database.updateEvent(myevent);
                         database.updateAttendee(attendee);
+                        database.updateEvent(myevent);
+
 
                         Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
                     }

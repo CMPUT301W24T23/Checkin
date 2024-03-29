@@ -94,4 +94,6 @@ public class AttendeeList implements Serializable {
         Attendee attendee = Attendees.get(position);
         return attendee;
     }
+
+
 }

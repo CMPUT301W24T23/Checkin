@@ -71,6 +71,11 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
                 // Use the retrieved event object here
                 //  }
                 // });
+                  //  @Override
+                  //  public void onEventRetrieved(Event event) {
+                        // Use the retrieved event object here
+                  //  }
+               // });
             }
         });
 
@@ -119,6 +124,7 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
 
                             //EventDetailAtten eventfragment = new EventDetailAtten();
                             //  Bundle args = new Bundle();
+                          //  Bundle args = new Bundle();
                             //args.putString("eventid", intentResult.getContents());
                             //eventfragment.setArguments(args);
 
@@ -128,6 +134,10 @@ public class ScanQrCode extends Fragment implements View.OnClickListener{
                             // .replace(R.id.atten_view, eventfragment)
                             // .addToBackStack(null)
                             //  .commit();
+                           // requireActivity().getSupportFragmentManager().beginTransaction()
+                            // .replace(R.id.atten_view, eventfragment)
+                                   // .addToBackStack(null)
+                                  //  .commit();
 
 
                         }

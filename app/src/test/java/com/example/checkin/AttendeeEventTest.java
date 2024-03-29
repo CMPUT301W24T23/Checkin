@@ -5,19 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//import org.junit.jupiter.api.Test;
-import android.provider.CalendarContract;
 
 import org.junit.Test;
-public class AttendeeEventTest {
 
+public class AttendeeEventTest {
 
     /**
      * Test an attendee checking in
      */
     @Test
     public void CheckIn(){
-        Event e = new Event();
+        Event e = new Event("Event1", "ME");
         Attendee a = new Attendee();
         e.userCheckIn(a);
         assertTrue(e.IsCheckedIn(a));
@@ -30,7 +28,7 @@ public class AttendeeEventTest {
      */
     @Test
     public void SubscriptionTest(){
-        Event e = new Event();
+        Event e = new Event("Event1", "ME");
         Attendee a = new Attendee();
 
         assertFalse(e.IsSubscribed(a));
@@ -47,7 +45,7 @@ public class AttendeeEventTest {
     @Test
     public void AttendeeCount(){
         AttendeeList a = new AttendeeList();
-        Event e = new Event();
+        Event e = new Event("Event1", "ME");
         Attendee new1 = new Attendee();
         Attendee new2 = new Attendee();
         Attendee new3 = new Attendee();

@@ -21,6 +21,9 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
+
+// need to comment out line 129 in Database class before testing
+// as it causes the app to close due to unique id generated not being set yet
 public class OrganizerViewTest {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
@@ -117,6 +120,9 @@ public class OrganizerViewTest {
 
         // click on the CheckBox to enable GeoLocation tracking
         onView(withId(R.id.checkbox_geo_tracking)).perform(click());
+        // assuming there is a button or switch for enabling GeoLocation tracking
+        // click on the button/switch to enable GeoLocation tracking
+        //onView(withId(R.id.checkbox_geo_tracking)).perform(click());
 
         // check if the CheckBox is checked
         onView(withId(R.id.checkbox_geo_tracking)).check(matches(isChecked()));
@@ -133,10 +139,50 @@ public class OrganizerViewTest {
 
         // Click on the button to add an event poster
         onView(withId(R.id.btnAddPoster)).perform(click());
+        //onView(withId(R.id.ivEventPoster)).perform(click());
 
         // Check if the ImageView for the event poster is displayed
         onView(withId(R.id.ivEventPoster)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testAddEvent() {
+        // Click on the organizer button to navigate to the organizer view
+        onView(withId(R.id.organizerbtn)).perform(click());
+
+        // Check if the organizer view is displayed
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+        // Click on the button to add an event poster
+        onView(withId(R.id.addeventbtn)).perform(click());
+
+        // Check if the add event is displayed
+        onView(withId(R.id.createfragment)).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void testsignedin(){
+
+        // click on organizer button
+        onView(withId(R.id.organizerbtn)).perform(click());
+        // check if switches to organizer view
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+
+
+        // click on event
+        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events)).perform(click());
+        // check if it switches to event details page
+        onView(withId(R.id.eventdet_org)).check(matches(isDisplayed()));
+        // check if it shows name of event
+        onView(withId(R.id.attendeeslistbtn)).perform(click());
+        // check if it shows attendees list fragment
+        onView(withId(R.id.attendeeslisted_frag)).check(matches(isDisplayed()));
+        // click on signed in attendees
+        onView(withId(R.id.signedinbtn)).perform(click());
+        // check to see signed up list of attendees
+        onView(withId(R.id.signinlist_frag)).check(matches(isDisplayed()));
+    }
 
 }

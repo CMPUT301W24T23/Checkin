@@ -1,3 +1,4 @@
+
 package com.example.checkin;
 
 import android.media.Image;
@@ -285,4 +286,5 @@ public class Attendee implements User, Serializable {
     public void setCheckInHist(Map<String, Long> checkInHist) {
         CheckInHist = checkInHist;
     }
+
 }

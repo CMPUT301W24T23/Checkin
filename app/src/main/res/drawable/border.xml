@@ -1,0 +1,13 @@
+<!-- border.xml -->
+<!-- This is a separate file which is used to add border to each and every
+section on the user profile fragment.-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners android:radius="8dp" /> <!-- Adjust the radius as needed -->
+    <solid android:color="@android:color/white" /> <!-- Background color of the EditText -->
+    <stroke
+        android:color="#F17474"
+        android:width="2dp" />
+
+</shape>

@@ -1,13 +1,3 @@
-// This class is a Fragment used to create new events. It allows the user to input event details,
-// including name, details, and upload poster image. The user can also enable/disable
-// geo-tracking for the event. The poster image can be selected from the device's gallery.
-// https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
-// https://stackoverflow.com/questions/66036757/android-location-gps-track
-// https://www.geeksforgeeks.org/how-to-manage-startactivityforresult-on-android/
-// https://www.youtube.com/watch?v=OV25x3a55pk
-// https://www.youtube.com/watch?v=bLi1qr6h4T4
-// https://www.geeksforgeeks.org/how-to-use-activityforresultluncher-as-startactivityforresult-is-deprecated-in-android/
-// https://www.youtube.com/watch?v=pHCZpw9JQHk&t=492s
 package com.example.checkin;
 
 import android.content.Intent;
@@ -53,8 +43,8 @@ public class CreateEventFragment extends Fragment {
     private ImageView ivEventPoster;
     private Button btnAddPoster;
     private Organizer organizer;
-    private Bitmap poster;          //bitmap of the poster
-    private ImageEncoder encoder = new ImageEncoder();      //image encoder for converting image
+    private Bitmap poster;
+    private ImageEncoder encoder = new ImageEncoder();
 
     private boolean posterAdded = false;
     private Button backbutton;
@@ -64,9 +54,6 @@ public class CreateEventFragment extends Fragment {
     private EventList events;
     private Event event;
 
-    /**
-     * Get the image from the user
-     */
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
@@ -122,9 +109,8 @@ public class CreateEventFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        // Convert the document snapshot to an Organizer object using Database class method
                         organizer = database.getOrganizer(document);
-                        // Proceed with setting up the UI using the retrieved organizer object                    } else {
+                    } else {
                         Log.d("document", "No such document");
                     }
                 } else {
@@ -133,10 +119,8 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        // choose event qr code to be generated
         qrcodebutton.setOnClickListener(view12 -> qrcodebutton.setBackgroundColor(Color.GRAY));
 
-        // create new event and open list of events
         addeventbutton.setOnClickListener(view13 -> {
             String eventName = eventname.getText().toString().trim();
             String eventDateStr = eventDate.getText().toString().trim();
@@ -187,7 +171,6 @@ public class CreateEventFragment extends Fragment {
             organizerfrag.setArguments(args);
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
         });
-
 
         btnMap.setOnClickListener(view14 -> {
             Intent intent = new Intent(getActivity(), MapActivity.class);

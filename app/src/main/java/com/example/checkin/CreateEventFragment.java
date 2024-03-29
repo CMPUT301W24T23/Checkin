@@ -68,7 +68,6 @@ public class CreateEventFragment extends Fragment {
     private ImageView qrcodeimage;
     private boolean posterAdded = false;
     private Button backbutton;
-    Button backbutton;
     private Button addeventbutton;
     private Button qrcodebutton;
     private Button btnMap;
@@ -199,110 +198,34 @@ public class CreateEventFragment extends Fragment {
         btnMap.setOnClickListener(view14 -> {
             Intent intent = new Intent(getActivity(), MapActivity.class);
             startActivity(intent);
-            // choose event qr code to be generated
+        });
 
-
-            // create new event and open list of events
-            addeventbutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //create event with event name and ID
-                    if (eventname.getText().toString().equals("")) {
-                        eventname.setError("Event name required");
-                        Log.d("Event Name Required", "User did not supply event name");
-                        return;
-                    }
-                    event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
-                    //get details if any
-                    event.setEventdetails(eventdetails.getText().toString());
-
-                    if (createqr == true) {
-                        String qrcodevalue = generateQRCode(event, qrcodeimage);
-                        event.setQrcodeid(qrcodevalue);
-
-
-                        //convert image to string and add to event
-                        if (posterAdded) {
-                            event.setPoster(encoder.BitmapToBase64(poster));
-                        } else {
-                            //empty string if no poster is added
-                            event.setPoster("");
-                        }
-
-                        //Add poster to database
-                        database.updatePoster(event.getPoster(), event.getEventId());
-
-
-                        events.addEvent(event);
-                        database.updateEvent(event);
-                        Log.d("Event Creation", String.format("Adding organizer %s event %s to the database", organizer.getUserId(), event.getEventId()));
-
-                        organizer.EventCreate(event.getEventId());
-                        database.updateOrganizer(organizer);
-
-                        OrganizerFragment1 organizerfrag = new OrganizerFragment1();
-                        Bundle args = new Bundle();
-                        args.putSerializable("organizer", organizer);
-                        args.putSerializable("eventslist", events);
-                        organizerfrag.setArguments(args);
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
-
-                    }
-                }
-            });
-
-
-            // choose event qr code to be generated
-
-            qrcodebutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    createqr = true;
-                    qrcodebutton.setBackgroundColor(Color.GRAY);
-
-
-                }
-            });
-
-
-            return view;
-
-
-            public String generateQRCode (Event myevent, ImageView imageCode){
-                String myText = myevent.getEventId();
-
-                // use event id instead -> to retrieve event from firebase?
-                // String myText = myevent.getEventId();
-
-                // Appending timestamp
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                String timestamp = dateFormat.format(new Date());
-                myText += "_" + timestamp;
-
-                // Appending user's ID
-                //String userid = "123456"; // Change 123456 to user's ID
-                //  myText += "_" + userid;
-
-                // Initializing MultiFormatWriter for QR code
-
-                MultiFormatWriter writer = new MultiFormatWriter();
-                try {
-                    //https://stackoverflow.com/questions/51917881/zxing-android-qrcode-generator
-                    // BitMatrix class to encode entered text and set Width & Height
-                    BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
-                    BarcodeEncoder mEncoder = new BarcodeEncoder();
-                    Bitmap mBitmap = mEncoder.createBitmap(matrix); // Creating bitmap of code
-                    imageCode.setImageBitmap(mBitmap); // Setting generated QR code to imageView
-
-                    // To hide the keyboard
-                    InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-                return myText;
-            }
-        }
+        return view;
     }
-}
 
+
+    public String generateQRCode(Event myevent, ImageView imageCode) {
+        String myText = myevent.getEventId();
+
+        // Appending timestamp
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        myText += "_" + timestamp;
+
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
+            BarcodeEncoder mEncoder = new BarcodeEncoder();
+            Bitmap mBitmap = mEncoder.createBitmap(matrix);
+            imageCode.setImageBitmap(mBitmap);
+
+            InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return myText;
+    }
+
+
+}

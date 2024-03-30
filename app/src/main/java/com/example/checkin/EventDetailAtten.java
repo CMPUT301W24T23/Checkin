@@ -2,6 +2,7 @@ package com.example.checkin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.MemoryLruGcSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.List;
 import java.util.Map;
 
 // Event details page for Attendee
@@ -110,12 +112,58 @@ public class EventDetailAtten extends Fragment {
                 // Fetch the event
                 fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
                     @Override
+
                     public void onSuccess(Event event) {
                         // Update 'myevent' with the fetched event details
                         //myevent = event;
 
                         // Perform the check-in process
                         fetchAttendeeFromFirestore(android_id, event);
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //Retrieve event from firebase
+                                //Event event = database.getEvent(document);
+                                myevent = database.getEvent(document);
+                                System.out.println("checkinpeople first "+ myevent.getCheckInList().getAttendees().size());
+
+                                //Retrieve event lists
+                                Map<String, String> checkInMap = (Map<String, String>) document.get("UserCheckIn");
+                                for(String a : checkInMap.keySet()){
+                                    //Check each user in to the event
+                                    //db.getAttendee(document);
+                                    retrieveAttendee(a, true);
+                                    //myevent.userCheckIn();
+                                    //Log.d("Retrieved event checkin", String.format("Checkin %s", a));
+                                }
+
+                                Map<String, String> subbedMap = (Map<String, String>) document.get("Subscribers");
+                                for(String a : subbedMap.keySet()){
+                                    //Check each user in to the event
+                                    //db.getAttendee(document);
+                                    retrieveAttendee(a, false);
+                                    //Log.d("Retrieved event Sub", String.format("Sub %s", a));
+                                    //myevent.userCheckIn();
+                                }
+                                //wait for execution FOR TESTING
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+
+                                //get current attendee and upload
+                                fetchAttendeeFromFirestore(android_id, true);
+                                System.out.println("checkinpeople last "+ myevent.getCheckInList().getAttendees().size());
+
+                            } else {
+                                Log.d("Firestore", "No such document");
+                            }
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
+                        }
                     }
         });
                         //fetchAttendee(new OnSuccessListener<Attendee>() {
@@ -145,26 +193,56 @@ public class EventDetailAtten extends Fragment {
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
+                db = FirebaseFirestore.getInstance();
+                Database d = new Database();
+                DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
+                eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(Event event) {
-                        // Update 'myevent' with the fetched event details
-                        myevent = event;
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //Retrieve event from firebase
+                                //Event event = database.getEvent(document);
+                                myevent = database.getEvent(document);
+                                System.out.println("checkinpeople first "+ myevent.getCheckInList().getAttendees().size());
 
-                        fetchAttendee(new OnSuccessListener<Attendee>() {
-                            @Override
-                            public void onSuccess(Attendee attendee) {
-                                attendee.setName("testname");
-                                attendee.EventSub(myevent);
-                                myevent.userSubs(attendee);
+                                //Retrieve event lists
+                                Map<String, String> checkInMap = (Map<String, String>) document.get("UserCheckIn");
+                                for(String a : checkInMap.keySet()){
+                                    //Check each user in to the event
+                                    //db.getAttendee(document);
+                                    retrieveAttendee(a, true);
+                                    //myevent.userCheckIn();
+                                    //Log.d("Retrieved event checkin", String.format("Checkin %s", a));
+                                }
 
-                                Database database = new Database();
-                                database.updateEvent(myevent);
-                                database.updateAttendee(attendee);
+                                Map<String, String> subbedMap = (Map<String, String>) document.get("Subscribers");
+                                for(String a : subbedMap.keySet()){
+                                    //Check each user in to the event
+                                    //db.getAttendee(document);
+                                    retrieveAttendee(a, false);
+                                    //Log.d("Retrieved event Sub", String.format("Sub %s", a));
+                                    //myevent.userCheckIn();
+                                }
+                                //wait for execution FOR TESTING
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
 
-                                Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
+                                //get current attendee and upload
+                                fetchAttendeeFromFirestore(android_id, false);
+
+                                System.out.println("checkinpeople last "+ myevent.getCheckInList().getAttendees().size());
+
+                            } else {
+                                Log.d("Firestore", "No such document");
                             }
-                        });
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
+                        }
                     }
                 });
             }
@@ -259,9 +337,6 @@ public class EventDetailAtten extends Fragment {
             }
         });
     }
-
-
-
     public void fetchEvent(String eventId, OnSuccessListener<Event> onSuccessListener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(eventId);
@@ -284,37 +359,102 @@ public class EventDetailAtten extends Fragment {
         });
     }
 
-    private void FetchEventCheckIN(Attendee attendee) {
-        db = FirebaseFirestore.getInstance();
-        Database d = new Database();
-        DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
-        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    /**
+     * Fetch all the users checked in to the event
+     * @param CheckedInUsers
+     */
+    public void FetchEventCheckIn(Map<String, String> CheckedInUsers){
+       Database db = new Database();
+        FirebaseFirestore.getInstance().collection("Events")
+                .document(myevent.getEventId()).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot document = task.getResult();
+                        Map<String, String> checkedAttendees = (Map<String, String>) document.get("UserCheckIn");
+                        for(String a : checkedAttendees.keySet()){
+                            //Check each user in to the event
+                            //db.getAttendee(document);
+                            retrieveAttendee(a, true);
+                            //myevent.userCheckIn();
+                            //Log.d("Retrieved event checkin", String.format("Checkin %s", a));
+                        }
+
+                        Map<String, String> subbedAttendees = (Map<String, String>) document.get("Subscribers");
+                        for(String a : subbedAttendees.keySet()){
+                            //Check each user in to the event
+                            //db.getAttendee(document);
+                            retrieveAttendee(a, false);
+                            //Log.d("Retrieved event Sub", String.format("Sub %s", a));
+                            //myevent.userCheckIn();
+                        }
+
+                    }
+                });
+    }
+
+    /**
+     * Fetch all users subbed to the event
+     * @param SubbedUsers
+     */
+    public void FetchEventSub(Map<String, String> SubbedUsers){
+        Database db = new Database();
+        FirebaseFirestore.getInstance().collection("Events")
+                .document(myevent.getEventId()).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot document = task.getResult();
+                        Map<String, String> subbedAttendees = (Map<String, String>) document.get("UserCheckIn");
+                        for(String a : subbedAttendees.keySet()){
+                            //Check each user in to the event
+                            //db.getAttendee(document);
+                            retrieveAttendee(a, false);
+                            //Log.d("Retrieved event Sub", String.format("Sub %s", a));
+                            //myevent.userCheckIn();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Retrieve attendee and sub/check in to the event
+     * @param id
+     * @param CheckIn
+     */
+    public void retrieveAttendee(String id, boolean CheckIn){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Attendees").document(id);
+        Database fireBase = new Database();
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Event event = d.getEvent(document);
-                        System.out.println("NUMBERS" + event.getCheckInList().getAttendees().size());
-                        attendee.CheckIn(event);
-                        event.userCheckIn(attendee);
-                        d.updateEvent(event);
-                        d.updateAttendee(attendee);
+                        Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
+                        Attendee a = fireBase.getAttendee(document);
 
+                        //If the user is to be checked in, check them in
+                        //Otherwise sub them
+                        if(CheckIn){
+                            myevent.userCheckIn(a);
+                        } else{
+                            myevent.userSubs(a);
+                        }
 
 
                     } else {
-                        Log.d("Firestore", "No such document");
+                        Log.d("Firebase", "No such document");
                     }
                 } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
                 }
             }
         });
-
     }
 
-        private void fetchAttendeeFromFirestore(String attendeeid, Event event) {
+        private void fetchAttendeeFromFirestore(String attendeeid, boolean CheckIn) {
 
         Database d = new Database();
 
@@ -327,11 +467,22 @@ public class EventDetailAtten extends Fragment {
                         if (document.exists()) {
                             // Convert the document snapshot to an Attendee object using Database class method
                             Attendee attendee = d.getAttendee(document);
-                            System.out.println("NUMBERS BEFORE" + event.getCheckInList().getAttendees().size());
-                            event.userCheckIn(attendee);
-                            System.out.println("NUMBERS " + event.getCheckInList().getAttendees().size());
-                            attendee.CheckIn(event);
-                            d.updateEvent(event);
+
+                            //User is checking in/out
+                            if(CheckIn){
+                                Log.d("Test Current Checkin", "NUMBERS BEFORE" + myevent.getCheckInList().getAttendees().size());
+                                myevent.userCheckIn(attendee);
+                                System.out.println("NUMBERS " + myevent.getCheckInList().getAttendees().size());
+                            } else{
+                                //otherwise they are subbing/unsubbing
+                                myevent.userSubs(attendee);
+                            }
+
+
+                            Log.d("Test Current Checkin", "NUMBERS AFTER" + myevent.getCheckInList().getAttendees().size());
+
+                            //attendee.CheckIn(event);
+                            d.updateEvent(myevent);
                             d.updateAttendee(attendee);
 
 

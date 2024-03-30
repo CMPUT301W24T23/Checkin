@@ -86,12 +86,12 @@ public class CheckedInListOrg extends Fragment {
                         Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
                         if (subscribersMap != null) {
                             int attendeeCount = subscribersMap.size();
-
                             for (String attendeeId : subscribersMap.keySet()) {
                                 // Fetch each attendee document and create Attendee objects
                                 fetchAttendeeFromFirestore(attendeeId, attendeedatalist, myevent.getEventId());
                             }
                         }
+
                     } else {
                         Log.d("Firestore", "No such document");
                     }

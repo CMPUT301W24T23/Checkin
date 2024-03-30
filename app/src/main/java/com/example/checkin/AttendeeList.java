@@ -84,6 +84,7 @@ public class AttendeeList implements Serializable {
      */
     public void removeAttendee(Attendee a){
         Attendees.remove(a);
+        Attendees.removeIf(AinList -> a.getUserId().equals(AinList.getUserId()));
     }
 
     public ArrayList<Attendee> getAttendees() {

@@ -79,6 +79,7 @@ public class OrganizerFragment1 extends Fragment {
         allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
 
+        /*
         // Add attendees and check them in/ sign up to test functionality
         Attendee attendee1 = new Attendee("Amy");
         Attendee attendee2 = new Attendee("John");
@@ -90,6 +91,8 @@ public class OrganizerFragment1 extends Fragment {
         event1.userCheckIn(attendee2);
         event1.userSubs(attendee2);
         allevents.addEvent(event1);
+
+         */
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());

@@ -24,14 +24,11 @@ import java.util.Map;
 
 /**
  * This class is for updating the other class objects to firebase
- *
- * Firebase Database: https://console.firebase.google.com/u/0/project/checkin-6a54e/firestore/data/~2FAttendees~2F10
- *
+ * Firebase Database: <a href="https://console.firebase.google.com/u/0/project/checkin-6a54e/firestore/data/~2FAttendees~2F10">...</a>
  * Guide for getting data from firebase:
- * https://firebase.google.com/docs/firestore/query-data/get-data#java_2
+ * <a href="https://firebase.google.com/docs/firestore/query-data/get-data#java_2">...</a>
  * Another example:
- * https://stackoverflow.com/a/63700530
- *
+ * <a href="https://stackoverflow.com/a/63700530">...</a>
  * I also have some sample code at the bottom that should go onto an activity in order to retrieve
  * the data
  *
@@ -139,21 +136,16 @@ public class Database {
         for (Attendee a: e.getCheckInList().getAttendees()){
             checkedIn.put(a.getUserId(), "");
         }
-
-        Map<String, String> updatedCheckInsId = e.getCheckInsId();
-
-        data.put("CheckInIds", updatedCheckInsId);
-
-
-
         data.put("UserCheckIn", checkedIn);
 
+        //Map<String, String> updatedCheckInsId = e.getCheckInsId();
 
+        //data.put("CheckInIds", updatedCheckInsId);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
-        eventRef.document(e.getEventId()).set(data, SetOptions.merge());
-
+        //eventRef.document(e.getEventId()).set(data, SetOptions.merge());
+        eventRef.document(e.getEventId()).set(data);
     }
 
     public void updateProfilePicture(String base64Image, String userID){
@@ -357,7 +349,7 @@ public class Database {
 
 
         Map<String, Object> data = doc.getData();
-
+        /*
         //Retrieve Subscribers
         Map<String, String> Subs = (Map<String, String>)data.get("Subscribers");
         for(String subber: Subs.keySet()){
@@ -380,7 +372,9 @@ public class Database {
                 }
             });
         }
+        */
 
+        /*
         db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(doc.getId());
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -402,10 +396,9 @@ public class Database {
             }
         });
 
+        */
 
-
-
-
+        /*
         //Retrieve Checked In users
         Map<String, String> Users = (Map<String, String>)data.get("UserCheckIn");
         List<Attendee> attendees = new ArrayList<>();
@@ -432,6 +425,8 @@ public class Database {
             });
         }
 
+
+         */
         Log.d("Retrieved Event", String.format("Event ID: %s ", e.getEventId()));
         return e;
     }

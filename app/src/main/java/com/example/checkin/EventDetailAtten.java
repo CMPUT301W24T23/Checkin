@@ -66,10 +66,6 @@ public class EventDetailAtten extends Fragment {
         String android_id = preferences.getString("ID", "");
 
 
-
-
-
-
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             myevent = (Event) bundle.getSerializable("event");

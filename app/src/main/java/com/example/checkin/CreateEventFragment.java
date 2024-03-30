@@ -184,7 +184,7 @@ public class CreateEventFragment extends Fragment {
             }
 
             if (!qrCodeOptionSelected) {
-                Toast.makeText(getContext(), "Please select a QR code option", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Mandatory Fields have no been entered. Please also select a QR code option.", Toast.LENGTH_SHORT).show();
                 hasError = true;
             }
 

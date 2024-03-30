@@ -20,18 +20,38 @@
         android:id="@+id/etEventName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Event Name"
+        android:hint="Event Name *"
         android:layout_below="@id/tvCreateEvent"
         android:layout_marginTop="16dp"
         android:textColor="@color/black"
         android:inputType="text"/>
 
     <EditText
-        android:id="@+id/etEventDetails"
+        android:id="@+id/etEventDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Event Details"
+        android:hint="Event Date (e.g., 2024-03-28) *"
         android:layout_below="@id/etEventName"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:inputType="date"/>
+
+    <EditText
+        android:id="@+id/etEventTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event Time (e.g., 14:00) *"
+        android:layout_below="@id/etEventDate"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:inputType="time"/>
+
+    <EditText
+        android:id="@+id/etEventdetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event Details *"
+        android:layout_below="@id/etEventTime"
         android:layout_marginTop="8dp"
         android:textColor="@color/black"
         android:inputType="textMultiLine"/>
@@ -41,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Event Poster"
-        android:layout_below="@id/etEventDetails"
+        android:layout_below="@id/etEventdetails"
         android:layout_marginTop="8dp"/>
 
     <ImageView
@@ -109,6 +129,16 @@
             android:scaleX="1.5"
             android:scaleY="1.5"
             android:layout_gravity="center_vertical"/>
+
+        <Button
+            android:id="@+id/btnMap"
+            android:layout_width="117dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnUseExistingQR"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="40dp"
+            android:text="Map" />
+
     </LinearLayout>
 
     <Button
@@ -117,6 +147,6 @@
         android:layout_height="wrap_content"
         android:text="Create Event"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="500dp"/>
+        android:layout_marginTop="530dp"/>
 
 </RelativeLayout>

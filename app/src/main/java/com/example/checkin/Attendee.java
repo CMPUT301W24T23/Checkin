@@ -1,3 +1,4 @@
+
 package com.example.checkin;
 
 import android.media.Image;
@@ -68,7 +69,7 @@ public class Attendee implements User, Serializable {
         this.geoTracking = geoTracking;
     }
 
-     /* Empty constructor for attendee
+    /* Empty constructor for attendee
      */
     public Attendee() {
         this.userId = String.valueOf(generateUserId());
@@ -103,7 +104,6 @@ public class Attendee implements User, Serializable {
         this.email = mail;
         this.phoneNumber = phone;
         this.geoTracking = tracking;
-        this.profilePicture = "";
         this.CheckInHist = new Hashtable<>();
     }
 
@@ -155,7 +155,7 @@ public class Attendee implements User, Serializable {
 
     //CheckedInList=================================================================================
 
-     /** Return the dictionary with the keys as the eventIds and values of number
+    /** Return the dictionary with the keys as the eventIds and values of number
      * of checkins.
      * @return
      * dictionary of check in counts
@@ -286,4 +286,5 @@ public class Attendee implements User, Serializable {
     public void setCheckInHist(Map<String, Long> checkInHist) {
         CheckInHist = checkInHist;
     }
+
 }

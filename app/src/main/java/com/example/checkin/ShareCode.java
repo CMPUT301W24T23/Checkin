@@ -40,8 +40,8 @@ public class ShareCode extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.fragment_share_code, container, false);
-       backbutton = view.findViewById(R.id.backbtn);
+        View view = inflater.inflate(R.layout.fragment_share_code, container, false);
+        backbutton = view.findViewById(R.id.backbtn);
 
         // move back to previous fragment
         backbutton.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +69,7 @@ public class ShareCode extends Fragment {
 
 
 
-            // ------- Sharing QR Code --------
+        // ------- Sharing QR Code --------
         sharebutton = view.findViewById(R.id.sharebtn);
         sharebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +130,7 @@ public class ShareCode extends Fragment {
     }
 
     /**
-     * Generates Qr code 
+     * Generates Qr code
      * @param myevent
      * @param imageCode
      */
@@ -138,6 +138,7 @@ public class ShareCode extends Fragment {
         String myText = myevent.getEventname();
 
         // use event id instead -> to retrieve event from firebase?
+        // String myText = myevent.getEventId();
        // String myText = myevent.getEventId();
 
         // Appending timestamp

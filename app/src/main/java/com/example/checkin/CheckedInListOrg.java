@@ -138,8 +138,14 @@ public class CheckedInListOrg extends Fragment {
                                     AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
                                     attendeesList.setAdapter(AttendeesAdapter);
                                 }
-                                String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
-                                totalcheckin.setText(text);
+                                if(attendeedatalist.getAttendees().size() ==0){
+                                    String text = "No Checked In Attendees: ";
+                                    totalcheckin.setText(text);
+                                }
+                                else {
+                                    String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
+                                    totalcheckin.setText(text);
+                                }
                             } else {
                                 Log.d("Firestore", "No such document");
                             }

@@ -97,7 +97,7 @@ public class EventDetailAtten extends Fragment {
                                 for(String a : checkInMap.keySet()){
                                     //Check each user in to the event
                                     //db.getAttendee(document);
-                                    retrieveAttendee(a, true);
+                                    retrieveAttendee(a, true, myevent);
                                     //myevent.userCheckIn();
                                     //Log.d("Retrieved event checkin", String.format("Checkin %s", a));
                                 }
@@ -106,7 +106,7 @@ public class EventDetailAtten extends Fragment {
                                 for(String a : subbedMap.keySet()){
                                     //Check each user in to the event
                                     //db.getAttendee(document);
-                                    retrieveAttendee(a, false);
+                                    retrieveAttendee(a, false, myevent);
                                     //Log.d("Retrieved event Sub", String.format("Sub %s", a));
                                     //myevent.userCheckIn();
                                 }
@@ -204,7 +204,7 @@ public class EventDetailAtten extends Fragment {
                                 for(String a : checkInMap.keySet()){
                                     //Check each user in to the event
                                     //db.getAttendee(document);
-                                    retrieveAttendee(a, true);
+                                    retrieveAttendee(a, true, myevent);
                                     //myevent.userCheckIn();
                                     //Log.d("Retrieved event checkin", String.format("Checkin %s", a));
                                 }
@@ -213,7 +213,7 @@ public class EventDetailAtten extends Fragment {
                                 for(String a : subbedMap.keySet()){
                                     //Check each user in to the event
                                     //db.getAttendee(document);
-                                    retrieveAttendee(a, false);
+                                    retrieveAttendee(a, false, myevent);
                                     //Log.d("Retrieved event Sub", String.format("Sub %s", a));
                                     //myevent.userCheckIn();
                                 }
@@ -367,7 +367,7 @@ public class EventDetailAtten extends Fragment {
                         for(String a : checkedAttendees.keySet()){
                             //Check each user in to the event
                             //db.getAttendee(document);
-                            retrieveAttendee(a, true);
+                            retrieveAttendee(a, true, myevent);
                             //myevent.userCheckIn();
                             //Log.d("Retrieved event checkin", String.format("Checkin %s", a));
                         }
@@ -376,7 +376,7 @@ public class EventDetailAtten extends Fragment {
                         for(String a : subbedAttendees.keySet()){
                             //Check each user in to the event
                             //db.getAttendee(document);
-                            retrieveAttendee(a, false);
+                            retrieveAttendee(a, false, myevent);
                             //Log.d("Retrieved event Sub", String.format("Sub %s", a));
                             //myevent.userCheckIn();
                         }
@@ -401,7 +401,7 @@ public class EventDetailAtten extends Fragment {
                         for(String a : subbedAttendees.keySet()){
                             //Check each user in to the event
                             //db.getAttendee(document);
-                            retrieveAttendee(a, false);
+                            retrieveAttendee(a, false, myevent);
                             //Log.d("Retrieved event Sub", String.format("Sub %s", a));
                             //myevent.userCheckIn();
                         }
@@ -414,7 +414,7 @@ public class EventDetailAtten extends Fragment {
      * @param id
      * @param CheckIn
      */
-    public void retrieveAttendee(String id, boolean CheckIn){
+    public void retrieveAttendee(String id, boolean CheckIn, Event event){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
         Database fireBase = new Database();
@@ -431,6 +431,8 @@ public class EventDetailAtten extends Fragment {
                         //Otherwise sub them
                         if(CheckIn){
                             myevent.userCheckIn(a);
+                            a.CheckIn(myevent);
+                            fireBase.updateAttendee(a);
                         } else{
                             myevent.userSubs(a);
                         }
@@ -464,6 +466,7 @@ public class EventDetailAtten extends Fragment {
                             if(CheckIn){
                                 Log.d("Test Current Checkin", "NUMBERS BEFORE" + myevent.getCheckInList().getAttendees().size());
                                 myevent.userCheckIn(attendee);
+                                d.updateAttendee(attendee);
                                 System.out.println("NUMBERS " + myevent.getCheckInList().getAttendees().size());
                             } else{
                                 //otherwise they are subbing/unsubbing

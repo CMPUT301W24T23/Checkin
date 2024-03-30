@@ -166,8 +166,8 @@ public class Attendee implements User, Serializable {
         } else {
             // If the map is not empty, retrieve the current count and increment it by 1
 
-            if (event != null) {
-                Long checkInCount = CheckInHist.get(event.getEventId());
+            Long checkInCount = CheckInHist.get(event.getEventId());
+            if (checkInCount != null) {
                 checkInCount = checkInCount + 1;
                 checkInValue = checkInCount;
                 CheckInHist.put(event.getEventId(), checkInCount);

@@ -7,7 +7,7 @@
 
     <item
         android:id="@+id/qrcodes2"
-        android:title="QR Codes"
+        android:title="Scan QR Code"
         android:icon="@drawable/img_2"/>
 
     <item

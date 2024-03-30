@@ -6,6 +6,19 @@
     tools:context=".OrganizerFragment1"
     android:id="@+id/attendeeviewfrag">
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"/>
+    <RelativeLayout
+        android:id="@+id/maincontent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+         >
+
     <TextView
         android:id="@+id/eventname"
         android:layout_width="wrap_content"
@@ -20,7 +33,7 @@
         android:id="@+id/events"
         android:layout_width="match_parent"
         android:layout_marginTop="100dp"
-        android:layout_height="391dp" />
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/backbtn"
@@ -28,5 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="-400dp"
         android:text="Back" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

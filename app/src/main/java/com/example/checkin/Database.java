@@ -38,6 +38,7 @@ public class Database {
     public Database(){
     }
     //TODO: Profile Picture storing
+    //      Poster storing
     //      QR Code Storing
 
     /**
@@ -51,18 +52,26 @@ public class Database {
 
         //Upload User info
         Map<String, Object> data = new HashMap<>();
-        data.put("Name", a.getName());
-        data.put("Homepage", a.getHomepage());
-        data.put("Email", a.getEmail());
-        data.put("Phone", a.getPhoneNumber());
-        data.put("Tracking", a.trackingEnabled());
-        data.put("ProfilePic", a.getProfilePicture());
 
+        data.put("Name", a.getName());
+        Log.d("Firebase Upload", "Attendee: " + a.getName());
+        data.put("Homepage", a.getHomepage());
+        Log.d("Firebase Upload", "Attendee: " + a.getHomepage());
+        data.put("Email", a.getEmail());
+        Log.d("Firebase Upload", "Attendee: " + a.getEmail());
+        data.put("Phone", a.getPhoneNumber());
+        Log.d("Firebase Upload", "Attendee: " + a.getPhoneNumber());
+        data.put("Tracking", a.trackingEnabled());
+        Log.d("Firebase Upload", "Attendee: " + a.trackingEnabled());
+
+        data.put("ProfilePic", a.getProfilePicture());
+        //DocumentReference picRef = attendeeRef.document("ProfilePic");
         //Upload check in counts
         Map<String, Long> checkins = a.getCheckIns();
         data.put("Checkins", checkins);
 
         attendeeRef.document(a.getUserId()).set(data);
+
         Log.d("New Attendee", String.format("Added Attendee to Firebase, ID: %s", a.getUserId()));
     }
 
@@ -103,7 +112,7 @@ public class Database {
      */
     public void updateEvent(Event e){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference attendeeRef = db.collection("Events");
+        CollectionReference eventRef = db.collection("Events");
 
         //Upload Event info
         Map<String, Object> data = new HashMap<>();
@@ -111,6 +120,7 @@ public class Database {
         data.put("Details", e.getEventdetails());
         data.put("Poster", e.getPoster());
         data.put("Creator", e.getCreator());
+        data.put("Qr Code Id", e.getQrcodeid());
 
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
@@ -125,13 +135,40 @@ public class Database {
         for (Attendee a: e.getCheckInList().getAttendees()){
             checkedIn.put(a.getUserId(), "");
         }
+
+
+
         data.put("UserCheckIn", checkedIn);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
-        attendeeRef.document(e.getEventId()).set(data);
+        eventRef.document(e.getEventId()).set(data);
 
     }
+
+    public void updateProfilePicture(String base64Image, String userID){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference profilePicRef = db.collection("ProfilePics");
+
+        Map<String, String> data = new HashMap<>();
+        data.put("Image", base64Image);
+
+        Log.d("UpdateProfilePic", String.format("Upload ProfilePic(%s)", userID));
+        profilePicRef.document(userID).set(data);
+    }
+
+    public void updatePoster(String base64Image, String eventID){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference profilePicRef = db.collection("Posters");
+
+        Map<String, String> data = new HashMap<>();
+        data.put("Image", base64Image);
+
+        Log.d("UpdatePoster", String.format("Upload Poster(%s)", eventID));
+        profilePicRef.document(eventID).set(data);
+    }
+
+    //Functions for dealing with retrieving users ==================================================
 
     /**
      * For use within a snapshot listener to return an attendee
@@ -140,10 +177,23 @@ public class Database {
      */
     public Attendee getAttendee(DocumentSnapshot doc){
         Attendee a = new Attendee();
+
         a.setUserId(doc.getId());
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getId() + ": " + a.getUserId());
+
         a.setName(doc.getString("Name"));
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Name") + ": " + a.getName());
+
         a.setHomepage(doc.getString("Homepage"));
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Homepage") + ": " + a.getHomepage());
+
         a.setPhoneNumber(doc.getString("Phone"));
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Phone") + ": " + a.getPhoneNumber());
+
+        a.setEmail(doc.getString("Email"));
+        Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Email") + ": " + a.getEmail());
+
+        a.setProfilePicture(doc.getString("ProfilePic"));
 
         //set the tracking status of the attendee
         //the empty constructor has tracking as true by default
@@ -222,6 +272,38 @@ public class Database {
         return o;
     }
 
+    /**
+     * Function to retrieve the information of a profile picture stored in the database
+     * @param doc
+     * a successfully retrieved document from firebase
+     * @return
+     * a UserImage object containing the base64 string of the image and the user it belongs to
+     */
+    public UserImage getProfilePicture(DocumentSnapshot doc){
+        UserImage avi = new UserImage();
+
+        avi.setID(doc.getId());
+        avi.setImageB64(doc.getString("Image"));
+
+        return avi;
+    }
+
+    /**
+     * Function to retrieve the information of a poster stored in the database
+     * @param doc
+     * a successfully retrieved document from firebase
+     * @return
+     * a UserImage object containing the base64 string of the image and the event it belongs to
+     */
+    public UserImage getPoster(DocumentSnapshot doc){
+        UserImage poster = new UserImage();
+
+        poster.setID(doc.getId());
+        poster.setImageB64(doc.getString("Image"));
+
+        return poster;
+    }
+
     //template snapshot listener function content for retrieving an organizer
     /*
         String id = Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID);
@@ -256,6 +338,7 @@ public class Database {
         e.setEventdetails(doc.getString("Details"));
         e.setPoster(doc.getString("Poster"));
         e.setCreator(doc.getString("Creator"));
+        e.setQrcodeid(doc.getString("Qr Code Id"));
 
         Map<String, Object> data = doc.getData();
 
@@ -308,6 +391,30 @@ public class Database {
         return e;
     }
 
+
+
+    public void updateMessage(Message m){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference messageRef = db.collection("Messages");
+
+     // Create a new message object
+        Map<String, Object> data = new HashMap<>();
+        data.put("Title", m.getTitle());
+        data.put("Body", m.getBody());
+        data.put("Event Id", m.getEventid());
+        data.put("Type", m.getType());
+
+        messageRef.add(data)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("Upload Message", "Message uploaded successfully with ID: " + documentReference.getId());
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Upload Message", "Error uploading message", e);
+                });
+
+
+    }
+
     //use/modify this code if you need to load all the attendees for whatever reason
     //Firebase data pulls must be done asynchronously through listeners
     //https://firebase.google.com/docs/firestore/query-data/get-data#java_2
@@ -330,6 +437,7 @@ public class Database {
                     }
                 });
     */
+
 
 
 

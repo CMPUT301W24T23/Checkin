@@ -22,13 +22,13 @@ public class Event implements Serializable {
     //      - remove poster
     //      - Geolocation integration
     //              - has: physical boundaries? i'm not sure how geolocation would work
-    //      - Firebase Integration
 
     private String EventId;//unique identifier for event
-    //private Image poster;       //event poster
     private String poster;        //Poster uploaded to this Event
     //private QRCode code;
     private String eventname;
+
+    private String qrcodeid;
     private String eventdetails;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
@@ -117,7 +117,7 @@ public class Event implements Serializable {
      * a valid Attendee object
      */
     public void userSubs(Attendee a){
-        //Attendee subscribes to receiving information updates
+        //Attendee subscribes to event
         Subscribers.addAttendee(a);
     }
 
@@ -127,7 +127,7 @@ public class Event implements Serializable {
      * a valid Attendee object
      */
     public void userUnSubs (Attendee a){
-        //Attendee unsubscribes to receiving information updates
+        //Attendee unsubscribes to event
         Subscribers.removeAttendee(a);
     }
 
@@ -155,18 +155,21 @@ public class Event implements Serializable {
      * a valid attendee object
      */
     public void userCheckIn (Attendee a){
+        System.out.println(getCheckInList().getAttendees().size());
 
-        if (CheckInList == null) {
-            CheckInList = new AttendeeList();
+        for (int i = 0; i < getCheckInList().getAttendees().size(); i++) {
+            System.out.println("attendee"+getCheckInList().getAttendees().get(i).getUserId());
+
         }
+
 
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
-            a.CheckIn(this);
-            CheckInList.removeAttendee(a);
+            //a.CheckIn(this);
+            //CheckInList.removeAttendee(a);
         } else{
             //otherwise the user is checking in
-            a.CheckIn(this);
+            //a.CheckIn(this);
             CheckInList.addAttendee(a);
         }
 
@@ -247,6 +250,14 @@ public class Event implements Serializable {
 
     public String getCreator() {
         return creator;
+    }
+
+    public String getQrcodeid() {
+        return qrcodeid;
+    }
+
+    public void setQrcodeid(String qrcodeid) {
+        this.qrcodeid = qrcodeid;
     }
 
     public void setCreator(String creator) {

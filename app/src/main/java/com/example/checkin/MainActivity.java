@@ -75,17 +75,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         //if (android_id.equals(id3)){
-            //create attendee profile
-           // Attendee a = new Attendee();
-          //  a.setUserId(id3);
-         //   db.updateAttendee(a);
+        //create attendee profile
+        // Attendee a = new Attendee();
+        //  a.setUserId(id3);
+        //   db.updateAttendee(a);
 
-            //create organizer profile
-           // Organizer o = new Organizer();
-         //   o.setUserId(id3);
-          //  db.updateOrganizer(o);
+        //create organizer profile
+        // Organizer o = new Organizer();
+        //   o.setUserId(id3);
+        //  db.updateOrganizer(o);
 
-       // }
+        // }
 
 
 
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-        
+
 
 
         if(!(android_id == "")){

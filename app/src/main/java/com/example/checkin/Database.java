@@ -117,7 +117,7 @@ public class Database {
         //Upload Event info
         Map<String, Object> data = new HashMap<>();
         data.put("Name", e.getEventname());
-        data.put("Details", e.getEventdetails());
+        data.put("Details", e.getEventDetails());
         data.put("Poster", e.getPoster());
         data.put("Creator", e.getCreator());
         data.put("Qr Code Id", e.getQrcodeid());
@@ -335,7 +335,7 @@ public class Database {
         //load user info
 
         e.setEventname(doc.getString("Name"));
-        e.setEventdetails(doc.getString("Details"));
+        e.setEventDetails(doc.getString("Details"));
         e.setPoster(doc.getString("Poster"));
         e.setCreator(doc.getString("Creator"));
         e.setQrcodeid(doc.getString("Qr Code Id"));
@@ -397,7 +397,7 @@ public class Database {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference messageRef = db.collection("Messages");
 
-     // Create a new message object
+        // Create a new message object
         Map<String, Object> data = new HashMap<>();
         data.put("Title", m.getTitle());
         data.put("Body", m.getBody());

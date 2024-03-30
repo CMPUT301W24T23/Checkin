@@ -166,19 +166,27 @@ public class Event implements Serializable {
 
     public void userCheckIn (Attendee a){
 
-        if (!CheckInList.contains(a)){
+        //if (!CheckInList.contains(a)){
             //if in list, the user is checking out of the event
             CheckInList.addAttendee(a);
 
-        } else{
+       // } else{
             //otherwise the user is checking in
+
+          //  CheckInList.removeAttendee(a);
+           // System.out.println("REMOVE");
+       // }
+
+
+
+    }
+
+    public void userCheckOut (Attendee a){
+        System.out.println("ID VALUE" + a.getUserId());
 
             CheckInList.removeAttendee(a);
             System.out.println("REMOVE");
-        }
-
-
-
+            //CheckInList.getAttendees().clear();
     }
 
     /**

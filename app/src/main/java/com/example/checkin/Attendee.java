@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -298,4 +299,18 @@ public class Attendee implements User, Serializable {
     public void setCheckInValue(Long checkInValue) {
         this.checkInValue = checkInValue;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Attendee otherAttendee = (Attendee) obj;
+        // Compare user IDs for equality
+        return Objects.equals(userId, otherAttendee.userId);
+    }
+
 }

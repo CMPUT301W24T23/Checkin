@@ -41,6 +41,8 @@ public class EventDetailAtten extends Fragment {
     Button signupbutton;
     Button posterbutton;
 
+    Button checkoutbtn;
+
     private FirebaseFirestore db;
 
 
@@ -53,8 +55,8 @@ public class EventDetailAtten extends Fragment {
         eventnametxt =  view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventinfo);
         backbutton = view.findViewById(R.id.backbtn);
-        eventmessagesbtn = view.findViewById(R.id.eventmessg);
         checkinbutton  = view.findViewById(R.id.checkinbtn);
+        checkoutbtn  = view.findViewById(R.id.checkoutbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
         Database database = new Database();
@@ -72,6 +74,27 @@ public class EventDetailAtten extends Fragment {
         }
 
         String eventid = myevent.getEventId();
+        Database database1 = new Database();
+
+        checkoutbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Fetch the attendee
+
+                // Fetch the event
+                fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
+                    @Override
+                    public void onSuccess(Event event) {
+                        // Update 'myevent' with the fetched event details
+                        //myevent = event;
+
+                        // Perform the check-in process
+                        fetchAttendeeForCheckout(android_id, event);
+                        //database1.updateEvent(myevent);
+                    }
+                });
+            }
+        });
 
 
 
@@ -82,46 +105,19 @@ public class EventDetailAtten extends Fragment {
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Fetch the attendee
 
-                db = FirebaseFirestore.getInstance();
-                Database d = new Database();
-                DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
-                eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                // Fetch the event
+                fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Event event = database.getEvent(document);
-                                System.out.println("checkinpeople first "+ myevent.getCheckInList().getAttendees().size());
+                    public void onSuccess(Event event) {
+                        // Update 'myevent' with the fetched event details
+                        //myevent = event;
 
-                                // Retrieve subscribers from the document
-                                Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
-
-                                if (!subscribersMap.isEmpty()) {
-
-                                    //for (String attendeeId : subscribersMap.keySet()) {
-                                        // Fetch each attendee document and create Attendee objects
-                                        fetchAttendeeFromFirestore(android_id, myevent);
-                                   // }
-                                }
-                                    else{
-                                    System.out.println("GET");
-                                        fetchAttendeeFromFirestore(android_id, myevent);
-
-                                    }
-                                //d.updateEvent(event);
-
-                                System.out.println("checkinpeople last "+ myevent.getCheckInList().getAttendees().size());
-
-                            } else {
-                                Log.d("Firestore", "No such document");
-                            }
-                        } else {
-                            Log.d("Firestore", "get failed with ", task.getException());
-                        }
+                        // Perform the check-in process
+                        fetchAttendeeFromFirestore(android_id, event);
                     }
-                });
+        });
                         //fetchAttendee(new OnSuccessListener<Attendee>() {
                            // @Override
                            // public void onSuccess(Attendee attendee) {
@@ -348,6 +344,35 @@ public class EventDetailAtten extends Fragment {
 
             });
         }
+
+    private void fetchAttendeeForCheckout(String attendeeid, Event event) {
+
+        Database d = new Database();
+
+        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeid);
+        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Attendee object using Database class method
+                        Attendee attendee = d.getAttendee(document);
+                        System.out.println("NUMBERS BEFORE" + event.getCheckInList().getAttendees().size());
+                        event.userCheckOut(attendee);
+                        System.out.println("NUMBERS " + event.getCheckInList().getAttendees().size());
+                        attendee.CheckIn(event);
+                        d.updateEvent(event);
+                        d.updateAttendee(attendee);
+
+                    }
+
+                }
+            }
+
+
+        });
+    }
 
 
 

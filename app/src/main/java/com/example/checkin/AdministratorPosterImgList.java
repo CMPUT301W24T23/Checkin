@@ -2,7 +2,6 @@ package com.example.checkin;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -16,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,7 +24,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdministratorProfileImgList extends Fragment {
+public class AdministratorPosterImgList extends Fragment {
 
     private FirebaseFirestore db;
     private ListView listView;
@@ -36,14 +33,14 @@ public class AdministratorProfileImgList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout and represent the list of events.
-        View view = inflater.inflate(R.layout.admin_profile_img_list, container, false);
-        listView = view.findViewById(R.id.admin_profileimglist);
+        View view = inflater.inflate(R.layout.admin_poster_img, container, false);
+        listView = view.findViewById(R.id.admin_posterlist);
 
         // Initialize Firebase Firestore.
         db = FirebaseFirestore.getInstance();
 
         // Get the collection reference for images
-        CollectionReference imagesCollectionRef = db.collection("ProfilePics");
+        CollectionReference imagesCollectionRef = db.collection("Posters");
 
 
         // Initialize image list
@@ -75,14 +72,12 @@ public class AdministratorProfileImgList extends Fragment {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String imageString = document.getString("Image"); // Assuming the field name is "image"
-//                        if (imageString == ""){
-//                            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.download);
-//                            imageAdapter.add(bitmap);
-//                        }
-                        if (imageString != null) {
-                            // Convert string to bitmap and add to the list
+                        if (imageString == ""){
+                            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.download);
+                            imageAdapter.add(bitmap);
+                        }
+                        else if (imageString != null) {
                             Bitmap bitmap = base64ToBitmap(imageString);
-//                            Bitmap bitmap1 = resizeBitmap(bitmap, 20, 20);
                             if (bitmap != null) {
                                 imageAdapter.add(bitmap);
                             }
@@ -99,24 +94,5 @@ public class AdministratorProfileImgList extends Fragment {
         byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
-
-//    public Bitmap resizeBitmap(Bitmap bitmap, int newWidth, int newHeight) {
-//        int width = bitmap.getWidth();
-//        int height = bitmap.getHeight();
-//
-//        float scaleWidth = ((float) newWidth) / width;
-//        float scaleHeight = ((float) newHeight) / height;
-//
-//        // Create a matrix for the manipulation
-//        Matrix matrix = new Matrix();
-//
-//        // Resize the bitmap
-//        matrix.postScale(scaleWidth, scaleHeight);
-//
-//        // Recreate the new bitmap
-//        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
-//
-//        return resizedBitmap;
-//    }
 
 }

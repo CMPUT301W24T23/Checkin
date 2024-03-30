@@ -5,18 +5,18 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/admin_profileimg"
+        android:id="@+id/admin_poster_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Profile Images."
+        android:text="Poster Images."
         android:textAlignment="center"
         android:layout_marginTop="18dp"
         android:textColor="@color/black"
         android:textSize="45dp" />
 
     <ListView
-        android:id="@+id/admin_profileimglist"
-        android:layout_below="@id/admin_profileimg"
+        android:id="@+id/admin_posterlist"
+        android:layout_below="@id/admin_poster_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="20dp"/>

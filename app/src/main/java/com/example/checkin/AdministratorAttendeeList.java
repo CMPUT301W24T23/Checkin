@@ -108,22 +108,10 @@ public class AdministratorAttendeeList extends Fragment {
                                             .whereEqualTo("Name", attendee)
                                             .get()
                                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     if (task.isSuccessful()) {
                                                         for (QueryDocumentSnapshot document : task.getResult()) {
-                                                            // Fade out animation
-                                                            listView.animate()
-                                                                    .alpha(0.0f)
-                                                                    .setDuration(500) // Adjust duration as needed
-                                                                    .withEndAction(new Runnable() {
-                                                                        @Override
-                                                                        public void run() {
-                                                                            // Remove the document after the animation completes
-                                                                            document.getReference().delete();
-                                                                        }
-                                                                    })
-                                                                    .start();
+                                                            document.getReference().delete();
                                                         }
                                                     } else {
                                                         Log.d(TAG, "Error getting documents: ", task.getException());

@@ -10,8 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.checkin.AdministratorEventList;
-
 // This class is responsible for executing the fragment "fragment_admin_menu".
 public class AdministratorView extends Fragment {
 
@@ -24,6 +22,33 @@ public class AdministratorView extends Fragment {
         Button adminprofiles = view.findViewById(R.id.adminprofile);
         Button adminimages = view.findViewById(R.id.adminimages);
         Button adminposters = view.findViewById(R.id.adminposter);
+
+
+        adminimages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                AdministratorProfileImgList fragment = new AdministratorProfileImgList();
+                fragmentTransaction.replace(R.id.adminFrame, fragment);
+
+                // Commit the transaction
+                fragmentTransaction.commit();
+            }
+        });
+
+        adminposters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                AdministratorPosterImgList fragment = new AdministratorPosterImgList();
+                fragmentTransaction.replace(R.id.adminFrame, fragment);
+
+                // Commit the transaction
+                fragmentTransaction.commit();
+            }
+        });
 
 
         // Displays the new fragment showing the list of attendees.

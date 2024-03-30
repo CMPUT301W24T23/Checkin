@@ -112,7 +112,18 @@ public class AdministratorAttendeeList extends Fragment {
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     if (task.isSuccessful()) {
                                                         for (QueryDocumentSnapshot document : task.getResult()) {
-                                                            document.getReference().delete();
+                                                            // Fade out animation
+                                                            listView.animate()
+                                                                    .alpha(0.0f)
+                                                                    .setDuration(500) // Adjust duration as needed
+                                                                    .withEndAction(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            // Remove the document after the animation completes
+                                                                            document.getReference().delete();
+                                                                        }
+                                                                    })
+                                                                    .start();
                                                         }
                                                     } else {
                                                         Log.d(TAG, "Error getting documents: ", task.getException());

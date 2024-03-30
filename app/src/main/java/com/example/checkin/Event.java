@@ -12,6 +12,7 @@ import com.example.checkin.AttendeeList;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
@@ -29,6 +30,8 @@ public class Event implements Serializable {
     private String poster;        //Poster uploaded to this Event
     //private QRCode code;
     private String eventname;
+
+    private Map<String, String> CheckInsId;
 
     private String qrcodeid;
     private String eventdetails;
@@ -85,6 +88,7 @@ public class Event implements Serializable {
         this.Subscribers = new AttendeeList();
         this.CheckInList = new AttendeeList();
         this.poster = "";
+        this.CheckInsId = new Hashtable<>();
     }
 
     /**
@@ -158,11 +162,9 @@ public class Event implements Serializable {
      * @param a
      * a valid attendee object
      */
-    public void userCheckIn (Attendee a){
 
-        if (CheckInList == null) {
-            CheckInList = new AttendeeList();
-        }
+
+    public void userCheckIn (Attendee a){
 
         if (CheckInList.contains(a)){
             //if in list, the user is checking out of the event
@@ -173,6 +175,7 @@ public class Event implements Serializable {
             a.CheckIn(this);
             CheckInList.addAttendee(a);
         }
+
 
 
     }
@@ -269,4 +272,28 @@ public class Event implements Serializable {
         return CheckInList;
     }
 
+    public Map<String, String> getCheckInsId() {
+        return CheckInsId;
+    }
+
+    public void setCheckInsId(Map<String, String> checkInsId) {
+        CheckInsId = checkInsId;
+    }
+    // String attendeeId = a.getUserId();
+    //
+    //        if (CheckInsId == null) {
+    //           CheckInsId = new HashMap<>();
+    //        }
+    //
+    //       else if (CheckInsId.containsKey(attendeeId)) {
+    //            // Attendee is already checked in, remove the
+    //            CheckInList.removeAttendee(a);
+    //            CheckInsId.remove(attendeeId);
+    //            System.out.println("Attendee " + attendeeId + " removed from check-in list");
+    //        } else {
+    //            // Attendee is not checked in, add them
+    //            CheckInList.addAttendee(a);
+    //            CheckInsId.put(attendeeId, "checked-in");
+    //            System.out.println("Attendee " + attendeeId + " added to check-in list");
+    //        }
 }

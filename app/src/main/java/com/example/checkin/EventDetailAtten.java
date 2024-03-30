@@ -71,6 +71,37 @@ public class EventDetailAtten extends Fragment {
         String eventid = myevent.getEventId();
 
         db = FirebaseFirestore.getInstance();
+        DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
+        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Event event = database.getEvent(document);
+                        // Retrieve subscribers from the document
+                        Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
+
+                        if (subscribersMap != null) {
+                            int attendeeCount = subscribersMap.size();
+
+                            for (String attendeeId : subscribersMap.keySet()) {
+                                // Fetch each attendee document and create Attendee objects
+                                fetchAttendeeFromFirestore(attendeeId, event.getEventId());
+                            }
+                        }
+                    } else {
+                        Log.d("Firestore", "No such document");
+                    }
+                } else {
+                    Log.d("Firestore", "get failed with ", task.getException());
+                }
+            }
+        });
+
+
+
+        db = FirebaseFirestore.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         System.out.println("checkincount first "+ myevent.getCheckInList().getAttendees().size());
@@ -78,44 +109,53 @@ public class EventDetailAtten extends Fragment {
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fetchAttendee(new OnSuccessListener<Attendee>() {
-                    @Override
-                    public void onSuccess(Attendee attendee) {
-                        attendee.CheckIn(myevent);
-                        myevent.userCheckIn(attendee);
-
-
-                        FirebaseMessaging.getInstance().subscribeToTopic(eventid).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        fetchAttendee(new OnSuccessListener<Attendee>() {
                             @Override
-                            public void onSuccess(Void unused) {
-                                Log.d("Subscribe", "subscribe to event");
+                            public void onSuccess(Attendee attendee) {
+
+                                FetchEventCheckIN(attendee);
+                                //attendee.CheckIn(myevent);
+                               // myevent.userCheckIn(attendee);
+
+                                FirebaseMessaging.getInstance().subscribeToTopic(myevent.getEventId())
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Log.d("Subscribe", "subscribe to event");
+                                            }
+                                        });
+
+                                //Database database = new Database();
+                                 // database.updateEvent(myevent);
+                                 // database.updateAttendee(attendee);
                             }
                         });
-
-                        Database database = new Database();
-                        database.updateEvent(myevent);
-                        database.updateAttendee(attendee);
-
-                    }
-                });
             }
         });
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fetchAttendee(new OnSuccessListener<Attendee>() {
+                fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
                     @Override
-                    public void onSuccess(Attendee attendee) {
-                        attendee.setName("testname");
-                        attendee.EventSub(myevent);
-                        myevent.userSubs(attendee);
+                    public void onSuccess(Event event) {
+                        // Update 'myevent' with the fetched event details
+                        myevent = event;
 
-                        Database database = new Database();
-                        database.updateEvent(myevent);
-                        database.updateAttendee(attendee);
+                        fetchAttendee(new OnSuccessListener<Attendee>() {
+                            @Override
+                            public void onSuccess(Attendee attendee) {
+                                attendee.setName("testname");
+                                attendee.EventSub(myevent);
+                                myevent.userSubs(attendee);
 
-                        Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
+                                Database database = new Database();
+                                database.updateEvent(myevent);
+                                database.updateAttendee(attendee);
+
+                                Toast.makeText(getContext(), "You Have Signed Up!", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
             }
@@ -220,8 +260,6 @@ public class EventDetailAtten extends Fragment {
                     if (document.exists()) {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
-                        attendee.CheckIn(myevent);
-                        myevent.userCheckIn(attendee);
 
 
                     } else {
@@ -257,6 +295,60 @@ public class EventDetailAtten extends Fragment {
             }
         });
     }
+
+    private void FetchEventCheckIN(Attendee attendee) {
+        db = FirebaseFirestore.getInstance();
+        Database d = new Database();
+        DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
+        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Event event = d.getEvent(document);
+                        System.out.println("NUMBERS" + event.getCheckInList().getAttendees().size());
+                        attendee.CheckIn(event);
+                        event.userCheckIn(attendee);
+                        d.updateEvent(event);
+                        d.updateAttendee(attendee);
+
+
+
+                    } else {
+                        Log.d("Firestore", "No such document");
+                    }
+                } else {
+                    Log.d("Firestore", "get failed with ", task.getException());
+                }
+            }
+        });
+
+    }
+
+        private void fetchAttendeeFromFirestore(String eventId, String attendeeid) {
+
+
+            DocumentReference attendeeRef = db.collection("Attendees").document(attendeeid);
+            attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Convert the document snapshot to an Attendee object using Database class method
+                            Attendee attendee = new Database().getAttendee(document);
+
+
+                        }
+
+                    }
+                }
+
+
+            });
+        }
+
 
 
 

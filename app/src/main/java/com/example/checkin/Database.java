@@ -14,6 +14,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -138,10 +140,15 @@ public class Database {
             checkedIn.put(a.getUserId(), "");
         }
 
+        Map<String, String> updatedCheckInsId = e.getCheckInsId();
+
+        data.put("CheckInIds", updatedCheckInsId);
 
 
-        eventRef.document(e.getEventId()).update("UserCheckIn",checkedIn);
+
         data.put("UserCheckIn", checkedIn);
+
+
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
@@ -343,6 +350,12 @@ public class Database {
         e.setCreator(doc.getString("Creator"));
         e.setQrcodeid(doc.getString("Qr Code Id"));
 
+        //get checkins
+        Map<String, Object> data2 = doc.getData();
+        Map<String, String> checkedIn = (Map<String, String>)data2.get("UserCheckIn");
+        e.setCheckInsId(checkedIn);
+
+
         Map<String, Object> data = doc.getData();
 
         //Retrieve Subscribers
@@ -368,9 +381,35 @@ public class Database {
             });
         }
 
+        db = FirebaseFirestore.getInstance();
+        DocumentReference eventRef = db.collection("Events").document(doc.getId());
+        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Retrieve subscribers from the document
+                        Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
+                        if (subscribersMap != null) {
+                            for (String attendeeId : subscribersMap.keySet()) {
+                                // Fetch each attendee document and create Attendee objects
+                                fetchAttendeeFromFirestore(attendeeId, doc.getId());
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+
+
         //Retrieve Checked In users
         Map<String, String> Users = (Map<String, String>)data.get("UserCheckIn");
-        for(String user: Subs.keySet()){
+        List<Attendee> attendees = new ArrayList<>();
+        for(String user: Users.keySet()){
             DocumentReference docRef = db.collection("Attendees").document(user);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -380,7 +419,9 @@ public class Database {
                         if (document.exists()) {
                             Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
                             Attendee a = getAttendee(document);
+                            System.out.println("Attendee id"+ a.getUserId());
                             e.userCheckIn(a);
+
                         } else {
                             Log.d("Firebase", String.format("No such document: %s", user));
                         }
@@ -390,6 +431,7 @@ public class Database {
                 }
             });
         }
+
         Log.d("Retrieved Event", String.format("Event ID: %s ", e.getEventId()));
         return e;
     }
@@ -440,6 +482,29 @@ public class Database {
                     }
                 });
     */
+
+    private void fetchAttendeeFromFirestore(String attendeeId, String eventId) {
+
+
+        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
+        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Attendee object using Database class method
+                        Attendee attendee = new Database().getAttendee(document);
+
+
+                    }
+
+                }
+            }
+
+
+        });
+    }
 
 
 

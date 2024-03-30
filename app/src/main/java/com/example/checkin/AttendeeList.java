@@ -57,11 +57,11 @@ public class AttendeeList implements Serializable {
      * boolean
      */
     public boolean contains (Attendee toFind){
-        if (Attendees.isEmpty()){
+        if (toFind == null || toFind.getUserId() == null || Attendees.isEmpty()) {
             return false;
         }
-        for (Attendee a: Attendees){
-            if (a == toFind){
+        for (Attendee a : Attendees) {
+            if (toFind.getUserId().equals(a.getUserId())) {
                 return true;
             }
         }

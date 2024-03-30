@@ -23,6 +23,9 @@ import java.util.Random;
 /**
  * This class outlines an Event object that stores all the information needed for an event
  */
+/**
+ * This class outlines an Event object that stores all the information needed for an event
+ */
 public class Event implements Serializable {
     //TODO:
     //      - Geolocation integration
@@ -159,30 +162,6 @@ public class Event implements Serializable {
 
 
     public void userCheckIn (Attendee a){
-
-
-        //if (!CheckInList.contains(a)){
-            //if in list, the user is checking out of the event
-            CheckInList.addAttendee(a);
-
-       // } else{
-            //otherwise the user is checking in
-
-          //  CheckInList.removeAttendee(a);
-           // System.out.println("REMOVE");
-       // }
-
-
-
-    }
-
-    public void userCheckOut (Attendee a){
-        System.out.println("ID VALUE" + a.getUserId());
-
-            CheckInList.removeAttendee(a);
-            System.out.println("REMOVE");
-            //CheckInList.getAttendees().clear();
-
         if(CheckInList.contains(a)){
             //Check the user out
             CheckInList.removeAttendee(a);
@@ -192,7 +171,6 @@ public class Event implements Serializable {
             CheckInList.addAttendee(a);
             a.CheckIn(this);
         }
-
     }
 
     /**

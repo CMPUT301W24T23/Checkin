@@ -57,11 +57,11 @@ public class AttendeeList implements Serializable {
      * boolean
      */
     public boolean contains (Attendee toFind){
-        if (Attendees.isEmpty()){
+        if (toFind == null || toFind.getUserId() == null || Attendees.isEmpty()) {
             return false;
         }
-        for (Attendee a: Attendees){
-            if (a == toFind){
+        for (Attendee a : Attendees) {
+            if (toFind.getUserId().equals(a.getUserId())) {
                 return true;
             }
         }
@@ -84,6 +84,7 @@ public class AttendeeList implements Serializable {
      */
     public void removeAttendee(Attendee a){
         Attendees.remove(a);
+        Attendees.removeIf(AinList -> a.getUserId().equals(AinList.getUserId()));
     }
 
     public ArrayList<Attendee> getAttendees() {
@@ -94,4 +95,6 @@ public class AttendeeList implements Serializable {
         Attendee attendee = Attendees.get(position);
         return attendee;
     }
+
+
 }

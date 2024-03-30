@@ -54,32 +54,11 @@ public class SignedInList extends Fragment {
 
         attendeedatalist = new AttendeeList();
 
-        ArrayList<Attendee> attendees = new ArrayList<>();
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             myevent = (Event) bundle.getSerializable("event");
         }
-
-
-        // if event exists, get checked in list of attendees
-        if (myevent !=null) {
-            attendeedatalist = myevent.getSubscribers();
-        }
-
-
-
-
-
-
-        // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
-        if (attendeedatalist!= null) {
-            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendeedatalist.getAttendees());
-            attendeesList.setAdapter(AttendeesAdapter);
-        }
-
-        String eventid = myevent.getEventId();
-
 
 
 
@@ -132,13 +111,29 @@ public class SignedInList extends Fragment {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
                         // Add the attendee to the list
-                        attendees.addAttendee(attendee);
-                        // Update the UI with the attendees list
-
-                        if (attendeedatalist!= null) {
-                            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
-                            attendeesList.setAdapter(AttendeesAdapter);
+                        if (!attendees.contains(attendee)) {
+                            attendees.addAttendee(attendee);
                         }
+
+
+                        if (attendeedatalist != null) {
+                            AttendeesAdapter = new ArrayAdapter<Attendee>(getActivity(), R.layout.content2, attendeedatalist.getAttendees()) {
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent) {
+                                    View view = convertView;
+                                    if (view == null) {
+                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                        view = inflater.inflate(R.layout.content2, null);
+                                    }
+                                    TextView textView = view.findViewById(R.id.attendee_name);
+                                    textView.setText(attendeedatalist.getAttendees().get(position).getName());
+                                    TextView textView2 = view.findViewById(R.id.checkin_times);
+                                    textView2.setVisibility(View.GONE);
+                                    return view;
+                                }
+                            };
+                        }
+                            attendeesList.setAdapter(AttendeesAdapter);
                     } else {
                         Log.d("Firestore", "No such document");
                     }

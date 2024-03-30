@@ -15,6 +15,9 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -29,8 +32,12 @@ public class Event implements Serializable {
     //private QRCode code;
     private String eventname;
 
+    private Map<String, String> CheckInsId;
+
     private String qrcodeid;
     private String eventdetails;
+
+
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
@@ -42,7 +49,7 @@ public class Event implements Serializable {
     public Event(String eventname, String eventdetails, ArrayList<Attendee> checkInList) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
-        checkInList = new ArrayList<>();
+
     }
 
     /**
@@ -56,7 +63,7 @@ public class Event implements Serializable {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timestamp = dateFormat.format(new Date());
         String eventID = String.format(creatorID + timestamp);
-        Log.d("EventID Generate", String.format("Event ID (%s)", eventID));
+        //Log.d("EventID Generate", String.format("Event ID (%s)", eventID));
         return eventID;
     }
 
@@ -72,6 +79,7 @@ public class Event implements Serializable {
         this.Subscribers = new AttendeeList();
         this.CheckInList = new AttendeeList();
         this.poster = "";
+        this.CheckInsId = new Hashtable<>();
     }
 
     /**
@@ -96,9 +104,21 @@ public class Event implements Serializable {
      * @param a
      * a valid Attendee object
      */
+    /*
     public void userSubs(Attendee a){
         //Attendee subscribes to event
         Subscribers.addAttendee(a);
+    }*/
+
+    public void userSubs (Attendee a){
+        if(Subscribers.contains(a)){
+            //Check the user out
+            Subscribers.removeAttendee(a);
+            System.out.println("REMOVE");
+        } else{
+            //Check the user in
+            Subscribers.addAttendee(a);
+        }
     }
 
     /**
@@ -106,10 +126,12 @@ public class Event implements Serializable {
      * @param a
      * a valid Attendee object
      */
+    /*
     public void userUnSubs (Attendee a){
         //Attendee unsubscribes to event
         Subscribers.removeAttendee(a);
     }
+    */
 
     /**
      * Check if a user is subscribed to the event
@@ -134,27 +156,20 @@ public class Event implements Serializable {
      * @param a
      * a valid attendee object
      */
+
+
     public void userCheckIn (Attendee a){
-        System.out.println(getCheckInList().getAttendees().size());
-
-        for (int i = 0; i < getCheckInList().getAttendees().size(); i++) {
-            System.out.println("attendee"+getCheckInList().getAttendees().get(i).getUserId());
-
-        }
-
-
-        if (CheckInList.contains(a)){
-            //if in list, the user is checking out of the event
-            //a.CheckIn(this);
-            //CheckInList.removeAttendee(a);
+        if(CheckInList.contains(a)){
+            //Check the user out
+            CheckInList.removeAttendee(a);
+            System.out.println("REMOVE");
         } else{
-            //otherwise the user is checking in
-            //a.CheckIn(this);
+            //Check the user in
             CheckInList.addAttendee(a);
+            a.CheckIn(this);
         }
-
-
     }
+
     /**
      * Check if the attendee is checked in
      * @param a
@@ -189,9 +204,6 @@ public class Event implements Serializable {
      * @return
      * Attendee List of checked in users
      */
-    public AttendeeList getCheckInList() {
-        return CheckInList;
-    }
 
     public String getEventId() {
         return EventId;
@@ -221,6 +233,7 @@ public class Event implements Serializable {
         CheckInList = checkInList;
     }
 
+
     public String getPoster() {
         return poster;
     }
@@ -244,4 +257,34 @@ public class Event implements Serializable {
     public void setCreator(String creator) {
         this.creator = creator;
     }
+
+
+    public AttendeeList getCheckInList() {
+        return CheckInList;
+    }
+
+    public Map<String, String> getCheckInsId() {
+        return CheckInsId;
+    }
+
+    public void setCheckInsId(Map<String, String> checkInsId) {
+        CheckInsId = checkInsId;
+    }
+    // String attendeeId = a.getUserId();
+    //
+    //        if (CheckInsId == null) {
+    //           CheckInsId = new HashMap<>();
+    //        }
+    //
+    //       else if (CheckInsId.containsKey(attendeeId)) {
+    //            // Attendee is already checked in, remove the
+    //            CheckInList.removeAttendee(a);
+    //            CheckInsId.remove(attendeeId);
+    //            System.out.println("Attendee " + attendeeId + " removed from check-in list");
+    //        } else {
+    //            // Attendee is not checked in, add them
+    //            CheckInList.addAttendee(a);
+    //            CheckInsId.put(attendeeId, "checked-in");
+    //            System.out.println("Attendee " + attendeeId + " added to check-in list");
+    //        }
 }

@@ -69,6 +69,7 @@ public class CheckedInListOrg extends Fragment {
 
 
 
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
@@ -85,15 +86,12 @@ public class CheckedInListOrg extends Fragment {
                         Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
                         if (subscribersMap != null) {
                             int attendeeCount = subscribersMap.size();
-                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putInt("attendeeCount", attendeeCount);
-                            editor.apply();
                             for (String attendeeId : subscribersMap.keySet()) {
                                 // Fetch each attendee document and create Attendee objects
-                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
+                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist, myevent.getEventId());
                             }
                         }
+
                     } else {
                         Log.d("Firestore", "No such document");
                     }
@@ -108,8 +106,9 @@ public class CheckedInListOrg extends Fragment {
     }
 
 
+    private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees, String eventId) {
 
-    private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees) {
+
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -119,29 +118,42 @@ public class CheckedInListOrg extends Fragment {
                     if (document.exists()) {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
-                        // Add the attendee to the list
-                        attendees.addAttendee(attendee);
 
 
-                        String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
-                        totalcheckin.setText(text);
 
-                        if (attendeedatalist != null) {
-                            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
-                            attendeesList.setAdapter(AttendeesAdapter);
+                        Map<String, Long> checkIns = (Map<String, Long>) document.get("Checkins");
+                        if (checkIns != null) {
+                            // Retrieve the check-in count for the specified eventId
+                            Long checkInValue = checkIns.get(eventId);
+                            System.out.println("checkin"+checkInValue);
+                            if (checkInValue != null) {
+                                // Set the check-in count for the attendee
+                                attendee.setCheckInValue(checkInValue);
+                                // Add the attendee to the list
+                                if (!attendees.contains(attendee)) {
+                                    attendees.addAttendee(attendee);
+                                }
+
+                                if (attendeedatalist != null) {
+                                    AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
+                                    attendeesList.setAdapter(AttendeesAdapter);
+                                }
+                                String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
+                                totalcheckin.setText(text);
+                            } else {
+                                Log.d("Firestore", "No such document");
+                            }
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
                         }
-                    } else {
-                        Log.d("Firestore", "No such document");
                     }
-                } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
+
                 }
             }
-        });
+
+
+                 });
     }
-
-
-
 
 
 

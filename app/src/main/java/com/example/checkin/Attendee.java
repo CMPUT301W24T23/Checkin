@@ -27,6 +27,8 @@ public class Attendee implements User, Serializable {
 
     private String userId;     //the user's ID
     private String profilePicture;              //user's profile picture as an encoded 64bit string
+    private Long checkInValue;
+
     private Map<String, Long> CheckInHist = new Hashtable<>();
     private boolean geoTracking;
     //Optional information the user can provide
@@ -123,11 +125,12 @@ public class Attendee implements User, Serializable {
      *
      * @param event a valid event object
      */
+    /*
     public void EventUnSub(Event event) {
         //User unsubscribes from event
         event.userUnSubs(this);
     }
-
+    */
     //CheckedInList=================================================================================
 
      /** Return the dictionary with the keys as the eventIds and values of number
@@ -153,15 +156,18 @@ public class Attendee implements User, Serializable {
         if (this.CheckInHist.isEmpty()) {
             // If the CheckInHist map is empty, initialize the count to 1
             CheckInHist.put(String.valueOf(event.getEventId()), 1L);
+            //checkInValue = 0L;
         } else {
             // If the map is not empty, retrieve the current count and increment it by 1
-            Long checkInCount = CheckInHist.get(String.valueOf(event.getEventId()));
+            Long checkInCount = CheckInHist.get(event.getEventId());
             if (checkInCount != null) {
-                long count = checkInCount + 1;
-                CheckInHist.put(String.valueOf(event.getEventId()), count);
+                checkInCount = checkInCount + 1;
+                checkInValue = checkInCount;
+                CheckInHist.put(event.getEventId(), checkInCount);
             } else {
+                //First time checking in to the event in this case
                 // If the value for the event ID is null, initialize it to 1
-                CheckInHist.put(String.valueOf(event.getEventId()), 1L);
+                CheckInHist.put(event.getEventId(), 1L);
             }
         }
     }
@@ -249,5 +255,13 @@ public class Attendee implements User, Serializable {
 
     public void setCheckInHist(Map<String, Long> checkInHist) {
         CheckInHist = checkInHist;
+    }
+
+    public Long getCheckInValue() {
+        return checkInValue;
+    }
+
+    public void setCheckInValue(Long checkInValue) {
+        this.checkInValue = checkInValue;
     }
 }

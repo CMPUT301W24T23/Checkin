@@ -4,38 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OrganizerFragment1"
-    android:id="@+id/attendeeviewfrag">
+    android:id="@+id/org_frag1">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"/>
-    <RelativeLayout
-        android:id="@+id/maincontent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-         >
 
     <TextView
-        android:id="@+id/eventname"
+        android:id="@+id/eventpage_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Select an Event"
         android:layout_centerHorizontal="true"
-        android:text="Events"
-        android:layout_marginTop="30dp"
         android:textColor="@color/black"
-        android:textSize="45dp" />
+        android:layout_marginTop="40dp"
+        android:textSize="40dp"
+        />
 
     <ListView
         android:id="@+id/events"
         android:layout_width="match_parent"
-        android:layout_marginTop="100dp"
-
         android:layout_height="wrap_content"
-        android:fadeScrollbars="false"/>
+        android:layout_below="@id/eventpage_text"
+        android:layout_marginTop="4dp"
+        android:fadeScrollbars="false"
+
+        />
 
     <Button
         android:id="@+id/backbtn"
@@ -44,6 +35,8 @@
         android:layout_marginBottom="-400dp"
         android:text="Back" />
 
-    </RelativeLayout>
+
+
+
 
 </RelativeLayout>

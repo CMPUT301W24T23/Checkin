@@ -12,6 +12,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -119,6 +122,7 @@ public class Database {
         data.put("Creator", e.getCreator());
         data.put("Qr Code Id", e.getQrcodeid());
 
+
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
         for (Attendee a: e.getSubscribers().getAttendees()){
@@ -132,15 +136,16 @@ public class Database {
         for (Attendee a: e.getCheckInList().getAttendees()){
             checkedIn.put(a.getUserId(), "");
         }
-
-
-
         data.put("UserCheckIn", checkedIn);
+
+        //Map<String, String> updatedCheckInsId = e.getCheckInsId();
+
+        //data.put("CheckInIds", updatedCheckInsId);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
+        //eventRef.document(e.getEventId()).set(data, SetOptions.merge());
         eventRef.document(e.getEventId()).set(data);
-
     }
 
     public void updateProfilePicture(String base64Image, String userID){
@@ -337,8 +342,14 @@ public class Database {
         e.setCreator(doc.getString("Creator"));
         e.setQrcodeid(doc.getString("Qr Code Id"));
 
-        Map<String, Object> data = doc.getData();
+        //get checkins
+        Map<String, Object> data2 = doc.getData();
+        Map<String, String> checkedIn = (Map<String, String>)data2.get("UserCheckIn");
+        e.setCheckInsId(checkedIn);
 
+
+        Map<String, Object> data = doc.getData();
+        /*
         //Retrieve Subscribers
         Map<String, String> Subs = (Map<String, String>)data.get("Subscribers");
         for(String subber: Subs.keySet()){
@@ -361,10 +372,37 @@ public class Database {
                 }
             });
         }
+        */
 
+        /*
+        db = FirebaseFirestore.getInstance();
+        DocumentReference eventRef = db.collection("Events").document(doc.getId());
+        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Retrieve subscribers from the document
+                        Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
+                        if (subscribersMap != null) {
+                            for (String attendeeId : subscribersMap.keySet()) {
+                                // Fetch each attendee document and create Attendee objects
+                                fetchAttendeeFromFirestore(attendeeId, doc.getId());
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        */
+
+        /*
         //Retrieve Checked In users
         Map<String, String> Users = (Map<String, String>)data.get("UserCheckIn");
-        for(String user: Subs.keySet()){
+        List<Attendee> attendees = new ArrayList<>();
+        for(String user: Users.keySet()){
             DocumentReference docRef = db.collection("Attendees").document(user);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -374,7 +412,9 @@ public class Database {
                         if (document.exists()) {
                             Log.d("Firebase Succeed", "DocumentSnapshot data: " + document.getData());
                             Attendee a = getAttendee(document);
+                            System.out.println("Attendee id"+ a.getUserId());
                             e.userCheckIn(a);
+
                         } else {
                             Log.d("Firebase", String.format("No such document: %s", user));
                         }
@@ -384,6 +424,9 @@ public class Database {
                 }
             });
         }
+
+
+         */
         Log.d("Retrieved Event", String.format("Event ID: %s ", e.getEventId()));
         return e;
     }
@@ -434,6 +477,29 @@ public class Database {
                     }
                 });
     */
+
+    private void fetchAttendeeFromFirestore(String attendeeId, String eventId) {
+
+
+        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
+        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Attendee object using Database class method
+                        Attendee attendee = new Database().getAttendee(document);
+
+
+                    }
+
+                }
+            }
+
+
+        });
+    }
 
 
 

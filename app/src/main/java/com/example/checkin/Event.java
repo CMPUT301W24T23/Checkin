@@ -169,7 +169,7 @@ public class Event implements Serializable {
         } else{
             //Check the user in
             CheckInList.addAttendee(a);
-            a.CheckIn(this);
+            //a.CheckIn(this);
         }
     }
 

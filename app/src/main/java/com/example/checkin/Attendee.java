@@ -5,6 +5,7 @@ import android.media.Image;
 import java.io.Serializable;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Objects;
@@ -153,6 +154,10 @@ public class Attendee implements User, Serializable {
      * an event object
      */
     public void CheckIn(Event event) {
+        if (CheckInHist == null) {
+            // Initialize CheckInHist if it's null
+            CheckInHist = new HashMap<>();
+        }
         //increment user check in count
         if (this.CheckInHist.isEmpty()) {
             // If the CheckInHist map is empty, initialize the count to 1
@@ -160,8 +165,9 @@ public class Attendee implements User, Serializable {
             //checkInValue = 0L;
         } else {
             // If the map is not empty, retrieve the current count and increment it by 1
-            Long checkInCount = CheckInHist.get(event.getEventId());
-            if (checkInCount != null) {
+
+            if (event != null) {
+                Long checkInCount = CheckInHist.get(event.getEventId());
                 checkInCount = checkInCount + 1;
                 checkInValue = checkInCount;
                 CheckInHist.put(event.getEventId(), checkInCount);

@@ -245,6 +245,7 @@ public class CreateEventFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timestamp = dateFormat.format(new Date());
         myText += "_" + timestamp;
+        myText += "_" + myevent.getEventname();
 
         // Appending user's ID
         //String userid = "123456"; // Change 123456 to user's ID

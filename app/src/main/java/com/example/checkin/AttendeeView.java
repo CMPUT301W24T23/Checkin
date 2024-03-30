@@ -38,8 +38,7 @@ public class AttendeeView extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private static final int PERMISSION_REQUEST_NOTIFICATION = 2;
     private FirebaseFirestore db;
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-    String android_id = preferences.getString("ID", "");
+
 
 
     @Override
@@ -115,6 +114,8 @@ public class AttendeeView extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
      super.onActivityResult(requestCode, resultCode, data);
     IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String android_id = preferences.getString("ID", "");
     // if the intentResult is null then
     // toast a message as "cancelled"
         if (intentResult != null) {
@@ -125,19 +126,10 @@ public class AttendeeView extends AppCompatActivity {
             // the content and format of scan message
             String qrCodeContent = intentResult.getContents();
             System.out.println("content"+ qrCodeContent);
-            getEventDetailsFromFirebase(qrCodeContent);
+            getEventDetailsFromFirebase(qrCodeContent, android_id);
             Toast.makeText(this, "Check In Successful", Toast.LENGTH_LONG).show();
 
 
-
-
-            // check in attendee using firebase- use event id and attendee id to get
-            // event and attendee from firebase, and update both
-
-            EventDetailAtten eventfragment = new EventDetailAtten();
-            Bundle args = new Bundle();
-            args.putString("event", intentResult.getContents());
-            eventfragment.setArguments(args);
         }
     } else {
         super.onActivityResult(requestCode, resultCode, data);
@@ -149,7 +141,7 @@ public class AttendeeView extends AppCompatActivity {
      * retrieve event to get the scanned qr code from firebase
      * @param qrCodeId
      */
-    private void getEventDetailsFromFirebase(String qrCodeId) {
+    private void getEventDetailsFromFirebase(String qrCodeId, String attendeeid) {
         Database database = new Database();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -190,7 +182,7 @@ public class AttendeeView extends AppCompatActivity {
 
 
                             //get current attendee and upload
-                            fetchAttendeeFromFirestore(android_id, true, event);
+                            fetchAttendeeFromFirestore(attendeeid, true, event);
 
                             
                             // fetch the attendee details
@@ -206,9 +198,9 @@ public class AttendeeView extends AppCompatActivity {
                                         // get both the event and the attendee
                                         if (attendee != null) {
                                             attendee.CheckIn(event);
-                                            event.userCheckIn(attendee);
-                                            System.out.println("Checked In Attendee");
-                                            database.updateEvent(event);
+                                            //event.userCheckIn(attendee);
+                                            //System.out.println("Checked In Attendee");
+                                            //database.updateEvent(event);
                                             database.updateAttendee(attendee);
 
                                             FirebaseMessaging.getInstance().subscribeToTopic(event.getEventId()).addOnSuccessListener(new OnSuccessListener<Void>() {

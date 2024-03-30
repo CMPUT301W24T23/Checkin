@@ -31,6 +31,8 @@ public class Event implements Serializable {
 
     private String qrcodeid;
     private String eventdetails;
+    private String eventdate;
+    private String eventtime;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
@@ -66,6 +68,8 @@ public class Event implements Serializable {
      */
     public Event(String name, String creatorID){
         this.eventname = name;
+        this.eventdate = "";
+        this.eventtime = "";
         this.eventdetails = "";
         this.creator = creatorID;
         this.EventId = generateEventId(creatorID);
@@ -82,6 +86,8 @@ public class Event implements Serializable {
     public Event(String id) {
         this.EventId = id;
         this.eventname = "";
+        this.eventdate = "";
+        this.eventtime = "";
         this.eventdetails = "";
         this.creator = "";
         this.Subscribers = new AttendeeList();
@@ -209,12 +215,28 @@ public class Event implements Serializable {
         this.eventname = eventname;
     }
 
-    public String getEventdetails() {
+    public String getEventDate() {
+        return eventdate;
+    }
+
+    public void setEventDate(String eventDate) {
+        this.eventdate = eventDate;
+    }
+
+    public String getEventTime() {
+        return eventtime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventtime = eventTime;
+    }
+
+    public String getEventDetails() {
         return eventdetails;
     }
 
-    public void setEventdetails(String eventdetails) {
-        this.eventdetails = eventdetails;
+    public void setEventDetails(String eventDetails) {
+        this.eventdetails = eventDetails;
     }
 
     public void setCheckInList(AttendeeList checkInList) {

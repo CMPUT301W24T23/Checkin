@@ -1,10 +1,8 @@
-
 package com.example.checkin;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * A class representing an organizer in an event-check-in system.
@@ -18,7 +16,6 @@ public class Organizer implements User, Serializable {
     private boolean geoTracking;
     private ArrayList<String> CreatedEvents = new ArrayList<>(); //event ids of events this organizer has created
     private ArrayList<String> QRCodes = new ArrayList<>(); //encoded qr codes created by this organizer
-
     //TODO:     Location
 
     /**
@@ -91,7 +88,6 @@ public class Organizer implements User, Serializable {
 
 
     //Variables=====================================================================================
-
     @Override
     public String getUserId() {
         return this.userId;
@@ -118,6 +114,8 @@ public class Organizer implements User, Serializable {
         return QRCodes;
     }
 
-
+    // Removes an event from the list of created events
+    public void removeEvent(String eventId) {
+        CreatedEvents.remove(eventId);
+    }
 }
-

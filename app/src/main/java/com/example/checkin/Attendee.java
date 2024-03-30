@@ -1,3 +1,4 @@
+
 package com.example.checkin;
 
 import android.media.Image;
@@ -59,7 +60,7 @@ public class Attendee implements User, Serializable {
      /* Empty constructor for attendee
      */
     public Attendee() {
-        this.userId = String.valueOf(generateUserId());
+        this.userId = "";
         this.name = "";
         this.homepage = "";
         this.email = "";
@@ -95,16 +96,6 @@ public class Attendee implements User, Serializable {
         this.CheckInHist = new Hashtable<>();
     }
 
-    /**
-     * Generates a new unique identifier for the user
-     *
-     * @return their assigned id.
-     */
-    private String generateUserId() {
-        //Random ID for the empty constructor
-        Random rand = new Random();
-        return Integer.toString(rand.nextInt(1000));
-    }
 
     //Event subscription===========================================================================
 
@@ -250,4 +241,6 @@ public class Attendee implements User, Serializable {
     public void setCheckInHist(Map<String, Long> checkInHist) {
         CheckInHist = checkInHist;
     }
+
+
 }

@@ -23,6 +23,9 @@ import java.util.Random;
 /**
  * This class outlines an Event object that stores all the information needed for an event
  */
+/**
+ * This class outlines an Event object that stores all the information needed for an event
+ */
 public class Event implements Serializable {
     //TODO:
     //      - Geolocation integration

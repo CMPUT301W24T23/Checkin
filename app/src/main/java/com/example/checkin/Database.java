@@ -388,7 +388,7 @@ public class Database {
                         if (subscribersMap != null) {
                             for (String attendeeId : subscribersMap.keySet()) {
                                 // Fetch each attendee document and create Attendee objects
-                                fetchAttendeeFromFirestore(attendeeId, doc.getId());
+                                fetchAttendeeFromFirestore(attendeeId, e);
                             }
                         }
                     }
@@ -478,7 +478,7 @@ public class Database {
                 });
     */
 
-    private void fetchAttendeeFromFirestore(String attendeeId, String eventId) {
+    private void fetchAttendeeFromFirestore(String attendeeId, Event event) {
 
 
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
@@ -490,6 +490,7 @@ public class Database {
                     if (document.exists()) {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
+                        event.userCheckIn(attendee);
 
 
                     }

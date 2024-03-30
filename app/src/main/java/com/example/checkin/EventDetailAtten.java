@@ -43,6 +43,8 @@ public class EventDetailAtten extends Fragment {
     Button signupbutton;
     Button posterbutton;
 
+    Button checkoutbtn;
+
     private FirebaseFirestore db;
     
     @Override
@@ -54,8 +56,8 @@ public class EventDetailAtten extends Fragment {
         eventnametxt =  view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventinfo);
         backbutton = view.findViewById(R.id.backbtn);
-        eventmessagesbtn = view.findViewById(R.id.eventmessg);
         checkinbutton  = view.findViewById(R.id.checkinbtn);
+        checkoutbtn  = view.findViewById(R.id.checkoutbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
         Database database = new Database();
@@ -70,6 +72,7 @@ public class EventDetailAtten extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         System.out.println("checkincount first "+ myevent.getCheckInList().getAttendees().size());
+        String eventid = myevent.getEventId();
 
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,29 +126,57 @@ public class EventDetailAtten extends Fragment {
                         }
                     }
                 });
-                        //fetchAttendee(new OnSuccessListener<Attendee>() {
-                           // @Override
-                           // public void onSuccess(Attendee attendee) {
+                //fetchAttendee(new OnSuccessListener<Attendee>() {
+                // @Override
+                // public void onSuccess(Attendee attendee) {
 
-                               // FetchEventCheckIN(attendee);
-                                //attendee.CheckIn(myevent);
-                               // myevent.userCheckIn(attendee);
+                // FetchEventCheckIN(attendee);
+                //attendee.CheckIn(myevent);
+                // myevent.userCheckIn(attendee);
 
-                                FirebaseMessaging.getInstance().subscribeToTopic(myevent.getEventId())
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                Log.d("Subscribe", "subscribe to event");
-                                            }
-                                        });
-
-                                //Database database = new Database();
-                                 // database.updateEvent(myevent);
-                                 // database.updateAttendee(attendee);
+                FirebaseMessaging.getInstance().subscribeToTopic(myevent.getEventId())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Log.d("Subscribe", "subscribe to event");
                             }
-                      //  });
-           // }
+                        });
+
+                //Database database = new Database();
+                // database.updateEvent(myevent);
+                // database.updateAttendee(attendee);
+            }
+            //  });
+            // }
         });
+
+        checkoutbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Fetch the attendee
+
+                // Fetch the event
+                fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
+                    @Override
+                    public void onSuccess(Event event) {
+                        // Update 'myevent' with the fetched event details
+                        //myevent = event;
+
+                        // Perform the check-in process
+                        fetchAttendeeForCheckout(android_id, event);
+                        //database1.updateEvent(myevent);
+                    }
+                });
+            }
+        });
+
+
+
+        db = FirebaseFirestore.getInstance();
+
+        System.out.println("checkincount first "+ myevent.getCheckInList().getAttendees().size());
+
+
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -325,8 +356,33 @@ public class EventDetailAtten extends Fragment {
         });
     }
 
+    private void fetchAttendeeForCheckout(String attendeeid, Event event) {
+
+        Database d = new Database();
+
+        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeid);
+        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Attendee object using Database class method
+                        Attendee attendee = d.getAttendee(document);
+                        System.out.println("NUMBERS BEFORE" + event.getCheckInList().getAttendees().size());
+                        //event.userCheckOut(attendee);
+                        System.out.println("NUMBERS " + event.getCheckInList().getAttendees().size());
+                        attendee.CheckIn(event);
+                        d.updateEvent(event);
+                        d.updateAttendee(attendee);
+
+                    }
+
+                }
+            }
 
 
-
+        });
+    }
 
 }

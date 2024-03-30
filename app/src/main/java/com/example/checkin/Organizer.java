@@ -3,7 +3,6 @@ package com.example.checkin;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.UUID;
 
 /*
 A class representing an organizer in an event-check-in system.

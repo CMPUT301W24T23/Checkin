@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.MemoryLruGcSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -57,6 +58,8 @@ public class EventDetailAtten extends Fragment {
         signupbutton =  view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
         Database database = new Database();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String android_id = preferences.getString("ID", "");
 
 
 
@@ -70,50 +73,60 @@ public class EventDetailAtten extends Fragment {
 
         String eventid = myevent.getEventId();
 
-        db = FirebaseFirestore.getInstance();
-        DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
-        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Event event = database.getEvent(document);
-                        // Retrieve subscribers from the document
-                        Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
-
-                        if (subscribersMap != null) {
-                            int attendeeCount = subscribersMap.size();
-
-                            for (String attendeeId : subscribersMap.keySet()) {
-                                // Fetch each attendee document and create Attendee objects
-                                fetchAttendeeFromFirestore(attendeeId, event.getEventId());
-                            }
-                        }
-                    } else {
-                        Log.d("Firestore", "No such document");
-                    }
-                } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
-                }
-            }
-        });
-
 
 
         db = FirebaseFirestore.getInstance();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         System.out.println("checkincount first "+ myevent.getCheckInList().getAttendees().size());
 
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                        fetchAttendee(new OnSuccessListener<Attendee>() {
-                            @Override
-                            public void onSuccess(Attendee attendee) {
 
-                                FetchEventCheckIN(attendee);
+                db = FirebaseFirestore.getInstance();
+                Database d = new Database();
+                DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
+                eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Event event = database.getEvent(document);
+                                System.out.println("checkinpeople first "+ myevent.getCheckInList().getAttendees().size());
+
+                                // Retrieve subscribers from the document
+                                Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
+
+                                if (!subscribersMap.isEmpty()) {
+
+                                    //for (String attendeeId : subscribersMap.keySet()) {
+                                        // Fetch each attendee document and create Attendee objects
+                                        fetchAttendeeFromFirestore(android_id, myevent);
+                                   // }
+                                }
+                                    else{
+                                    System.out.println("GET");
+                                        fetchAttendeeFromFirestore(android_id, myevent);
+
+                                    }
+                                //d.updateEvent(event);
+
+                                System.out.println("checkinpeople last "+ myevent.getCheckInList().getAttendees().size());
+
+                            } else {
+                                Log.d("Firestore", "No such document");
+                            }
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
+                        }
+                    }
+                });
+                        //fetchAttendee(new OnSuccessListener<Attendee>() {
+                           // @Override
+                           // public void onSuccess(Attendee attendee) {
+
+                               // FetchEventCheckIN(attendee);
                                 //attendee.CheckIn(myevent);
                                // myevent.userCheckIn(attendee);
 
@@ -129,8 +142,8 @@ public class EventDetailAtten extends Fragment {
                                  // database.updateEvent(myevent);
                                  // database.updateAttendee(attendee);
                             }
-                        });
-            }
+                      //  });
+           // }
         });
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
@@ -250,27 +263,6 @@ public class EventDetailAtten extends Fragment {
             }
         });
     }
-    private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees, String eventId) {
-        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
-        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Convert the document snapshot to an Attendee object using Database class method
-                        Attendee attendee = new Database().getAttendee(document);
-
-
-                    } else {
-                        Log.d("Firestore", "No such document");
-                    }
-                } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
-                }
-            }
-        });
-    }
 
 
 
@@ -326,8 +318,9 @@ public class EventDetailAtten extends Fragment {
 
     }
 
-        private void fetchAttendeeFromFirestore(String eventId, String attendeeid) {
+        private void fetchAttendeeFromFirestore(String attendeeid, Event event) {
 
+        Database d = new Database();
 
             DocumentReference attendeeRef = db.collection("Attendees").document(attendeeid);
             attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -337,7 +330,14 @@ public class EventDetailAtten extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             // Convert the document snapshot to an Attendee object using Database class method
-                            Attendee attendee = new Database().getAttendee(document);
+                            Attendee attendee = d.getAttendee(document);
+                            System.out.println("NUMBERS BEFORE" + event.getCheckInList().getAttendees().size());
+                            event.userCheckIn(attendee);
+                            System.out.println("NUMBERS " + event.getCheckInList().getAttendees().size());
+                            attendee.CheckIn(event);
+                            d.updateEvent(event);
+                            d.updateAttendee(attendee);
+
 
 
                         }

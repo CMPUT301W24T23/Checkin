@@ -166,15 +166,18 @@ public class Attendee implements User, Serializable {
         } else {
             // If the map is not empty, retrieve the current count and increment it by 1
 
-            Long checkInCount = CheckInHist.get(event.getEventId());
-            if (checkInCount != null) {
-                checkInCount = checkInCount + 1;
-                checkInValue = checkInCount;
-                CheckInHist.put(event.getEventId(), checkInCount);
-            } else {
-                //First time checking in to the event in this case
-                // If the value for the event ID is null, initialize it to 1
-                CheckInHist.put(event.getEventId(), 1L);
+            if (event != null && event.getCheckInList().getAttendees().contains(this) ) {
+                Long checkInCount = CheckInHist.get(event.getEventId());
+                if (checkInCount != null) {
+                    checkInCount = checkInCount + 1;
+                    checkInValue = checkInCount;
+                    CheckInHist.put(event.getEventId(), checkInCount);
+
+                } else {
+                    //First time checking in to the event in this case
+                    // If the value for the event ID is null, initialize it to 1
+                    CheckInHist.put(event.getEventId(), 1L);
+                }
             }
         }
     }

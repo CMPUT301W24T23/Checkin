@@ -131,6 +131,10 @@ public class SignedInList extends Fragment {
                     if (document.exists()) {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
+
+                        // Clear the attendees list before adding new attendees
+                        attendees.clear();
+
                         // Add the attendee to the list
                         attendees.addAttendee(attendee);
                         // Update the UI with the attendees list

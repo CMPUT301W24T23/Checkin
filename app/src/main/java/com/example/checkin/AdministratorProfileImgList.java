@@ -1,11 +1,20 @@
 package com.example.checkin;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+import static com.example.checkin.OnSwipeTouchListener.GestureListener.SWIPE_THRESHOLD;
+import static com.example.checkin.OnSwipeTouchListener.GestureListener.SWIPE_VELOCITY_THRESHOLD;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -24,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +42,8 @@ public class AdministratorProfileImgList extends Fragment {
     private FirebaseFirestore db;
     private ListView listView;
     private ArrayAdapter<Bitmap> imageAdapter;
+    ImageEncoder imageEncoder = new ImageEncoder();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +56,6 @@ public class AdministratorProfileImgList extends Fragment {
 
         // Get the collection reference for images
         CollectionReference imagesCollectionRef = db.collection("ProfilePics");
-
 
         // Initialize image list
         List<Bitmap> imageList = new ArrayList<>();
@@ -81,7 +92,7 @@ public class AdministratorProfileImgList extends Fragment {
 //                        }
                         if (imageString != null) {
                             // Convert string to bitmap and add to the list
-                            Bitmap bitmap = base64ToBitmap(imageString);
+                            Bitmap bitmap = imageEncoder.base64ToBitmap(imageString);
 //                            Bitmap bitmap1 = resizeBitmap(bitmap, 20, 20);
                             if (bitmap != null) {
                                 imageAdapter.add(bitmap);
@@ -91,32 +102,103 @@ public class AdministratorProfileImgList extends Fragment {
                 }
             }
         });
-
         return view;
     }
 
-    public Bitmap base64ToBitmap(String base64String) {
-        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupSwipeGesture();
     }
 
-//    public Bitmap resizeBitmap(Bitmap bitmap, int newWidth, int newHeight) {
-//        int width = bitmap.getWidth();
-//        int height = bitmap.getHeight();
-//
-//        float scaleWidth = ((float) newWidth) / width;
-//        float scaleHeight = ((float) newHeight) / height;
-//
-//        // Create a matrix for the manipulation
-//        Matrix matrix = new Matrix();
-//
-//        // Resize the bitmap
-//        matrix.postScale(scaleWidth, scaleHeight);
-//
-//        // Recreate the new bitmap
-//        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
-//
-//        return resizedBitmap;
-//    }
 
+    // CHATGPT 3.5
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupSwipeGesture() {
+        listView.setOnTouchListener(new View.OnTouchListener() {
+            private float startX;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        float endX = event.getX();
+                        float deltaX = endX - startX;
+
+                        // Determine if it's a swipe
+                        if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > SWIPE_VELOCITY_THRESHOLD) {
+                            if (deltaX < 0) {
+                                // Left swipe
+                                int position = listView.pointToPosition((int) event.getX(), (int) event.getY());
+                                if (position != ListView.INVALID_POSITION) {
+                                    Bitmap profilePic = imageAdapter.getItem(position);
+
+                                    // Show confirmation dialog
+                                    new AlertDialog.Builder(requireContext())
+                                            .setTitle("Delete Attendee")
+                                            .setMessage("Are you sure you want to delete this Profile Pic?")
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // User confirmed deletion
+                                                    // Remove the attendee from the adapter
+                                                    imageAdapter.remove(profilePic);
+                                                    // Notify adapter about the removal
+                                                    imageAdapter.notifyDataSetChanged();
+                                                    String profilePic2 = imageEncoder.BitmapToBase64(profilePic);
+
+                                                    // Delete the profile pic from the field "ProfilePics"
+                                                    db.collection("ProfilePics")
+                                                            .whereEqualTo("Image", profilePic2)
+                                                            .get()
+                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @SuppressLint("RestrictedApi")
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            document.getReference().delete();
+                                                                            Log.d(TAG, "Deleted Profile");
+                                                                        }
+                                                                    } else {
+                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                                                    }
+                                                                }
+                                                            });
+
+                                                    // Delete the profile pic from the field "Attendees and subfield 'ProfilePic'".
+                                                    db.collection("Attendees")
+                                                            .whereEqualTo("ProfilePic", profilePic2)
+                                                            .get()
+                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            document.getReference().delete();
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // User cancelled deletion
+                                                    dialog.dismiss();
+                                                }
+                                            })
+                                            .show();
+                                }
+                            }
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+    }
 }

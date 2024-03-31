@@ -6,6 +6,8 @@ import static com.example.checkin.OnSwipeTouchListener.GestureListener.SWIPE_THR
 import static com.example.checkin.OnSwipeTouchListener.GestureListener.SWIPE_VELOCITY_THRESHOLD;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,56 +78,77 @@ public class AdministratorAttendeeList extends Fragment {
     }
 
    // CHATGPT 3.5
-    @SuppressLint("ClickableViewAccessibility")
-    private void setupSwipeGesture() {
-        listView.setOnTouchListener(new View.OnTouchListener() {
-            private float startX;
+   @SuppressLint("ClickableViewAccessibility")
+   private void setupSwipeGesture() {
+       listView.setOnTouchListener(new View.OnTouchListener() {
+           private float startX;
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        startX = event.getX();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        float endX = event.getX();
-                        float deltaX = endX - startX;
+           @Override
+           public boolean onTouch(View v, MotionEvent event) {
+               switch (event.getAction()) {
+                   case MotionEvent.ACTION_DOWN:
+                       startX = event.getX();
+                       break;
+                   case MotionEvent.ACTION_UP:
+                       float endX = event.getX();
+                       float deltaX = endX - startX;
 
-                        // Determine if it's a swipe
-                        if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > SWIPE_VELOCITY_THRESHOLD) {
-                            if (deltaX < 0) {
-                                // Left swipe
-                                int position = listView.pointToPosition((int) event.getX(), (int) event.getY());
-                                if (position != ListView.INVALID_POSITION) {
-                                    String attendee = attendeeAdapter.getItem(position);
-                                    // Remove the attendee from the adapter
-                                    attendeeAdapter.remove(attendee);
-                                    // Notify adapter about the removal
-                                    attendeeAdapter.notifyDataSetChanged();
+                       // Determine if it's a swipe
+                       if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > SWIPE_VELOCITY_THRESHOLD) {
+                           if (deltaX < 0) {
+                               // Left swipe
+                               int position = listView.pointToPosition((int) event.getX(), (int) event.getY());
+                               if (position != ListView.INVALID_POSITION) {
+                                   String attendee = attendeeAdapter.getItem(position);
 
-                                    // Update Firebase Firestore
-                                    db.collection("Attendees")
-                                            .whereEqualTo("Name", attendee)
-                                            .get()
-                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                            document.getReference().delete();
-                                                        }
-                                                    } else {
-                                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                                    }
-                                                }
-                                            });
-                                }
-                            }
-                        }
-                        break;
-                }
-                return false;
-            }
-        });
-    }
+                                   // Show confirmation dialog
+                                   new AlertDialog.Builder(requireContext())
+                                           .setTitle("Delete Attendee")
+                                           .setMessage("Are you sure you want to delete this attendee?")
+                                           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                               @Override
+                                               public void onClick(DialogInterface dialog, int which) {
+                                                   // User confirmed deletion
+                                                   // Remove the attendee from the adapter
+                                                   attendeeAdapter.remove(attendee);
+                                                   // Notify adapter about the removal
+                                                   attendeeAdapter.notifyDataSetChanged();
+
+                                                   // Update Firebase Firestore
+                                                   db.collection("Attendees")
+                                                           .whereEqualTo("Name", attendee)
+                                                           .get()
+                                                           .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                               @SuppressLint("RestrictedApi")
+                                                               public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                   if (task.isSuccessful()) {
+                                                                       for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                           document.getReference().delete();
+                                                                       }
+                                                                   } else {
+                                                                       Log.d(TAG, "Error getting documents: ", task.getException());
+                                                                   }
+                                                               }
+                                                           });
+                                               }
+                                           })
+                                           .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                               @Override
+                                               public void onClick(DialogInterface dialog, int which) {
+                                                   // User cancelled deletion
+                                                   dialog.dismiss();
+                                               }
+                                           })
+                                           .show();
+                               }
+                           }
+                       }
+                       break;
+               }
+               return false;
+           }
+       });
+   }
+
 
 }

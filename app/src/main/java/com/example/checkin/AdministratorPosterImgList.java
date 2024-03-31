@@ -28,7 +28,10 @@ public class AdministratorPosterImgList extends Fragment {
 
     private FirebaseFirestore db;
     private ListView listView;
+
     private ArrayAdapter<Bitmap> imageAdapter;
+    ImageEncoder imageEncoder = new ImageEncoder();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

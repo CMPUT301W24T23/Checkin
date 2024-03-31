@@ -212,11 +212,11 @@ public class UserProfileFragment extends Fragment {
             return;
         }
 
-        String imageBase64 = "";
+        String imageBase64 = currentUser.getProfilePicture();
         // Check if an image is uploaded
         if (imageUri != null && newImage) {
             try {
-                deleteImage();  //delete the old image from the database
+                //A new image has been uploaded
 
                 originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 myImageView.setImageBitmap(originalBitmap);
@@ -225,23 +225,20 @@ public class UserProfileFragment extends Fragment {
                 imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
                 currentUser.setProfilePicture(imageBase64);
 
-                //update database
-                db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update image in database
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
+        } else if (!(currentUser.getProfilePicture().isEmpty())){
             //if no new image is uploaded and an image is saved locally
             imageBase64 = currentUser.getProfilePicture();
         } else{
             //otherwise generate a new image
-            //first delete the original in database
-            deleteImage();
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
             Bitmap bitmap = generateImageWithInitials(name);
             myImageView.setImageBitmap(bitmap);
             originalBitmap = bitmap;
             imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
+            newImage = false;
 
             // Show the 'Edit Picture' button
             Button editPictureButton = getView().findViewById(R.id.editPictureButton);
@@ -253,8 +250,6 @@ public class UserProfileFragment extends Fragment {
             // Log the visibility of the ImageView
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
 
-            //save on database
-            db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update the image
         }
 
         // Updating/Saving the new/changed user information of the current Attendee.
@@ -268,6 +263,7 @@ public class UserProfileFragment extends Fragment {
         currentUser.setProfilePicture(imageBase64);
         removePictureButton.setVisibility(View.VISIBLE);
 
+        db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update the image
         db.updateAttendee(currentUser);     //update user on firebase
         savePrefs();        //Save user info to local preferences
 
@@ -294,8 +290,10 @@ public class UserProfileFragment extends Fragment {
         String imageBase64 = imgEncode.BitmapToBase64(bitmap);
         imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
 
+
         //update user profile
         currentUser.setProfilePicture(imageBase64);
+        newImage = false;
     }
 
     /**
@@ -365,27 +363,6 @@ public class UserProfileFragment extends Fragment {
     private boolean isValidUrl(String url) {
         String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         return Pattern.matches(urlRegex, url);
-    }
-
-    /**
-     * Make a query to firebase that deletes the (old) profile picture from firebase
-     */
-    public void deleteImage(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("ProfilePics").document(currentUser.getUserId())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Image Deletion", "DocumentSnapshot successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Image Deletion", "Error deleting document", e);
-                    }
-                });
     }
 
     /**

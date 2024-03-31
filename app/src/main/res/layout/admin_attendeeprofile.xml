@@ -4,21 +4,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/admin_attendeelist"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Attenddes."
-        android:textAlignment="center"
+        android:text="Back"
+        />
+
+    <TextView
+        android:paddingTop="10dp"
+        android:id="@+id/admin_attendeelist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
+        android:text="Attenddes."
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="45dp" />
 
     <ListView
         android:id="@+id/admin_attendees"
         android:layout_below="@id/admin_attendeelist"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginBottom="20dp"/>
+
 
 </RelativeLayout>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -38,6 +39,15 @@ public class AdministratorPosterImgList extends Fragment {
         // Inflate the layout and represent the list of events.
         View view = inflater.inflate(R.layout.admin_poster_img, container, false);
         listView = view.findViewById(R.id.admin_posterlist);
+
+        Button backbtn = view.findViewById(R.id.back_button);
+
+        backbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         // Initialize Firebase Firestore.
         db = FirebaseFirestore.getInstance();

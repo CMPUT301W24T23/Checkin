@@ -32,8 +32,12 @@ public class AdministratorView extends Fragment {
                 AdministratorProfileImgList fragment = new AdministratorProfileImgList();
                 fragmentTransaction.replace(R.id.adminFrame, fragment);
 
-                // Commit the transaction
-                fragmentTransaction.commit();
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.adminFrame, fragment) // Replace R.id.fragment_container with the ID of your fragment container
+                        .addToBackStack(null)
+                        .commit();
+
             }
         });
 
@@ -45,8 +49,11 @@ public class AdministratorView extends Fragment {
                 AdministratorPosterImgList fragment = new AdministratorPosterImgList();
                 fragmentTransaction.replace(R.id.adminFrame, fragment);
 
-                // Commit the transaction
-                fragmentTransaction.commit();
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.adminFrame, fragment) // Replace R.id.fragment_container with the ID of your fragment container
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -60,8 +67,11 @@ public class AdministratorView extends Fragment {
                 AdministratorAttendeeList fragment = new AdministratorAttendeeList();
                 fragmentTransaction.replace(R.id.adminFrame, fragment);
 
-                // Commit the transaction
-                fragmentTransaction.commit();
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.adminFrame, fragment) // Replace R.id.fragment_container with the ID of your fragment container
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -74,8 +84,11 @@ public class AdministratorView extends Fragment {
                 AdministratorEventList fragment = new AdministratorEventList();
                 fragmentTransaction.replace(R.id.adminFrame, fragment);
 
-                // Commit the transaction
-                fragmentTransaction.commit();
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.adminFrame, fragment) // Replace R.id.fragment_container with the ID of your fragment container
+                        .addToBackStack(null)
+                        .commit();
             }
         });
         return view;

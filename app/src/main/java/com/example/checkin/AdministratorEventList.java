@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,7 +42,15 @@ public class AdministratorEventList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.admin_eventlist, container, false);
         ListView listView = view.findViewById(R.id.admin_events);
+        Button backbtn = view.findViewById(R.id.back_button);
         allevents = new EventList(); // Initialize the list of events
+
+        backbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         db = FirebaseFirestore.getInstance();
 

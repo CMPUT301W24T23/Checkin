@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,14 @@ public class AdministratorAttendeeList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.admin_attendeeprofile, container, false);
         listView = view.findViewById(R.id.admin_attendees);
+        Button backbtn = view.findViewById(R.id.back_button);
+
+        backbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         // Get the instance of the Firebase.
         db = FirebaseFirestore.getInstance();

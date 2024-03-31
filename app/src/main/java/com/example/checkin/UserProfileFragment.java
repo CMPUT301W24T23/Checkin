@@ -216,7 +216,7 @@ public class UserProfileFragment extends Fragment {
         // Check if an image is uploaded
         if (imageUri != null && newImage) {
             try {
-                //deleteImage();  //delete the old image from the database
+                //A new image has been uploaded
 
                 originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 myImageView.setImageBitmap(originalBitmap);
@@ -225,21 +225,14 @@ public class UserProfileFragment extends Fragment {
                 imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
                 currentUser.setProfilePicture(imageBase64);
 
-                //update database
-                //deleteImage(imageBase64);
-                //db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update the image
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (!(currentUser.getProfilePicture().isEmpty())){
             //if no new image is uploaded and an image is saved locally
             imageBase64 = currentUser.getProfilePicture();
-            //db.updateProfilePicture(imageBase64, currentUser.getUserId());
         } else{
             //otherwise generate a new image
-            //first delete the original in database
-            //deleteImage();
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
             Bitmap bitmap = generateImageWithInitials(name);
             myImageView.setImageBitmap(bitmap);
@@ -256,9 +249,6 @@ public class UserProfileFragment extends Fragment {
             currentUser.setProfilePicture(imageBase64);
             // Log the visibility of the ImageView
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
-            //deleteImage(imageBase64);
-
-            //save on database
 
         }
 
@@ -373,29 +363,6 @@ public class UserProfileFragment extends Fragment {
     private boolean isValidUrl(String url) {
         String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         return Pattern.matches(urlRegex, url);
-    }
-
-    /**
-     * Make a query to firebase that deletes the (old) profile picture from firebase
-     */
-    public void deleteImage(String imageBase64){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Database firedb = new Database();
-        db.collection("ProfilePics").document(currentUser.getUserId())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Image Deletion", "DocumentSnapshot successfully deleted!");
-                        firedb.updateProfilePicture(imageBase64, currentUser.getUserId()); //update the image
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Image Deletion", "Error deleting document", e);
-                    }
-                });
     }
 
     /**

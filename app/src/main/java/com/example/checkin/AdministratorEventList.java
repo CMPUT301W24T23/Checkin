@@ -100,6 +100,7 @@ public class AdministratorEventList extends Fragment {
                 EventsDetailOrg eventd_frag1= new EventsDetailOrg();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
+                args.putSerializable("frameLayout", R.id.adminFrame);
                 eventd_frag1.setArguments(args);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()

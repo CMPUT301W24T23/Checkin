@@ -202,6 +202,7 @@ public class OrganizerFragment1 extends Fragment {
                 EventsDetailOrg eventd_frag1= new EventsDetailOrg();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
+                args.putSerializable("frameLayout", R.id.org_view);
                 eventd_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).addToBackStack(null).commit();

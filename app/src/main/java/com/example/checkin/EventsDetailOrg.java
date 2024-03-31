@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 // Shows event information for an organizer
@@ -44,6 +45,9 @@ public class EventsDetailOrg extends Fragment {
         assert bundle != null;
         myevent = (Event) bundle.getSerializable("event");
 
+        // Frame layout on which to display the other sub informational fragment.
+        int frameLayout = (int) bundle.getSerializable("frameLayout");
+
         if (myevent.getPoster().equals("")){
             //no poster for this event
             //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
@@ -70,7 +74,7 @@ public class EventsDetailOrg extends Fragment {
                 code_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, code_frag).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, code_frag).addToBackStack(null).commit();
 
 
             }
@@ -85,9 +89,10 @@ public class EventsDetailOrg extends Fragment {
 
                 Bundle args = new Bundle();
                 args.putSerializable("event", myevent);
+                args.putSerializable("frameLayout", frameLayout);
                 list_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, list_frag).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, list_frag).addToBackStack(null).commit();
 
             }
         });
@@ -119,7 +124,7 @@ public class EventsDetailOrg extends Fragment {
                 //code_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("Poster",args);
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, posterShareFrag).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, posterShareFrag).addToBackStack(null).commit();
 
 
 

@@ -4,42 +4,25 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-/*
-A class representing an organizer in an event-check-in system.
-It manages created events, allows toggling of geolocation tracking, and retrieves user details.
-The class supports event creation and geolocation preferences.
-In the main application, organizers can create and manage events seamlessly.
+/**
+ * A class representing an organizer in an event-check-in system.
+ * It manages created events, allows toggling of geolocation tracking, and retrieves user details.
+ * The class supports event creation and geolocation preferences.
+ * In the main application, organizers can create and manage events seamlessly.
  */
-
 public class Organizer implements User, Serializable {
     private String userId;
     private boolean IsAdmin;
     private boolean geoTracking;
     private ArrayList<String> CreatedEvents = new ArrayList<>(); //event ids of events this organizer has created
     private ArrayList<String> QRCodes = new ArrayList<>(); //encoded qr codes created by this organizer
-
-    //private QRCodeList QRCodes;       //the qr codes this organizer has generated
-    //private ImageList images;         //posters uploaded by this organizer
-
     //TODO:     Location
-    //          Milestone listener
-    //          Add QR code
-    //          Remove QR code
-    //          add event posters
-    //          remove event posters
-    //          loading created events from firebase
 
-
-    //TODO:
-    //public addQR(){}              //organizer generates a QR Code
-    //TODO:
-    //public deleteQR(){}           //organizer deletes one of their QR Codes
-
-    private String generateUserId() {
-        //TODO: Generate the userId for a new user
-        //      Integration with firebase needed in order to have unique IDs
-        //      idea: increment from zero, check if ID is in use, when
-        //            vacant ID is found, assign that to this user
+    /**
+     * Generate a temporary ID for the generation of the class object
+     * @return
+     */
+    private String generateTempId() {
         Random rand = new Random();
         return Integer.toString(rand.nextInt(1000));
     }
@@ -48,7 +31,7 @@ public class Organizer implements User, Serializable {
      * Generates a new Organizer
      */
     public Organizer() {
-        this.userId = generateUserId();
+        this.userId = generateTempId();
         this.geoTracking = true;
         this.IsAdmin = false;
         this.CreatedEvents = new ArrayList<>();

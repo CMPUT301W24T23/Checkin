@@ -101,7 +101,7 @@ public class AdministratorEventList extends Fragment {
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
                 eventd_frag1.setArguments(args);
-                getParentFragmentManager()
+                getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.adminFrame, eventd_frag1) // Replace R.id.fragment_container with the ID of your fragment container
                         .addToBackStack(null)

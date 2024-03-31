@@ -123,7 +123,7 @@ public class AdministratorAttendeeList extends Fragment {
                                                    // Notify adapter about the removal
                                                    attendeeAdapter.notifyDataSetChanged();
 
-                                                   // Update Firebase Firestore
+                                                   // Delete the attendee from the field "Attendees".
                                                    db.collection("Attendees")
                                                            .whereEqualTo("Name", attendee)
                                                            .get()

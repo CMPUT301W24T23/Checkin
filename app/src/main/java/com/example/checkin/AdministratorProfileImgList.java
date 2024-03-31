@@ -44,6 +44,7 @@ public class AdministratorProfileImgList extends Fragment {
     private ListView listView;
     private ArrayAdapter<Bitmap> imageAdapter;
     ImageEncoder imageEncoder = new ImageEncoder();
+    UserProfileFragment userProfileFragment = new UserProfileFragment();
 
 
     @Override
@@ -95,10 +96,7 @@ public class AdministratorProfileImgList extends Fragment {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String imageString = document.getString("Image"); // Assuming the field name is "image"
-//                        if (imageString == ""){
-//                            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.download);
-//                            imageAdapter.add(bitmap);
-//                        }
+
                         if (imageString != null) {
                             // Convert string to bitmap and add to the list
                             Bitmap bitmap = imageEncoder.base64ToBitmap(imageString);
@@ -149,6 +147,7 @@ public class AdministratorProfileImgList extends Fragment {
                                     new AlertDialog.Builder(requireContext())
                                             .setTitle("Delete Attendee")
                                             .setMessage("Are you sure you want to delete this Profile Pic?")
+
                                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -169,7 +168,8 @@ public class AdministratorProfileImgList extends Fragment {
                                                                     if (task.isSuccessful()) {
                                                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                                                             document.getReference().delete();
-                                                                            Log.d(TAG, "Deleted Profile");
+                                                                            Log.d(TAG, "Deleted Profile Pic");
+                                                                            imageAdapter.notifyDataSetChanged();
                                                                         }
                                                                     } else {
                                                                         Log.d(TAG, "Error getting documents: ", task.getException());
@@ -187,7 +187,52 @@ public class AdministratorProfileImgList extends Fragment {
                                                                     if (task.isSuccessful()) {
                                                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                                                             document.getReference().delete();
+                                                                            imageAdapter.notifyDataSetChanged();
                                                                         }
+                                                                    }
+                                                                }
+                                                            });
+
+                                                    // Generates a new profile pic based on the initials of the name and replace it with the deleted profile pic.
+                                                    db.collection("Attendees")
+                                                            .whereEqualTo("ProfilePic", profilePic2)
+                                                            .get()
+                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @SuppressLint("RestrictedApi")
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            // Get the value of the "Name" subsection
+                                                                            String name = document.getString("Name");
+                                                                            if (name != null) {
+                                                                                // Generated a new default profile pic.
+                                                                                Bitmap newPic = userProfileFragment.generateImageWithInitials(name);
+
+                                                                                // Converted the bitmap to strong 64 (Compatible to firebase).
+                                                                                String finalNewPic = imageEncoder.BitmapToBase64(newPic);
+
+                                                                                //
+                                                                                document.getReference().update("ProfilePic", finalNewPic)
+                                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                            @Override
+                                                                                            public void onSuccess(Void unused) {
+                                                                                                Log.d(TAG, "Default Profile picture generated successfully");
+                                                                                                imageAdapter.notifyDataSetChanged();
+                                                                                            }
+                                                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                                                            @Override
+                                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                                Log.e(TAG, "Error updating profile picture", e);
+                                                                                            }
+                                                                                        });
+                                                                            }
+                                                                            else {
+                                                                                Log.d(TAG, "Error generating default image (No Name).");
+                                                                            }
+                                                                        }
+                                                                    } else {
+                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
                                                                     }
                                                                 }
                                                             });

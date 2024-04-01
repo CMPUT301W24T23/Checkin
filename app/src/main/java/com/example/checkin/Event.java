@@ -7,21 +7,22 @@ The class supports QR code and poster management.
 package com.example.checkin;
 
 import android.media.Image;
+import android.util.Log;
 
 import com.example.checkin.AttendeeList;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
+/**
+ * This class outlines an Event object that stores all the information needed for an event
+ */
 public class Event implements Serializable {
     //TODO:
-    //      - assign QR CODE
-    //      - remove QR CODE
-    //      - assign poster
-    //      - remove poster
     //      - Geolocation integration
-    //              - has: physical boundaries? i'm not sure how geolocation would work
 
     private String EventId;//unique identifier for event
     private String poster;        //Poster uploaded to this Event
@@ -32,6 +33,8 @@ public class Event implements Serializable {
 
     private String uniquepromoqr;
     private String eventdetails;
+    private String eventdate;
+    private String eventtime;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
@@ -46,30 +49,20 @@ public class Event implements Serializable {
         checkInList = new ArrayList<>();
     }
 
-    /*
-    public Event(String eventname, String eventdetails) {
-        this.eventname = eventname;
-        this.eventdetails = eventdetails;
+    /**
+     * Generates a unique event ID for the event
+     * @param creatorID
+     * The User ID of the organizer creating this event
+     * @return
+     * appends the user ID to the current timestamp
+     */
+    private String generateEventId(String creatorID){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        String eventID = String.format(creatorID + timestamp);
+        Log.d("EventID Generate", String.format("Event ID (%s)", eventID));
+        return eventID;
     }
-    */
-
-
-    //TODO: ID generation
-    private String generateEventId(){
-        Random rand = new Random();
-        return Integer.toString(rand.nextInt(1000));
-    }
-
-    /*
-    public Event() {
-        this.eventname = "";
-        this.eventdetails = "";
-        this.creator = "";
-        this.EventId = generateEventId();
-        this.Subscribers = new AttendeeList();
-        this.CheckInList = new AttendeeList();
-        this.poster = "";
-    }*/
 
     /**
      * Creates an event, requires a name and a creator at bare minimum
@@ -77,9 +70,11 @@ public class Event implements Serializable {
      */
     public Event(String name, String creatorID){
         this.eventname = name;
+        this.eventdate = "";
+        this.eventtime = "";
         this.eventdetails = "";
         this.creator = creatorID;
-        this.EventId = generateEventId();       //TODO: Generate event ID (CreatorID + Year + Month + Day + Minute + Second)
+        this.EventId = generateEventId(creatorID);
         this.Subscribers = new AttendeeList();
         this.CheckInList = new AttendeeList();
         this.poster = "";
@@ -93,23 +88,14 @@ public class Event implements Serializable {
     public Event(String id) {
         this.EventId = id;
         this.eventname = "";
+        this.eventdate = "";
+        this.eventtime = "";
         this.eventdetails = "";
         this.creator = "";
         this.Subscribers = new AttendeeList();
         this.CheckInList = new AttendeeList();
         this.poster = "";
     }
-    //Poster Image===============================================================
-
-    //pri
-
-    //QR CODE=====================================================================
-
-    //TODO: Adding QR Code
-    //public void addQRCode(QRCode qr){}
-
-    //TODO: Removing QR Code
-    //public void removeQRCODE(){}
 
     //Subscription=============================================================
 
@@ -206,6 +192,7 @@ public class Event implements Serializable {
     /**
      * Return the array of attendees who are currently checked in to the event
      * @return
+     * Attendee List of checked in users
      */
     public AttendeeList getCheckInList() {
         return CheckInList;
@@ -227,12 +214,28 @@ public class Event implements Serializable {
         this.eventname = eventname;
     }
 
-    public String getEventdetails() {
+    public String getEventDate() {
+        return eventdate;
+    }
+
+    public void setEventDate(String eventDate) {
+        this.eventdate = eventDate;
+    }
+
+    public String getEventTime() {
+        return eventtime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventtime = eventTime;
+    }
+
+    public String getEventDetails() {
         return eventdetails;
     }
 
-    public void setEventdetails(String eventdetails) {
-        this.eventdetails = eventdetails;
+    public void setEventDetails(String eventDetails) {
+        this.eventdetails = eventDetails;
     }
 
     public void setCheckInList(AttendeeList checkInList) {

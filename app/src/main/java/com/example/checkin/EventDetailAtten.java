@@ -34,6 +34,8 @@ public class EventDetailAtten extends Fragment {
     Button checkinbutton;
     Button signupbutton;
     Button posterbutton;
+    Attendee attendee;
+
 
     private FirebaseFirestore db;
 
@@ -50,7 +52,6 @@ public class EventDetailAtten extends Fragment {
         checkinbutton  = view.findViewById(R.id.checkinbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
-
 
 
         Bundle bundle = this.getArguments();
@@ -121,7 +122,7 @@ public class EventDetailAtten extends Fragment {
             }
         });
         eventnametxt.setText(myevent.getEventname());
-        eventdetails.setText(myevent.getEventdetails());
+        eventdetails.setText(myevent.getEventDetails());
 
         //Display no poster available if the event does not have a poster
         if (myevent.getPoster().equals("")){

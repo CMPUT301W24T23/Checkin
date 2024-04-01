@@ -104,6 +104,7 @@ public class AttendeeView extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
      super.onActivityResult(requestCode, resultCode, data);
     IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
     // if the intentResult is null then
@@ -128,8 +129,8 @@ public class AttendeeView extends AppCompatActivity {
         }
     } else {
         super.onActivityResult(requestCode, resultCode, data);
+        }
     }
-}
 
 
     /**

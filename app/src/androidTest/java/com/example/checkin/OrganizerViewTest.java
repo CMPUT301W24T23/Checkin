@@ -4,6 +4,7 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -117,11 +118,16 @@ public class OrganizerViewTest {
         // check if the organizer view is displayed
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
+        // click on the CheckBox to enable GeoLocation tracking
+        onView(withId(R.id.checkbox_geo_tracking)).perform(click());
         // assuming there is a button or switch for enabling GeoLocation tracking
         // click on the button/switch to enable GeoLocation tracking
         //onView(withId(R.id.checkbox_geo_tracking)).perform(click());
 
+        // check if the CheckBox is checked
+        onView(withId(R.id.checkbox_geo_tracking)).check(matches(isChecked()));
     }
+
 
     @Test
     public void testAddEventPoster() {
@@ -132,8 +138,11 @@ public class OrganizerViewTest {
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // Click on the button to add an event poster
+        onView(withId(R.id.btnAddPoster)).perform(click());
         //onView(withId(R.id.ivEventPoster)).perform(click());
 
+        // Check if the ImageView for the event poster is displayed
+        onView(withId(R.id.ivEventPoster)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -175,7 +184,5 @@ public class OrganizerViewTest {
         // check to see signed up list of attendees
         onView(withId(R.id.signinlist_frag)).check(matches(isDisplayed()));
     }
-
-
 
 }

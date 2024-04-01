@@ -210,29 +210,19 @@ public class UserProfileFragment extends Fragment {
         }
 
         String imageBase64 = currentUser.getProfilePicture();
-        // Check if an image is uploaded
-        /**
-         * Saves the user's profile information and picture.
-         * Citing: Took the help of Chat gpt in order to understand and learn new concepts about Bitmap and
-         * how to work with it.
-         */
-        // Store the original Bitmap here
-        Bitmap originalBitmap;
+        
         if (imageUri != null && newImage) {
             try {
                 //A new image has been uploaded
 
-                originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
 
                 //resize image and update view
-                originalBitmap = Bitmap.createScaledBitmap(originalBitmap, 100, 100, false);
-                myImageView.setImageBitmap(originalBitmap);
-
-
-
+                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+                myImageView.setImageBitmap(bitmap);
 
                 //encode and save to user
-                imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+                imageBase64 = imgEncode.BitmapToBase64(bitmap);
                 currentUser.setProfilePicture(imageBase64);
 
             } catch (IOException e) {

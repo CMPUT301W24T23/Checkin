@@ -193,7 +193,9 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Saves the user information on screen to the database
+     */
     private void saveUserProfile() {
         // Get user-entered information
         String name = nameEdit.getText().toString();
@@ -210,7 +212,7 @@ public class UserProfileFragment extends Fragment {
         }
 
         String imageBase64 = currentUser.getProfilePicture();
-        
+
         if (imageUri != null && newImage) {
             try {
                 //A new image has been uploaded

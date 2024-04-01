@@ -184,7 +184,7 @@ public class CreateEventFragment extends Fragment {
                 event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
                 //get details if any
                 event.setEventdetails(eventdetails.getText().toString());
-                String uniquecode = generateUniqueQRCode(event,uniqueqrcodeimage ,organizer);
+                String uniquecode = generatepromotionQRCode(event,uniqueqrcodeimage ,organizer);
                 event.setUniquepromoqr(uniquecode);
 
 
@@ -282,7 +282,7 @@ public class CreateEventFragment extends Fragment {
 
     }
 
-    public String generateUniqueQRCode(Event myevent, ImageView imageCode, Organizer organizer){
+    public String generatepromotionQRCode(Event myevent, ImageView imageCode, Organizer organizer){
         String myText = myevent.getEventId();
         myText += "_" + organizer.getUserId();
 

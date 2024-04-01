@@ -202,7 +202,7 @@ public class AttendeeView extends AppCompatActivity {
                     }
                 });
 
-        eventsRef.whereEqualTo("Unique QR Code Id", qrCodeId)
+        eventsRef.whereEqualTo("Promotion QR Code Id", qrCodeId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

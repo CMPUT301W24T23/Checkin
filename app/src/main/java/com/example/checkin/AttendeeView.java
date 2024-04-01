@@ -120,8 +120,6 @@ public class AttendeeView extends AppCompatActivity {
             getEventDetailsFromFirebase(qrCodeContent);
 
 
-
-
             // check in attendee using firebase- use event id and attendee id to get
             // event and attendee from firebase, and update both
 
@@ -169,6 +167,7 @@ public class AttendeeView extends AppCompatActivity {
                                             database.updateEvent(event);
                                             database.updateAttendee(attendee);
 
+
                                             FirebaseMessaging.getInstance().subscribeToTopic(event.getEventId()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
@@ -186,6 +185,7 @@ public class AttendeeView extends AppCompatActivity {
                                                     .replace(R.id.atten_view, eventfragment)
                                                     .addToBackStack(null)
                                                     .commit();
+                                            Toast.makeText(this, "Check In Successful!", Toast.LENGTH_LONG).show();
 
                                         }
                                     } else {

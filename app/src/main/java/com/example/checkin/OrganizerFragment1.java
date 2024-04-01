@@ -263,7 +263,7 @@ public class OrganizerFragment1 extends Fragment {
             String notificationKey = "milestone_" + myevent.getEventId();
             boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
             if (!notificationSent) {
-                int notificationId = Integer.parseInt(myevent.getEventId());
+                int notificationId = 1;
                 MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent, notificationId);
                 sharedPreferences.edit().putBoolean(notificationKey, true).apply();
             }

@@ -121,6 +121,9 @@ public class Database {
         data.put("Creator", e.getCreator());
         data.put("Event Qr Code Id", e.getQrcodeid());
         data.put("Promotion QR Code Id", e.getUniquepromoqr());
+        data.put("Date", e.getEventDate());
+        data.put("Time", e.getEventTime());
+        data.put("Location", e.getLocation());
 
 
         //Upload userIds of subscribers
@@ -340,6 +343,9 @@ public class Database {
         e.setPoster(doc.getString("Poster"));
         e.setCreator(doc.getString("Creator"));
         e.setQrcodeid(doc.getString("Event Qr Code Id"));
+        e.setEventDate(doc.getString("Date"));
+        e.setEventTime(doc.getString("Time"));
+        e.setLocation(doc.getString("Location"));
         e.setUniquepromoqr(doc.getString("Promotion QR Code Id"));
 
         Map<String, Object> data = doc.getData();

@@ -79,6 +79,8 @@ public class CreateEventFragment extends Fragment {
     private Event event;
     boolean createqr;
 
+    private EditText eventlocation;
+
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
@@ -115,6 +117,7 @@ public class CreateEventFragment extends Fragment {
         qrcodeimage = view.findViewById(R.id.qrcodeimage);
         uniqueqrcodeimage = view.findViewById(R.id.uniquecodeimage);
         btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
+        eventlocation = view.findViewById(R.id.etlocation);
 
         Database database = new Database();
         btnAddPoster.setOnClickListener(v -> mGetContent.launch("image/*"));
@@ -163,11 +166,16 @@ public class CreateEventFragment extends Fragment {
             String eventDateStr = eventDate.getText().toString().trim();
             String eventTimeStr = eventTime.getText().toString().trim();
             String eventDetailsStr = eventDetails.getText().toString().trim();
+            String eventlocationStr = eventlocation.getText().toString().trim();
 
             boolean hasError = false;
 
             if (eventName.isEmpty()) {
                 eventname.setError("Required");
+                hasError = true;
+            }
+            if (eventlocationStr.isEmpty()) {
+                eventlocation.setError("Required");
                 hasError = true;
             }
 
@@ -200,6 +208,7 @@ public class CreateEventFragment extends Fragment {
             event.setEventDate(eventDateStr);
             event.setEventTime(eventTimeStr);
             event.setEventDetails(eventDetailsStr);
+            event.setLocation(eventlocationStr);
 
             String uniquecode = generatepromotionQRCode(event,uniqueqrcodeimage ,organizer);
             event.setUniquepromoqr(uniquecode);
@@ -243,6 +252,7 @@ public class CreateEventFragment extends Fragment {
         qrcodebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                qrCodeOptionSelected = true;
                 createqr = true;
                 qrcodebutton.setBackgroundColor(Color.GRAY);
             }

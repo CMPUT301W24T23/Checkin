@@ -35,6 +35,8 @@ public class Event implements Serializable {
     private String eventdetails;
     private String eventdate;
     private String eventtime;
+
+    private String location;
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
@@ -272,5 +274,13 @@ public class Event implements Serializable {
 
     public void setUniquepromoqr(String uniquepromoqr) {
         this.uniquepromoqr = uniquepromoqr;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

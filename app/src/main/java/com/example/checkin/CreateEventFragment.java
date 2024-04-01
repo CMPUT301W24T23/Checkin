@@ -67,6 +67,7 @@ public class CreateEventFragment extends Fragment {
     private Bitmap poster;
     private ImageEncoder encoder = new ImageEncoder();
     private ImageView qrcodeimage;
+    private ImageView uniqueqrcodeimage;
     private boolean posterAdded = false;
     private Button backbutton;
     private Button addeventbutton;
@@ -76,6 +77,9 @@ public class CreateEventFragment extends Fragment {
     private boolean qrCodeOptionSelected = false;
     private EventList events;
     private Event event;
+    boolean createqr;
+
+    private EditText eventlocation;
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -111,7 +115,9 @@ public class CreateEventFragment extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
         btnMap = view.findViewById(R.id.btnMap);
         qrcodeimage = view.findViewById(R.id.qrcodeimage);
+        uniqueqrcodeimage = view.findViewById(R.id.uniquecodeimage);
         btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
+        eventlocation = view.findViewById(R.id.etlocation);
 
         Database database = new Database();
         btnAddPoster.setOnClickListener(v -> mGetContent.launch("image/*"));
@@ -160,11 +166,16 @@ public class CreateEventFragment extends Fragment {
             String eventDateStr = eventDate.getText().toString().trim();
             String eventTimeStr = eventTime.getText().toString().trim();
             String eventDetailsStr = eventDetails.getText().toString().trim();
+            String eventlocationStr = eventlocation.getText().toString().trim();
 
             boolean hasError = false;
 
             if (eventName.isEmpty()) {
                 eventname.setError("Required");
+                hasError = true;
+            }
+            if (eventlocationStr.isEmpty()) {
+                eventlocation.setError("Required");
                 hasError = true;
             }
 
@@ -197,6 +208,18 @@ public class CreateEventFragment extends Fragment {
             event.setEventDate(eventDateStr);
             event.setEventTime(eventTimeStr);
             event.setEventDetails(eventDetailsStr);
+            event.setLocation(eventlocationStr);
+
+            String uniquecode = generatepromotionQRCode(event,uniqueqrcodeimage ,organizer);
+            event.setUniquepromoqr(uniquecode);
+
+
+            if (createqr == true) {
+                String qrcodevalue = generateQRCode(event, qrcodeimage);
+                event.setQrcodeid(qrcodevalue);
+            }
+
+
 
             if (posterAdded) {
                 event.setPoster(encoder.BitmapToBase64(poster));
@@ -226,12 +249,44 @@ public class CreateEventFragment extends Fragment {
             startActivity(intent);
         });
 
+        qrcodebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                qrCodeOptionSelected = true;
+                createqr = true;
+                qrcodebutton.setBackgroundColor(Color.GRAY);
+            }
+        });
+
         return view;
     }
 
-
     public String generateQRCode(Event myevent, ImageView imageCode) {
         String myText = myevent.getEventId();
+
+        // Appending timestamp
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        myText += "_" + timestamp;
+
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
+            BarcodeEncoder mEncoder = new BarcodeEncoder();
+            Bitmap mBitmap = mEncoder.createBitmap(matrix);
+            imageCode.setImageBitmap(mBitmap);
+
+            InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return myText;
+    }
+
+    public String generatepromotionQRCode(Event myevent, ImageView imageCode, Organizer organizer){
+        String myText = myevent.getEventId();
+        myText += "_" + organizer.getUserId();
 
         // Appending timestamp
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");

@@ -36,8 +36,14 @@ public class EventDetailAtten extends Fragment {
     Button posterbutton;
     Attendee attendee;
 
+    String eventid;
+
 
     private FirebaseFirestore db;
+
+    TextView eventDate;
+    TextView eventTime;
+    TextView eventlocation;
 
 
     @Override
@@ -49,16 +55,20 @@ public class EventDetailAtten extends Fragment {
         eventnametxt =  view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventinfo);
         backbutton = view.findViewById(R.id.backbtn);
-        eventmessagesbtn = view.findViewById(R.id.eventmessg);
         checkinbutton  = view.findViewById(R.id.checkinbtn);
         signupbutton =  view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
+        eventDate = view.findViewById(R.id.EventDatetxt);
+        eventTime = view.findViewById(R.id.EventTimetxt);
+        eventlocation = view.findViewById(R.id.editlocation);
 
 
         Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
-        String eventid = myevent.getEventId();
+
+        if (bundle != null) {
+            myevent = (Event) bundle.getSerializable("event");
+            eventid = myevent.getEventId();
+        }
 
         db = FirebaseFirestore.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -115,17 +125,6 @@ public class EventDetailAtten extends Fragment {
 
 
 
-        // move to announcements page when see announcements button is clicked
-        eventmessagesbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Announcements announce_frag1= new Announcements();
-
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, announce_frag1).commit();
-
-            }
-        });
-
         // move back to previous fragment when clicked
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,8 +132,15 @@ public class EventDetailAtten extends Fragment {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+        String time = "Time: " + myevent.getEventTime();
+        String date = "Date: " + myevent.getEventDate();
+        String location = "Location: " + myevent.getLocation();
         eventnametxt.setText(myevent.getEventname());
         eventdetails.setText(myevent.getEventDetails());
+        eventDate.setText(date);
+        eventTime.setText(time);
+        eventlocation.setText(location);
+
 
         //Display no poster available if the event does not have a poster
         if (myevent.getPoster().equals("")){

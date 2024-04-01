@@ -9,9 +9,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -117,7 +119,12 @@ public class Database {
         data.put("Details", e.getEventDetails());
         data.put("Poster", e.getPoster());
         data.put("Creator", e.getCreator());
-        data.put("Qr Code Id", e.getQrcodeid());
+        data.put("Event Qr Code Id", e.getQrcodeid());
+        data.put("Promotion QR Code Id", e.getUniquepromoqr());
+        data.put("Date", e.getEventDate());
+        data.put("Time", e.getEventTime());
+        data.put("Location", e.getLocation());
+
 
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
@@ -134,12 +141,12 @@ public class Database {
         }
 
 
-
         data.put("UserCheckIn", checkedIn);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
-        eventRef.document(e.getEventId()).set(data);
+        //eventRef.document(e.getEventId()).set(data);
+        eventRef.document(e.getEventId()).set(data, SetOptions.merge());
 
     }
 
@@ -335,7 +342,11 @@ public class Database {
         e.setEventDetails(doc.getString("Details"));
         e.setPoster(doc.getString("Poster"));
         e.setCreator(doc.getString("Creator"));
-        e.setQrcodeid(doc.getString("Qr Code Id"));
+        e.setQrcodeid(doc.getString("Event Qr Code Id"));
+        e.setEventDate(doc.getString("Date"));
+        e.setEventTime(doc.getString("Time"));
+        e.setLocation(doc.getString("Location"));
+        e.setUniquepromoqr(doc.getString("Promotion QR Code Id"));
 
         Map<String, Object> data = doc.getData();
 

@@ -36,7 +36,7 @@ public class EventsDetailOrg extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
         eventnametxt = view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventdetails_txt);
-        detailscodebutton = view.findViewById(R.id.codebtn);
+        detailscodebutton = view.findViewById(R.id.detailscode);
         posterbutton = view.findViewById(R.id.posterbtn);
 
         // get event object from previous fragment
@@ -50,6 +50,19 @@ public class EventsDetailOrg extends Fragment {
             posterbutton.setText("No Poster Available");
         }
 
+        detailscodebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PromotionQrShare sharefrag = new PromotionQrShare();
+                Bundle args = new Bundle();
+                args.putSerializable("event", myevent);
+                sharefrag.setArguments(args);
+                getParentFragmentManager().setFragmentResult("event",args);
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, sharefrag).addToBackStack(null).commit();
+
+            }
+        });
 
 
         // move back to pevious fragment when clicked

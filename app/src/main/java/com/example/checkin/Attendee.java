@@ -38,8 +38,6 @@ public class Attendee implements User, Serializable {
     private String homepage;
     private String email;
     private String phoneNumber;
-    private String country;
-
 
     public Attendee(String name) {
         this.name = name;
@@ -56,7 +54,6 @@ public class Attendee implements User, Serializable {
         this.name = name;
         this.homepage = homepage;
         this.email = email;
-        this.country = country;
         this.geoTracking = geoTracking;
     }
 
@@ -110,29 +107,6 @@ public class Attendee implements User, Serializable {
         return Integer.toString(rand.nextInt(1000));
     }
 
-    //Event subscription===========================================================================
-
-    /**
-     * Subscribes a user to an event, consenting to receive notifications
-     *
-     * @param event a valid event object
-     */
-    public void EventSub(Event event) {
-        //User subscribes to event, consents to receive notifications
-        event.userSubs(this);
-    }
-
-    /**
-     * Unsubscribes the user from an event
-     *
-     * @param event a valid event object
-     */
-    /*
-    public void EventUnSub(Event event) {
-        //User unsubscribes from event
-        event.userUnSubs(this);
-    }
-    */
     //CheckedInList=================================================================================
 
      /** Return the dictionary with the keys as the eventIds and values of number
@@ -153,7 +127,7 @@ public class Attendee implements User, Serializable {
      * @param event
      * an event object
      */
-    public void CheckIn(Event event) {
+    public void updateCheckInCount(Event event) {
         if (CheckInHist == null) {
             // Initialize CheckInHist if it's null
             CheckInHist = new HashMap<>();
@@ -162,22 +136,15 @@ public class Attendee implements User, Serializable {
         if (this.CheckInHist.isEmpty()) {
             // If the CheckInHist map is empty, initialize the count to 1
             CheckInHist.put(String.valueOf(event.getEventId()), 1L);
-            //checkInValue = 0L;
         } else {
             // If the map is not empty, retrieve the current count and increment it by 1
-
-            if (event != null && event.getCheckInList().getAttendees().contains(this) ) {
-                Long checkInCount = CheckInHist.get(event.getEventId());
-                if (checkInCount != null) {
-                    checkInCount = checkInCount + 1;
-                    checkInValue = checkInCount;
-                    CheckInHist.put(event.getEventId(), checkInCount);
-
-                } else {
-                    //First time checking in to the event in this case
-                    // If the value for the event ID is null, initialize it to 1
-                    CheckInHist.put(event.getEventId(), 1L);
-                }
+            Long checkInCount = CheckInHist.get(String.valueOf(event.getEventId()));
+            if (checkInCount != null) {
+                long count = checkInCount + 1;
+                CheckInHist.put(String.valueOf(event.getEventId()), count);
+            } else {
+                // If the value for the event ID is null, initialize it to 1
+                CheckInHist.put(String.valueOf(event.getEventId()), 1L);
             }
         }
     }

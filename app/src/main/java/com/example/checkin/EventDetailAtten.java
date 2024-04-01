@@ -284,8 +284,8 @@ public class EventDetailAtten extends Fragment {
                         Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
                         Attendee a = fireBase.getAttendee(document);
                         if (CheckIn) {
-                            myevent.userCheckIn(a);
-                            a.CheckIn(myevent);
+                            myevent.addToCheckIn(a);
+                            //a.CheckIn(myevent);
                             fireBase.updateAttendee(a);
                         } else {
                             myevent.userSubs(a);

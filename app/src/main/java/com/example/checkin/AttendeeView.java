@@ -197,7 +197,7 @@ public class AttendeeView extends AppCompatActivity {
 
                                         // get both the event and the attendee
                                         if (attendee != null) {
-                                            attendee.CheckIn(event);
+                                            attendee.updateCheckInCount(event);
                                             //event.userCheckIn(attendee);
                                             //System.out.println("Checked In Attendee");
                                             //database.updateEvent(event);

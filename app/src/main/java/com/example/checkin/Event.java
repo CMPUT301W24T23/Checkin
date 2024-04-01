@@ -103,16 +103,10 @@ public class Event implements Serializable {
     //Subscription=============================================================
 
     /**
-     * Subscribes a user to the event to mark them as opting in to related notifications
+     * Subscribes or unsubscribes a user to the event to mark them as opting in to related notifications
      * @param a
      * a valid Attendee object
      */
-    /*
-    public void userSubs(Attendee a){
-        //Attendee subscribes to event
-        Subscribers.addAttendee(a);
-    }*/
-
     public void userSubs (Attendee a){
         if(Subscribers.contains(a)){
             //Check the user out
@@ -123,18 +117,6 @@ public class Event implements Serializable {
             Subscribers.addAttendee(a);
         }
     }
-
-    /**
-     * Unsubscribes a user to the event to mark them as opting out to related notifications
-     * @param a
-     * a valid Attendee object
-     */
-    /*
-    public void userUnSubs (Attendee a){
-        //Attendee unsubscribes to event
-        Subscribers.removeAttendee(a);
-    }
-    */
 
     /**
      * Check if a user is subscribed to the event
@@ -155,12 +137,10 @@ public class Event implements Serializable {
     //Attendee checkin==========================================================
 
     /**
-     * Checks a user a into the event
+     * Checks a user a in or out of an event
      * @param a
      * a valid attendee object
      */
-
-
     public void userCheckIn (Attendee a){
         if(CheckInList.contains(a)){
             //Check the user out
@@ -169,8 +149,18 @@ public class Event implements Serializable {
         } else{
             //Check the user in
             CheckInList.addAttendee(a);
-            //a.CheckIn(this);
+            a.updateCheckInCount(this);        //update the user's check in count
         }
+    }
+
+    /**
+     * Adds a user to the CheckInList without formally checking them into the event
+     * Use this for populating the event list
+     * @param a
+     * a valid attendee object
+     */
+    public void addToCheckIn (Attendee a){
+        CheckInList.addAttendee(a);
     }
 
     /**

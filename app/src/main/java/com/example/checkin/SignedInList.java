@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -23,7 +24,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -74,29 +77,27 @@ public class SignedInList extends Fragment {
         });
         db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
-        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        eventRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Retrieve subscribers from the document
-                        Map<String, String> subscribersMap = (Map<String, String>) document.get("Subscribers");
-                        if (subscribersMap != null) {
-                            for (String attendeeId : subscribersMap.keySet()) {
-                                // Fetch each attendee document and create Attendee objects
-                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
-                            }
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("Listener", "Listen failed.", e);
+                    return;
+                }
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    // Retrieve subscribers from the document
+                    Map<String, String> subscribersMap = (Map<String, String>) documentSnapshot.get("Subscribers");
+                    if (subscribersMap != null) {
+                        for (String attendeeId : subscribersMap.keySet()) {
+                            // Fetch each attendee document and create Attendee objects
+                            fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
                         }
-                    } else {
-                        Log.d("Firestore", "No such document");
                     }
                 } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
+                    Log.d("Firestore", "No such document");
                 }
             }
         });
-
         return view;
     }
 

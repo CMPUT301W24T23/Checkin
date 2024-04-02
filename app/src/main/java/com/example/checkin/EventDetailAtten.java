@@ -78,6 +78,7 @@ public class EventDetailAtten extends Fragment {
         eventDate = view.findViewById(R.id.EventDatetxt);
         eventTime = view.findViewById(R.id.EventTimetxt);
         eventlocation = view.findViewById(R.id.editlocation);
+        checkinbutton = view.findViewById(R.id.checkinbtn);
 
 
 

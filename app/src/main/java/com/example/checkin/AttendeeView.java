@@ -128,7 +128,9 @@ public class AttendeeView extends AppCompatActivity {
             String qrCodeContent = intentResult.getContents();
             System.out.println("content"+ qrCodeContent);
             getEventDetailsFromFirebase(qrCodeContent, android_id);
-            Toast.makeText(this, "Check In Successful", Toast.LENGTH_LONG).show();
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar2);
+            bottomNavigationView.setSelectedItemId(R.id.home2);
+
 
             // check in attendee using firebase- use event id and attendee id to get
             // event and attendee from firebase, and update both
@@ -252,7 +254,7 @@ public class AttendeeView extends AppCompatActivity {
                             Event event = database.getEvent(document);
 
                             // Open the fragment for unique QR code
-                            PromotionFragment promofrag = new PromotionFragment();
+                            EventDetailAtten promofrag = new EventDetailAtten();
                             Bundle args = new Bundle();
                             args.putSerializable("event", event);
                             promofrag.setArguments(args);

@@ -30,7 +30,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class SignedInList extends Fragment {
@@ -40,10 +42,11 @@ public class SignedInList extends Fragment {
     private ArrayAdapter<Attendee> AttendeesAdapter;
     Event myevent;
 
-    Organizer organizer;
     Button backbutton;
 
     private FirebaseFirestore db;
+
+    private TextView totalsignups;
 
 
     @Override
@@ -54,8 +57,30 @@ public class SignedInList extends Fragment {
 
         backbutton = view.findViewById(R.id.backbtn);
         attendeesList = view.findViewById(R.id.signedin_attendees_list);
+        totalsignups = view.findViewById(R.id.total_signup);
 
         attendeedatalist = new AttendeeList();
+
+
+        if (attendeedatalist != null) {
+            AttendeesAdapter = new ArrayAdapter<Attendee>(getActivity(), R.layout.content2, attendeedatalist.getAttendees()) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = convertView;
+                    if (view == null) {
+                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        view = inflater.inflate(R.layout.content2, null);
+                    }
+                    TextView textView = view.findViewById(R.id.attendee_name);
+                    textView.setText(attendeedatalist.getAttendees().get(position).getName());
+                    TextView textView2 = view.findViewById(R.id.checkin_times);
+                    textView2.setVisibility(View.GONE);
+                    return view;
+                }
+            };
+            attendeesList.setAdapter(AttendeesAdapter);
+
+        }
 
 
         Bundle bundle = this.getArguments();
@@ -92,7 +117,16 @@ public class SignedInList extends Fragment {
                             // Fetch each attendee document and create Attendee objects
                             fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
                         }
-                    }
+
+                            for (Attendee existingAttendee : attendeedatalist.getAttendees()) {
+                               if (!subscribersMap.containsKey(existingAttendee.getUserId())) {
+                                    attendeedatalist.removeAttendee(existingAttendee);
+                                }
+                            }
+                        }
+                        AttendeesAdapter.notifyDataSetChanged();
+                    String text = "Total Signed Up Attendees: " + attendeedatalist.getAttendees().size();
+                    totalsignups.setText(text);
                 } else {
                     Log.d("Firestore", "No such document");
                 }
@@ -116,25 +150,9 @@ public class SignedInList extends Fragment {
                             attendees.addAttendee(attendee);
                         }
 
-
-                        if (attendeedatalist != null) {
-                            AttendeesAdapter = new ArrayAdapter<Attendee>(getActivity(), R.layout.content2, attendeedatalist.getAttendees()) {
-                                @Override
-                                public View getView(int position, View convertView, ViewGroup parent) {
-                                    View view = convertView;
-                                    if (view == null) {
-                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                        view = inflater.inflate(R.layout.content2, null);
-                                    }
-                                    TextView textView = view.findViewById(R.id.attendee_name);
-                                    textView.setText(attendeedatalist.getAttendees().get(position).getName());
-                                    TextView textView2 = view.findViewById(R.id.checkin_times);
-                                    textView2.setVisibility(View.GONE);
-                                    return view;
-                                }
-                            };
-                        }
-                            attendeesList.setAdapter(AttendeesAdapter);
+                        AttendeesAdapter.notifyDataSetChanged();
+                        String text = "Total Signed Up Attendees: " + attendeedatalist.getAttendees().size();
+                        totalsignups.setText(text);
                     } else {
                         Log.d("Firestore", "No such document");
                     }

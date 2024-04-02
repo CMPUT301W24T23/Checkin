@@ -177,6 +177,7 @@ public class EventDetailAtten extends Fragment {
                                 }
 
                                 fetchAttendeeFromFirestore(android_id, false);
+                                Toast.makeText(getContext(), "Sign Up Successful", Toast.LENGTH_LONG).show();
 
                                 System.out.println("checkinpeople last " + myevent.getCheckInList().getAttendees().size());
 

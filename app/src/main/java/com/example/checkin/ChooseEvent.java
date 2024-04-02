@@ -17,10 +17,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +42,9 @@ public class ChooseEvent extends Fragment {
     Organizer organizer;
 
     private FirebaseFirestore db;
+    ProgressBar p;
+
+    RelativeLayout maincontent;
 
 
     @Override
@@ -55,6 +61,10 @@ public class ChooseEvent extends Fragment {
 
         allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
+        p = view.findViewById(R.id.progress);
+        maincontent = view.findViewById(R.id.maincontent);
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
+        bottomNavigationView.setVisibility(View.GONE);
 
         // Add attendees and check them in/ sign up to test functionality
         Attendee attendee1 = new Attendee("Amy");
@@ -97,6 +107,9 @@ public class ChooseEvent extends Fragment {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
+                        p.setVisibility(View.GONE);
+                        maincontent.setVisibility(View.VISIBLE);
+                        bottomNavigationView.setVisibility(View.VISIBLE);
                         if (task.isSuccessful()) {
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);

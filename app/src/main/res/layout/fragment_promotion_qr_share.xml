@@ -5,19 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ShareCode"
-    android:id="@+id/sharecode_frag">
+    >
 
+
+    <!-- button to generate QR code -->
 
     <TextView
-        android:id="@+id/sharingqrcode_text"
+        android:id="@+id/sharingcode_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Share Event QR Code"
+        android:text="Share Promotion QR Code"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         android:textColor="@color/black"
         android:textSize="30sp" />
-    <!-- button to generate QR code -->
 
     <ImageView
         android:id="@+id/imageCode"

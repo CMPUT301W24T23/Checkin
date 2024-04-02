@@ -1,3 +1,4 @@
+
 package com.example.checkin;
 
 import android.media.Image;
@@ -254,5 +255,7 @@ public class Attendee implements User, Serializable {
         // Compare user IDs for equality
         return Objects.equals(userId, otherAttendee.userId);
     }
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,7 +35,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-// Shows the Organizer Home page, which includes list of events
 public class OrganizerFragment1 extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
@@ -51,12 +51,9 @@ public class OrganizerFragment1 extends Fragment {
 
     RelativeLayout maincontent;
 
-
-    
+    // Shows the Organizer Home page, which includes list of events
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_organizer1, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
@@ -71,13 +68,11 @@ public class OrganizerFragment1 extends Fragment {
 
         //EventList allevents  = new EventList();
         Bundle bundle = this.getArguments();
-       // if (bundle != null) {
+        // if (bundle != null) {
         //    allevents = (EventList) bundle.getSerializable("eventslist");
-     //   } else {
-          //  allevents = new EventList(); // Initialize only if bundle is null
-      //  }
-
-
+        //   } else {
+        //  allevents = new EventList(); // Initialize only if bundle is null
+        //  }
         allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
 
@@ -122,7 +117,6 @@ public class OrganizerFragment1 extends Fragment {
             }
         });
 
-
         // Query events collection based on organizer ID
         db.collection("Events")
                 .whereEqualTo("Creator", android_id)
@@ -160,10 +154,9 @@ public class OrganizerFragment1 extends Fragment {
                                 }
                             };
                             eventslist.setAdapter(EventAdapter);
-
-
-                        }}
-                    });
+                        }
+                    }
+                });
 
         // add event button, open create event fragment
         addeventbutton.setOnClickListener(new View.OnClickListener() {
@@ -212,18 +205,46 @@ public class OrganizerFragment1 extends Fragment {
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                EventsDetailOrg eventd_frag1= new EventsDetailOrg();
+                EventsDetailOrg eventd_frag1 = new EventsDetailOrg();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
                 eventd_frag1.setArguments(args);
-                getParentFragmentManager().setFragmentResult("event",args);
+                getParentFragmentManager().setFragmentResult("event", args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).addToBackStack(null).commit();
-
-
             }
         });
-        return view;
 
+        // Long click to delete an event
+        eventslist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Event eventToDelete = allevents.getEvents().get(position);
+                // Confirm deletion with the organizer
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Delete Event")
+                        .setMessage("Are you sure you want to delete this event?")
+                        .setPositiveButton("Yes", (dialog, which) -> deleteEvent(eventToDelete))
+                        .setNegativeButton("No", null)
+                        .show();
+                return true;
+            }
+        });
+
+        return view;
+    }
+
+    // Deletes an event
+    private void deleteEvent(Event event) {
+        String eventId = event.getEventId();
+        // Remove event from the organizer's list of created events
+        organizer.removeEvent(eventId);
+        // Remove event from the UI list
+        allevents.removeEvent(event);
+        EventAdapter.notifyDataSetChanged();
+        // Delete event from the database
+        db.collection("Events").document(eventId).delete()
+                .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted"))
+                .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
     }
 
     private void checkMilestone(int attendeeCount, Event myevent) {
@@ -269,23 +290,29 @@ public class OrganizerFragment1 extends Fragment {
 
     private void sendMilestoneNotification(String title, String body, Event myevent, int attendeecount) {
         // Create an intent and call the MileStone class's method to send a notification
+
+
         if (getContext() != null) {
             Intent intent = new Intent(getContext(), OrganizerView.class);
-
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+
 
             // Construct the notification key including the attendee count
             // Check if the notification for this milestone has already been sent
-          //  boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
+            //  boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
 
             //if (!notificationSent) {
-                //int notificationId = Integer.parseInt(myevent.getEventId());
+            //int notificationId = Integer.parseInt(myevent.getEventId());
+
+            String notificationKey = "milestone_" + myevent.getEventId();
+            boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
+            if (!notificationSent) {
+
                 int notificationId = 1;
                 MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent, notificationId);
                 //sharedPreferences.edit().putBoolean(notificationKey, true).apply();
-           // }
+                // }
+            }
         }
     }
-
 }
-

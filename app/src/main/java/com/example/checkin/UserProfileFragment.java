@@ -164,6 +164,10 @@ public class UserProfileFragment extends Fragment {
             newImage = true;
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+
+                //resize to 100x100
+                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+
                 myImageView.setImageBitmap(bitmap);
                 removePictureButton.setVisibility(View.VISIBLE);
 
@@ -189,14 +193,9 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
-
     /**
-     * Saves the user's profile information and picture.
-     * Citing: Took the help of Chat gpt in order to understand and learn new concepts about Bitmap and
-     * how to work with it.
+     * Saves the user information on screen to the database
      */
-    private Bitmap originalBitmap; // Store the original Bitmap here
-
     private void saveUserProfile() {
         // Get user-entered information
         String name = nameEdit.getText().toString();
@@ -212,49 +211,46 @@ public class UserProfileFragment extends Fragment {
             return;
         }
 
-        String imageBase64 = "";
-        // Check if an image is uploaded
+        String imageBase64 = currentUser.getProfilePicture();
+
         if (imageUri != null && newImage) {
             try {
-                deleteImage();  //delete the old image from the database
+                //A new image has been uploaded
 
-                originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                myImageView.setImageBitmap(originalBitmap);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+
+                //resize image and update view
+                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+                myImageView.setImageBitmap(bitmap);
 
                 //encode and save to user
-                imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+                imageBase64 = imgEncode.BitmapToBase64(bitmap);
                 currentUser.setProfilePicture(imageBase64);
 
-                //update database
-                db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update image in database
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (!(Objects.equals(currentUser.getProfilePicture(), ""))){
+        } else if (!(currentUser.getProfilePicture().isEmpty())){
             //if no new image is uploaded and an image is saved locally
             imageBase64 = currentUser.getProfilePicture();
         } else{
             //otherwise generate a new image
-            //first delete the original in database
-            deleteImage();
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
             Bitmap bitmap = generateImageWithInitials(name);
             myImageView.setImageBitmap(bitmap);
-            originalBitmap = bitmap;
             imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
+            newImage = false;
 
             // Show the 'Edit Picture' button
             Button editPictureButton = getView().findViewById(R.id.editPictureButton);
             editPictureButton.setVisibility(View.VISIBLE);
 
             //save to cyurrent user
-            imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+            imageBase64 = imgEncode.BitmapToBase64(bitmap);
             currentUser.setProfilePicture(imageBase64);
             // Log the visibility of the ImageView
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
 
-            //save on database
-            db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update the image
         }
 
         // Updating/Saving the new/changed user information of the current Attendee.
@@ -268,6 +264,7 @@ public class UserProfileFragment extends Fragment {
         currentUser.setProfilePicture(imageBase64);
         removePictureButton.setVisibility(View.VISIBLE);
 
+        db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update the image
         db.updateAttendee(currentUser);     //update user on firebase
         savePrefs();        //Save user info to local preferences
 
@@ -294,8 +291,10 @@ public class UserProfileFragment extends Fragment {
         String imageBase64 = imgEncode.BitmapToBase64(bitmap);
         imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
 
+
         //update user profile
         currentUser.setProfilePicture(imageBase64);
+        newImage = false;
     }
 
     /**
@@ -365,27 +364,6 @@ public class UserProfileFragment extends Fragment {
     private boolean isValidUrl(String url) {
         String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         return Pattern.matches(urlRegex, url);
-    }
-
-    /**
-     * Make a query to firebase that deletes the (old) profile picture from firebase
-     */
-    public void deleteImage(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("ProfilePics").document(currentUser.getUserId())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Image Deletion", "DocumentSnapshot successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Image Deletion", "Error deleting document", e);
-                    }
-                });
     }
 
     /**

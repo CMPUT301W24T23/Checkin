@@ -112,6 +112,7 @@ public class AttendeeView extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
      super.onActivityResult(requestCode, resultCode, data);
     IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -129,12 +130,15 @@ public class AttendeeView extends AppCompatActivity {
             getEventDetailsFromFirebase(qrCodeContent, android_id);
             Toast.makeText(this, "Check In Successful", Toast.LENGTH_LONG).show();
 
+            // check in attendee using firebase- use event id and attendee id to get
+            // event and attendee from firebase, and update both
+
 
         }
     } else {
         super.onActivityResult(requestCode, resultCode, data);
+        }
     }
-}
 
 
     /**
@@ -148,7 +152,7 @@ public class AttendeeView extends AppCompatActivity {
         String androidId = preferences.getString("ID", "");
         CollectionReference eventsRef = db.collection("Events");
 
-        eventsRef.whereEqualTo("Qr Code Id", qrCodeId)
+        eventsRef.whereEqualTo("Event Qr Code Id", qrCodeId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -203,6 +207,7 @@ public class AttendeeView extends AppCompatActivity {
                                             //database.updateEvent(event);
                                             database.updateAttendee(attendee);
 
+
                                             FirebaseMessaging.getInstance().subscribeToTopic(event.getEventId()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
@@ -220,6 +225,7 @@ public class AttendeeView extends AppCompatActivity {
                                                     .replace(R.id.atten_view, eventfragment)
                                                     .addToBackStack(null)
                                                     .commit();
+                                            Toast.makeText(this, "Check In Successful!", Toast.LENGTH_LONG).show();
 
                                         }
                                     } else {
@@ -236,6 +242,33 @@ public class AttendeeView extends AppCompatActivity {
                         Log.e("Firebase", "Error fetching event details", task.getException());
                     }
                 });
+
+        eventsRef.whereEqualTo("Promotion QR Code Id", qrCodeId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Retrieve event
+                            Event event = database.getEvent(document);
+
+                            // Open the fragment for unique QR code
+                            PromotionFragment promofrag = new PromotionFragment();
+                            Bundle args = new Bundle();
+                            args.putSerializable("event", event);
+                            promofrag.setArguments(args);
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.atten_view, promofrag)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    } else {
+                        // Error fetching event details
+                        Toast.makeText(this, "Error fetching event details from Firebase", Toast.LENGTH_SHORT).show();
+                        Log.e("Firebase", "Error fetching event details", task.getException());
+                    }
+                });
+
+
     }
 
     private void fetchAttendeeFromFirestore(String attendeeid, boolean CheckIn, Event myevent) {
@@ -332,6 +365,30 @@ public class AttendeeView extends AppCompatActivity {
 
         }
 
+    }
+
+    private boolean isEventQRCode(String qrCodeContent) {
+        // Return true if it's an event QR code, false otherwise
+        Database database = new Database();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String androidId = preferences.getString("ID", "");
+        CollectionReference eventsRef = db.collection("Events");
+
+        eventsRef.whereEqualTo("Event Qr Code Id", qrCodeContent)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // retrieve event
+                            Event event = database.getEvent(document);
+                            //return true;
+                        }
+                    }
+                   // return false;
+                });
+
+        return false; // Default return value if the task is not successful or no event is found
     }
 
     /**

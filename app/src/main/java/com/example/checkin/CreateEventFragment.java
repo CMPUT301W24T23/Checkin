@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import android.provider.MediaStore;
@@ -37,6 +36,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,40 +58,35 @@ public class CreateEventFragment extends Fragment {
 
     private CheckBox checkBoxGeoTracking;
     private EditText eventname;
-    private EditText eventdetails;
+    private EditText eventDate;
+    private EditText eventTime;
+    private EditText eventDetails;
     private ImageView ivEventPoster;
     private Button btnAddPoster;
     private Organizer organizer;
-    private Bitmap poster;          //bitmap of the poster
-    private ImageEncoder encoder = new ImageEncoder();      //image encoder for converting image
-
-
+    private Bitmap poster;
+    private ImageEncoder encoder = new ImageEncoder();
     private ImageView qrcodeimage;
-
-
+    private ImageView uniqueqrcodeimage;
     private boolean posterAdded = false;
-
-    Button backbutton;
-
+    private Button backbutton;
     private Button addeventbutton;
-
     private Button qrcodebutton;
+    private Button btnMap;
+    private Button btnUseExistingQR;
+    private boolean qrCodeOptionSelected = false;
+    private EventList events;
+    private Event event;
     boolean createqr;
 
-    private EventList events;
+    private EditText eventlocation;
 
-    Event event;
-
-    /**
-     * Get the image from the user
-     */
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
                 public void onActivityResult(Uri uri) {
                     if (uri != null) {
-                        //ivEventPoster.setImageURI(uri);
                         try {
                             poster = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
                             ivEventPoster.setImageBitmap(poster);
@@ -110,35 +105,29 @@ public class CreateEventFragment extends Fragment {
 
         checkBoxGeoTracking = view.findViewById(R.id.checkbox_geo_tracking);
         eventname = view.findViewById(R.id.etEventName);
-        eventdetails = view.findViewById(R.id.etEventDetails);
+        eventDate = view.findViewById(R.id.etEventDate);
+        eventTime = view.findViewById(R.id.etEventTime);
+        eventDetails = view.findViewById(R.id.etEventdetails);
         ivEventPoster = view.findViewById(R.id.ivEventPoster);
         btnAddPoster = view.findViewById(R.id.btnAddPoster);
         addeventbutton = view.findViewById(R.id.createeventbtn);
         qrcodebutton = view.findViewById(R.id.btnGenerateQR);
         backbutton = view.findViewById(R.id.backbtn);
+        btnMap = view.findViewById(R.id.btnMap);
         qrcodeimage = view.findViewById(R.id.qrcodeimage);
-
+        uniqueqrcodeimage = view.findViewById(R.id.uniquecodeimage);
+        btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
+        eventlocation = view.findViewById(R.id.etlocation);
 
         Database database = new Database();
-        btnAddPoster.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mGetContent.launch("image/*");
-            }
-        });
+        btnAddPoster.setOnClickListener(v -> mGetContent.launch("image/*"));
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             events = (EventList) bundle.getSerializable("eventslist");
         }
 
-        backbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
-
+        backbutton.setOnClickListener(view1 -> getActivity().getSupportFragmentManager().popBackStack());
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
@@ -151,9 +140,7 @@ public class CreateEventFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        // Convert the document snapshot to an Organizer object using Database class method
                         organizer = database.getOrganizer(document);
-                        // Proceed with setting up the UI using the retrieved organizer object
                     } else {
                         Log.d("document", "No such document");
                     }
@@ -163,9 +150,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-
         // choose event qr code to be generated
-
 
         // create new event and open list of events
         addeventbutton.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +164,6 @@ public class CreateEventFragment extends Fragment {
                 }
                 event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
                 //get details if any
-                event.setEventdetails(eventdetails.getText().toString());
 
                 if (createqr == true) {
                     String qrcodevalue = generateQRCode(event, qrcodeimage);
@@ -213,33 +197,119 @@ public class CreateEventFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
 
             }
-
         });
 
+        qrcodebutton.setOnClickListener(view12 -> {
+            qrCodeOptionSelected = true;
+            qrcodebutton.setBackgroundColor(Color.GRAY);
+            // Your existing code for generating QR code
+        });
 
-        // choose event qr code to be generated
+        btnUseExistingQR.setOnClickListener(view12 -> {
+            qrCodeOptionSelected = true;
+            // Your code for using an existing QR code
+        });
+
+        addeventbutton.setOnClickListener(view13 -> {
+            String eventName = eventname.getText().toString().trim();
+            String eventDateStr = eventDate.getText().toString().trim();
+            String eventTimeStr = eventTime.getText().toString().trim();
+            String eventDetailsStr = eventDetails.getText().toString().trim();
+            String eventlocationStr = eventlocation.getText().toString().trim();
+
+            boolean hasError = false;
+
+            if (eventName.isEmpty()) {
+                eventname.setError("Required");
+                hasError = true;
+            }
+            if (eventlocationStr.isEmpty()) {
+                eventlocation.setError("Required");
+                hasError = true;
+            }
+
+            if (eventDateStr.isEmpty()) {
+                eventDate.setError("Required");
+                hasError = true;
+            }
+
+            if (eventTimeStr.isEmpty()) {
+                eventTime.setError("Required");
+                hasError = true;
+            }
+
+            if (eventDetailsStr.isEmpty()) {
+                eventDetails.setError("Required");
+                hasError = true;
+            }
+
+            if (!qrCodeOptionSelected) {
+                Toast.makeText(getContext(), "Mandatory Fields have no been entered. Please also select a QR code option.", Toast.LENGTH_SHORT).show();
+                hasError = true;
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            // Proceed with event creation
+            event = new Event(eventName, Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+            event.setEventDate(eventDateStr);
+            event.setEventTime(eventTimeStr);
+            event.setEventDetails(eventDetailsStr);
+            event.setLocation(eventlocationStr);
+
+            String uniquecode = generatepromotionQRCode(event, uniqueqrcodeimage, organizer);
+            event.setUniquepromoqr(uniquecode);
+
+
+            if (createqr == true) {
+                String qrcodevalue = generateQRCode(event, qrcodeimage);
+                event.setQrcodeid(qrcodevalue);
+            }
+
+            if (posterAdded) {
+                event.setPoster(encoder.BitmapToBase64(poster));
+            } else {
+                event.setPoster("");
+            }
+
+            database.updatePoster(event.getPoster(), event.getEventId());
+
+            events.addEvent(event);
+            database.updateEvent(event);
+            Log.d("Event Creation", String.format("Adding organizer %s event %s to the database", organizer.getUserId(), event.getEventId()));
+
+            organizer.EventCreate(event.getEventId());
+            database.updateOrganizer(organizer);
+
+            OrganizerFragment1 organizerfrag = new OrganizerFragment1();
+            Bundle args = new Bundle();
+            args.putSerializable("organizer", organizer);
+            args.putSerializable("eventslist", events);
+            organizerfrag.setArguments(args);
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
+        });
+
+        btnMap.setOnClickListener(view14 -> {
+            Intent intent = new Intent(getActivity(), MapActivity.class);
+            startActivity(intent);
+        });
 
         qrcodebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                qrCodeOptionSelected = true;
                 createqr = true;
                 qrcodebutton.setBackgroundColor(Color.GRAY);
-
-
             }
         });
-
 
         return view;
     }
 
-
-
     public String generateQRCode(Event myevent, ImageView imageCode) {
         String myText = myevent.getEventId();
-
-        // use event id instead -> to retrieve event from firebase?
-        // String myText = myevent.getEventId();
 
         // Appending timestamp
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -255,24 +325,40 @@ public class CreateEventFragment extends Fragment {
 
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
-            //https://stackoverflow.com/questions/51917881/zxing-android-qrcode-generator
-            // BitMatrix class to encode entered text and set Width & Height
             BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
             BarcodeEncoder mEncoder = new BarcodeEncoder();
-            Bitmap mBitmap = mEncoder.createBitmap(matrix); // Creating bitmap of code
-            imageCode.setImageBitmap(mBitmap); // Setting generated QR code to imageView
+            Bitmap mBitmap = mEncoder.createBitmap(matrix);
+            imageCode.setImageBitmap(mBitmap);
 
-            // To hide the keyboard
             InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
         } catch (WriterException e) {
             e.printStackTrace();
         }
         return myText;
-
-
     }
 
+    public String generatepromotionQRCode(Event myevent, ImageView imageCode, Organizer organizer) {
+        String myText = myevent.getEventId();
+        myText += "_" + organizer.getUserId();
+
+        // Appending timestamp
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        myText += "_" + timestamp;
+
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
+            BarcodeEncoder mEncoder = new BarcodeEncoder();
+            Bitmap mBitmap = mEncoder.createBitmap(matrix);
+            imageCode.setImageBitmap(mBitmap);
+
+            InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return myText;
+    }
 }
-
-

@@ -21,13 +21,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.Map;
 
-public class PromotionFragment extends Fragment {
+public class signedupeventdetail extends Fragment {
 
     Event myevent;
     TextView eventnametxt;
@@ -36,6 +33,10 @@ public class PromotionFragment extends Fragment {
     Button signupbutton;
     Button posterbutton;
 
+    TextView eventDate;
+    TextView eventTime;
+    TextView eventlocation;
+
     private FirebaseFirestore db;
 
 
@@ -43,13 +44,24 @@ public class PromotionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_promotion, container, false);
+        View view = inflater.inflate(R.layout.fragment_signedupeventdetail, container, false);
 
         eventnametxt =  view.findViewById(R.id.eventname_text);
         eventdetails = view.findViewById(R.id.eventinfo);
         backbutton = view.findViewById(R.id.backbtn);
-        signupbutton =  view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
+        eventDate = view.findViewById(R.id.EventDatetxt);
+        eventTime = view.findViewById(R.id.EventTimetxt);
+        eventlocation = view.findViewById(R.id.editlocation);
+
+        String time = "Time: " + myevent.getEventTime();
+        String date = "Date: " + myevent.getEventDate();
+        String location = "Location: " + myevent.getLocation();
+        eventnametxt.setText(myevent.getEventname());
+        eventdetails.setText(myevent.getEventDetails());
+        eventDate.setText(date);
+        eventTime.setText(time);
+        eventlocation.setText(location);
 
         Database database = new Database();
 
@@ -64,56 +76,6 @@ public class PromotionFragment extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
-
-        signupbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                db = FirebaseFirestore.getInstance();
-                Database d = new Database();
-                DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
-                eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                //Retrieve event from firebase
-                                //Event event = database.getEvent(document);
-                                myevent = database.getEvent(document);
-                                System.out.println("checkinpeople first "+ myevent.getCheckInList().getAttendees().size());
-
-
-                                Map<String, String> subbedMap = (Map<String, String>) document.get("Subscribers");
-                                for(String a : subbedMap.keySet()){
-                                    //call retrieveAttendee with 'false'
-                                    //indicates that this is for getting the subscribers
-                                    retrieveAttendee(a, false);
-                                }
-
-                                //short wait, allows for the previous async calls to catch up
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                                //get current attendee and upload
-                                //call with false because this is for signing up for notifications
-                                fetchAttendeeFromFirestore(android_id, false);
-                                Toast.makeText(getContext(), "Sign Up Successful", Toast.LENGTH_LONG).show();
-
-                                System.out.println("checkinpeople last "+ myevent.getCheckInList().getAttendees().size());
-
-                            } else {
-                                Log.d("Firestore", "No such document");
-                            }
-                        } else {
-                            Log.d("Firestore", "get failed with ", task.getException());
-                        }
-                    }
-                });
-            }
-        });
 
 
         // get event object from previous fragment
@@ -231,48 +193,6 @@ public class PromotionFragment extends Fragment {
                     }
                 } else {
                     Log.d("Firebase get failed", "get failed with ", task.getException());
-                }
-            }
-        });
-    }
-
-    /**
-     * Fetch the current attendee from firestore, check them in or sub them, and then update to the database
-     * @param attendeeid
-     * the ID of an attendee to be checked in or subbed to the current event
-     * @param CheckIn
-     * boolean indicating whether they are checking in or subscribing
-     */
-    private void fetchAttendeeFromFirestore(String attendeeid, boolean CheckIn) {
-        Database d = new Database();
-        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeid);
-        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Convert the document snapshot to an Attendee object using Database class method
-                        Attendee attendee = d.getAttendee(document);
-
-                        //User is checking in/out
-                        if(CheckIn){
-                            Log.d("Test Current Checkin", "NUMBERS BEFORE" + myevent.getCheckInList().getAttendees().size());
-                            myevent.userCheckIn(attendee);
-                            //System.out.println("NUMBERS " + myevent.getCheckInList().getAttendees().size());
-                            Log.d("Test Current Checkin", "NUMBERS AFTER" + myevent.getCheckInList().getAttendees().size());
-                        }
-                        //Otherwise, user is subscribing.
-                        else{
-                            Log.d("Test Current Checkin", "NUMBERS BEFORE" + myevent.getSubscribers().getAttendees().size());
-                            myevent.userSubs(attendee);
-                            Log.d("Test Current Checkin", "NUMBERS AFTER" + myevent.getSubscribers().getAttendees().size());
-                        }
-                        //update the event in the database
-                        d.updateEvent(myevent);
-                        //update the attendee in the database
-                        d.updateAttendee(attendee);
-                    }
                 }
             }
         });

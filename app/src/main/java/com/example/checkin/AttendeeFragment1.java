@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,6 +56,8 @@ public class AttendeeFragment1 extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
         p = view.findViewById(R.id.progress);
         maincontent = view.findViewById(R.id.maincontent);
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
+        bottomNavigationView.setVisibility(View.GONE);
 
         allevents = new EventList();
         datalist = new ArrayList<>();
@@ -79,6 +82,7 @@ public class AttendeeFragment1 extends Fragment {
                         if (task.isSuccessful()) {
                             p.setVisibility(View.GONE);
                             maincontent.setVisibility(View.VISIBLE);
+                            bottomNavigationView.setVisibility(View.VISIBLE);
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);
                                 allevents.addEvent(event);
@@ -96,8 +100,7 @@ public class AttendeeFragment1 extends Fragment {
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 

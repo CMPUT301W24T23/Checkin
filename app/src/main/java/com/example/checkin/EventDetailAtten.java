@@ -43,8 +43,6 @@ public class EventDetailAtten extends Fragment {
     Button signupbutton;
     Button posterbutton;
 
-    Button checkoutbtn;
-
     private FirebaseFirestore db;
 
     @Override
@@ -57,7 +55,6 @@ public class EventDetailAtten extends Fragment {
         eventdetails = view.findViewById(R.id.eventinfo);
         backbutton = view.findViewById(R.id.backbtn);
         checkinbutton = view.findViewById(R.id.checkinbtn);
-        checkoutbtn = view.findViewById(R.id.checkoutbtn);
         signupbutton = view.findViewById(R.id.signupbtn);
         posterbutton = view.findViewById(R.id.eventposterbtn);
         Database database = new Database();
@@ -127,17 +124,6 @@ public class EventDetailAtten extends Fragment {
             }
         });
 
-        checkoutbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fetchEvent(myevent.getEventId(), new OnSuccessListener<Event>() {
-                    @Override
-                    public void onSuccess(Event event) {
-                        //fetchAttendeeForCheckout(android_id, event);
-                    }
-                });
-            }
-        });
 
         db = FirebaseFirestore.getInstance();
 

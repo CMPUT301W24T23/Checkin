@@ -30,7 +30,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 // Shows the Organizer Home page, which includes list of events
 public class OrganizerFragment1 extends Fragment {
@@ -231,31 +233,57 @@ public class OrganizerFragment1 extends Fragment {
         milestones.add(50);
         milestones.add(75);
         milestones.add(100);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+
+        // Retrieve the set of reached milestones for this event
+        Set<String> reachedMilestones = sharedPreferences.getStringSet("reachedMilestones_" + myevent.getEventId(), new HashSet<>());
+
         for (int milestone : milestones) {
-            if (attendeeCount == milestone) {
-                sendMilestoneNotification(myevent.getEventname()+ ": Milestone Reached!", "Attendee count: " + attendeeCount, myevent);
-                break; // No need to continue checking other milestones
+            if (attendeeCount >= milestone) {
+                String milestoneKey = "milestone_" + milestone;
+                if (!reachedMilestones.contains(milestoneKey)) {
+                    // This milestone is reached for the first time
+                    sendMilestoneNotification(myevent.getEventname() + ": Milestone Reached!", "Attendee count: " + attendeeCount, myevent, milestone);
+
+                    // Add the milestone ID to the set of reached milestones
+                    reachedMilestones.add(milestoneKey);
+
+                    // Save the updated set in SharedPreferences
+                    sharedPreferences.edit().putStringSet("reachedMilestones_" + myevent.getEventId(), reachedMilestones).apply();
+                }
+            } else {
+                // If the attendee count drops below the milestone, remove it from the set
+                String milestoneKey = "milestone_" + milestone;
+                reachedMilestones.remove(milestoneKey);
+                sharedPreferences.edit().putStringSet("reachedMilestones_" + myevent.getEventId(), reachedMilestones).apply();
             }
         }
+
     }
 
-    private void sendMilestoneNotification(String title, String body, Event myevent) {
+    private void removeNotificationFlag(String eventId) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        String notificationKey = "milestone_" + eventId;
+        sharedPreferences.edit().remove(notificationKey).apply();
+    }
+
+    private void sendMilestoneNotification(String title, String body, Event myevent, int attendeecount) {
         // Create an intent and call the MileStone class's method to send a notification
         if (getContext() != null) {
             Intent intent = new Intent(getContext(), OrganizerView.class);
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-            String notificationKey = "milestone_" + myevent.getEventId();
 
+            // Construct the notification key including the attendee count
             // Check if the notification for this milestone has already been sent
-            boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
+          //  boolean notificationSent = sharedPreferences.getBoolean(notificationKey, false);
 
-            if (!notificationSent) {
+            //if (!notificationSent) {
                 //int notificationId = Integer.parseInt(myevent.getEventId());
                 int notificationId = 1;
                 MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent, notificationId);
-                sharedPreferences.edit().putBoolean(notificationKey, true).apply();
-            }
+                //sharedPreferences.edit().putBoolean(notificationKey, true).apply();
+           // }
         }
     }
 

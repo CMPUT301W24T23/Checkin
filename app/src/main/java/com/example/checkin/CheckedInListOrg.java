@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -22,11 +23,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 // Shows list of checked in attendees for an event
@@ -66,6 +70,11 @@ public class CheckedInListOrg extends Fragment {
         }
         attendeedatalist = new AttendeeList();
 
+        if (attendees != null) {
+            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendeedatalist.getAttendees());
+            attendeesList.setAdapter(AttendeesAdapter);
+        }
+
 
 
 
@@ -76,30 +85,39 @@ public class CheckedInListOrg extends Fragment {
         // retrieve events from firebase
         db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
-        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        eventRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Retrieve subscribers from the document
-                        Map<String, String> subscribersMap = (Map<String, String>) document.get("UserCheckIn");
-                        if (subscribersMap != null) {
-                            int attendeeCount = subscribersMap.size();
-                            for (String attendeeId : subscribersMap.keySet()) {
-                                // Fetch each attendee document and create Attendee objects
-                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist, myevent.getEventId());
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("Listener", "Listen failed.", e);
+                    return;
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    Map<String, String> subscribersMap = (Map<String, String>) documentSnapshot.get("UserCheckIn");
+                    if (subscribersMap != null) {
+                        for (String attendeeId : subscribersMap.keySet()) {
+                            fetchAttendeeFromFirestore(attendeeId, attendeedatalist, myevent.getEventId());
+                        }
+
+                        List<Attendee> attendeesCopy = new ArrayList<>(attendeedatalist.getAttendees());
+                        Set<String> checkedInAttendeeIds = subscribersMap.keySet();
+                        for (Attendee existingAttendee : attendeesCopy) {
+                            if (!checkedInAttendeeIds.contains(existingAttendee.getUserId())) {
+                               attendeedatalist.removeAttendee(existingAttendee);
                             }
                         }
 
-                    } else {
-                        Log.d("Firestore", "No such document");
+                        AttendeesAdapter.notifyDataSetChanged();
+                        String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
+                        totalcheckin.setText(text);
                     }
                 } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
+                    Log.d("Firestore", "No such document");
                 }
             }
         });
+
 
 
         return view;
@@ -119,8 +137,6 @@ public class CheckedInListOrg extends Fragment {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
 
-
-
                         Map<String, Long> checkIns = (Map<String, Long>) document.get("Checkins");
                         if (checkIns != null) {
                             // Retrieve the check-in count for the specified eventId
@@ -134,16 +150,27 @@ public class CheckedInListOrg extends Fragment {
                                     attendees.addAttendee(attendee);
                                 }
 
-                                if (attendeedatalist != null) {
-                                    AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
-                                    attendeesList.setAdapter(AttendeesAdapter);
+                                List<Attendee> attendeesCopy = new ArrayList<>(attendees.getAttendees());
+                                for (Attendee existingAttendee : attendeesCopy) {
+                                    if (!document.exists() || !checkIns.containsKey(eventId)) {
+                                        // Remove the attendee from the list if it's not present in the Firestore document or has no check-in for this event
+                                        attendees.removeAttendee(existingAttendee);
+                                    }
                                 }
-                                if(attendeedatalist.getAttendees().size() ==0){
-                                    String text = "No Checked In Attendees: ";
-                                    totalcheckin.setText(text);
+
+
+                                //if (attendees != null) {
+                                AttendeesAdapter.notifyDataSetChanged();
+                                  //  AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
+                                    //attendeesList.setAdapter(AttendeesAdapter);
+                                //}
+                                if(attendees.getAttendees().size() ==0){
+                                   // String text = "No Checked In Attendees: ";
+                                    //totalcheckin.setText(text);
+
                                 }
                                 else {
-                                    String text = "Total Checked In Attendees: " + attendeedatalist.getAttendees().size();
+                                    String text = "Total Checked In Attendees: " + attendees.getAttendees().size();
                                     totalcheckin.setText(text);
                                 }
                             } else {

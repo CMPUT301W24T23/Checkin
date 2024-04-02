@@ -57,14 +57,6 @@
         android:layout_marginBottom="-165dp"
         android:text="Check In" />
 
-    <Button
-        android:id="@+id/checkoutbtn"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="500dp"
-        android:text="Check Out" />
-
 
     <Button
         android:id="@+id/backbtn"

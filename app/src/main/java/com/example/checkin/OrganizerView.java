@@ -18,7 +18,10 @@ public class OrganizerView extends AppCompatActivity {
 
     OrganizerFragment1 org_frag1;
 
+
+
     private static final int PERMISSION_REQUEST_NOTIFICATION = 3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +41,14 @@ public class OrganizerView extends AppCompatActivity {
 
         org_frag1 = new OrganizerFragment1();
         AttendeesOptions list_frag = new AttendeesOptions();
+
+        ChooseEvent choose_eventfrag = new ChooseEvent();
+
+
+
         SendNotification sendmssg_frag = new SendNotification();
         MessagesOption messageopt_frag = new MessagesOption();
+
 
 
         getSupportFragmentManager()
@@ -74,7 +83,7 @@ public class OrganizerView extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.attendees) {
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.org_view, org_frag1)
+                            .replace(R.id.org_view, choose_eventfrag)
                             .commit();
                     return true;
                 }

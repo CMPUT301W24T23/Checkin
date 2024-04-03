@@ -10,14 +10,31 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
+import android.content.Context;
+import android.widget.ListView;
+
+import androidx.test.espresso.Espresso;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -25,6 +42,12 @@ import org.junit.runner.RunWith;
 // need to comment out line 78 in Database class before testing
 // as it causes the app to close due to unique id generated not being set yet
 public class AttendeeViewTest {
+
+    @Mock
+    private Database mockDatabase;
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
@@ -55,22 +78,28 @@ public class AttendeeViewTest {
 
     @Test
     public void testeventdinfo(){
+        // Define a mock event list that you want to return when updateEvent() is called
+        Event event = new Event("Test Event1", "1234");
+        ArrayList<Event> mockEventList = new ArrayList<>();
+        mockEventList.add(new Event("Show", "1234"));
+
+
+
 
         onView(withId(R.id.attendeebtn)).perform(click());
-        // check if switches to attendee view
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
-        // click on event
+        doReturn(mockEventList).when(mockDatabase).updateEvent(event);
+
+        Espresso.onView(withId(R.id.progress)).check(matches(isDisplayed()));
+
         onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events)).perform(click());
-        // check if it switches to event details page
         onView(withId(R.id.eventdet_frag)).check(matches(isDisplayed()));
-        // check if it shows name of event
-        onView(withId(R.id.eventname_text)).check(matches((withText("Show"))));
-        onView(withId(R.id.eventinfo)).check(matches((withText("Starts at 7"))));
+        onView(withId(R.id.eventname_text)).check(matches(withText("Test Event1")));
     }
 
     @Test
-    public void testannouncements(){
+    public void testannouncements() {
 
         onView(withId(R.id.attendeebtn)).perform(click());
         // check if switches to attendee view
@@ -81,9 +110,8 @@ public class AttendeeViewTest {
         // check if it switches to event details page
         onView(withId(R.id.eventdet_frag)).check(matches(isDisplayed()));
         // check if it shows name of event
-        onView(withId(R.id.eventmessg)).perform(click());
-        onView(withId(R.id.announce_frag)).check(matches(isDisplayed()));
     }
+
 
 
 

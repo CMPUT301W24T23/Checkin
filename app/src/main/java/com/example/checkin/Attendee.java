@@ -29,6 +29,8 @@ public class Attendee implements User, Serializable {
     private String userId;     //the user's ID
     private String profilePicture;              //user's profile picture as an encoded 64bit string
     private Map<String, Long> CheckInHist = new Hashtable<>();
+
+    private Map<String, String> SubList = new Hashtable<>();
     private boolean geoTracking;
     //Optional information the user can provide
     private String name;
@@ -105,8 +107,12 @@ public class Attendee implements User, Serializable {
      * @param event a valid event object
      */
     public void EventSub(Event event) {
-        //User subscribes to event, consents to receive notifications
+        //User signs up to event
+        if (SubList == null) {
+            SubList = new Hashtable<>(); // Initialize SubList if it's null
+        }
         event.userSubs(this);
+        SubList.put(String.valueOf(event.getEventId()), "");
     }
 
     /**
@@ -242,5 +248,11 @@ public class Attendee implements User, Serializable {
         CheckInHist = checkInHist;
     }
 
+    public Map<String, String> getSubList() {
+        return SubList;
+    }
 
+    public void setSubList(Map<String, String> subList) {
+        SubList = subList;
+    }
 }

@@ -56,7 +56,7 @@ public class AttendeeFragment1 extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
         p = view.findViewById(R.id.progress);
         maincontent = view.findViewById(R.id.maincontent);
-        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar2);
         bottomNavigationView.setVisibility(View.GONE);
 
         allevents = new EventList();

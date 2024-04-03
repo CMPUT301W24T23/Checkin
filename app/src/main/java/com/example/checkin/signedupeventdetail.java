@@ -36,6 +36,7 @@ public class signedupeventdetail extends Fragment {
     TextView eventDate;
     TextView eventTime;
     TextView eventlocation;
+    String eventid;
 
     private FirebaseFirestore db;
 
@@ -54,6 +55,11 @@ public class signedupeventdetail extends Fragment {
         eventTime = view.findViewById(R.id.EventTimetxt);
         eventlocation = view.findViewById(R.id.editlocation);
 
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            myevent = (Event) bundle.getSerializable("event");
+        }
+
         String time = "Time: " + myevent.getEventTime();
         String date = "Date: " + myevent.getEventDate();
         String location = "Location: " + myevent.getLocation();
@@ -66,10 +72,8 @@ public class signedupeventdetail extends Fragment {
         Database database = new Database();
 
 
-        Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
-        String eventid = myevent.getEventId();
+
+        eventid = myevent.getEventId();
 
 
         db = FirebaseFirestore.getInstance();

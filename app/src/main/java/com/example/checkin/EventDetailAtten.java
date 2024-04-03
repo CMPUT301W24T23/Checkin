@@ -158,12 +158,7 @@ public class EventDetailAtten extends Fragment {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 myevent = database.getEvent(document);
-                                System.out.println("checkinpeople first " + myevent.getCheckInList().getAttendees().size());
 
-                                Map<String, String> checkInMap = (Map<String, String>) document.get("UserCheckIn");
-                                for (String a : checkInMap.keySet()) {
-                                    retrieveAttendee(a, true, myevent);
-                                }
 
                                 Map<String, String> subbedMap = (Map<String, String>) document.get("Subscribers");
                                 for (String a : subbedMap.keySet()) {
@@ -238,51 +233,8 @@ public class EventDetailAtten extends Fragment {
         return view;
     }
 
-    private void fetchAttendee(OnSuccessListener<Attendee> onSuccessListener) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Database database = new Database();
-        DocumentReference attendeeRef = db.collection("Attendees").document(android_id);
-        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Attendee attendee = database.getAttendee(document);
-                        onSuccessListener.onSuccess(attendee);
-                    } else {
-                        Log.d("document", "No such document");
-                    }
-                } else {
-                    Log.d("error", "get failed with ", task.getException());
-                }
-            }
-        });
-    }
 
-    public void fetchEvent(String eventId, OnSuccessListener<Event> onSuccessListener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference eventRef = db.collection("Events").document(eventId);
-        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Event event = new Database().getEvent(document);
-                        onSuccessListener.onSuccess(event);
-                    } else {
-                        Log.d("Firestore", "No such document");
-                    }
-                } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
-                }
-            }
-        });
-    }
 
     public void retrieveAttendee(String id, boolean CheckIn, Event event) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -302,6 +254,7 @@ public class EventDetailAtten extends Fragment {
                             fireBase.updateAttendee(a);
                         } else {
                             myevent.userSubs(a);
+                            a.EventSub(myevent);
                         }
                     } else {
                         Log.d("Firebase", "No such document");

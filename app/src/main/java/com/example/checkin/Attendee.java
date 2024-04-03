@@ -164,6 +164,16 @@ public class Attendee implements User, Serializable {
 
     }
 
+    public void EventSub(Event event) {
+        //User subscribes to event, consents to receive notifications
+        //User signs up to event
+        if (SubList == null) {
+            SubList = new Hashtable<>(); // Initialize SubList if it's null
+        }
+        event.userSubs(this);
+        SubList.put(String.valueOf(event.getEventId()), "");
+    }
+
     //GEOLOCATION===========================================================
 
     /**

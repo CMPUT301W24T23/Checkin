@@ -73,7 +73,14 @@ public class AttendeeFragment1 extends Fragment {
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
 
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        // Query events collection based on organizer ID
+
         // Query all events from firebase
+
         db.collection("Events")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

@@ -150,6 +150,55 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        // choose event qr code to be generated
+
+        // create new event and open list of events
+        addeventbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //create event with event name and ID
+                if (eventname.getText().toString().equals("")) {
+                    eventname.setError("Event name required");
+                    Log.d("Event Name Required", "User did not supply event name");
+                    return;
+                }
+                event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+                //get details if any
+
+                if (createqr == true) {
+                    String qrcodevalue = generateQRCode(event, qrcodeimage);
+                    event.setQrcodeid(qrcodevalue);
+                }
+
+                //convert image to string and add to event
+                if (posterAdded) {
+                    event.setPoster(encoder.BitmapToBase64(poster));
+                } else {
+                    //empty string if no poster is added
+                    event.setPoster("");
+                }
+
+                //Add poster to database
+                database.updatePoster(event.getPoster(), event.getEventId());
+
+
+                events.addEvent(event);
+                database.updateEvent(event);
+                Log.d("Event Creation", String.format("Adding organizer %s event %s to the database", organizer.getUserId(), event.getEventId()));
+
+                organizer.EventCreate(event.getEventId());
+                database.updateOrganizer(organizer);
+
+                OrganizerFragment1 organizerfrag = new OrganizerFragment1();
+                Bundle args = new Bundle();
+                args.putSerializable("organizer", organizer);
+                args.putSerializable("eventslist", events);
+                organizerfrag.setArguments(args);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
+
+            }
+        });
+
         qrcodebutton.setOnClickListener(view12 -> {
             qrCodeOptionSelected = true;
             qrcodebutton.setBackgroundColor(Color.GRAY);
@@ -210,7 +259,7 @@ public class CreateEventFragment extends Fragment {
             event.setEventDetails(eventDetailsStr);
             event.setLocation(eventlocationStr);
 
-            String uniquecode = generatepromotionQRCode(event,uniqueqrcodeimage ,organizer);
+            String uniquecode = generatepromotionQRCode(event, uniqueqrcodeimage, organizer);
             event.setUniquepromoqr(uniquecode);
 
 
@@ -218,8 +267,6 @@ public class CreateEventFragment extends Fragment {
                 String qrcodevalue = generateQRCode(event, qrcodeimage);
                 event.setQrcodeid(qrcodevalue);
             }
-
-
 
             if (posterAdded) {
                 event.setPoster(encoder.BitmapToBase64(poster));
@@ -268,6 +315,13 @@ public class CreateEventFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timestamp = dateFormat.format(new Date());
         myText += "_" + timestamp;
+        myText += "_" + myevent.getEventname();
+
+        // Appending user's ID
+        //String userid = "123456"; // Change 123456 to user's ID
+        //  myText += "_" + userid;
+
+        // Initializing MultiFormatWriter for QR code
 
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
@@ -284,7 +338,7 @@ public class CreateEventFragment extends Fragment {
         return myText;
     }
 
-    public String generatepromotionQRCode(Event myevent, ImageView imageCode, Organizer organizer){
+    public String generatepromotionQRCode(Event myevent, ImageView imageCode, Organizer organizer) {
         String myText = myevent.getEventId();
         myText += "_" + organizer.getUserId();
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 // Shows event information for an organizer
 public class EventsDetailOrg extends Fragment {
@@ -24,6 +25,11 @@ public class EventsDetailOrg extends Fragment {
     Button posterbutton;
 
     Button detailscodebutton;
+    EditText eventDate;
+    EditText eventTime;
+    EditText eventlocation;
+
+    Button savebutton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,17 +44,54 @@ public class EventsDetailOrg extends Fragment {
         eventdetails = view.findViewById(R.id.eventdetails_txt);
         detailscodebutton = view.findViewById(R.id.detailscode);
         posterbutton = view.findViewById(R.id.posterbtn);
+        eventDate = view.findViewById(R.id.Eteventdate);
+        eventTime = view.findViewById(R.id.Eteventtime);
+        eventlocation = view.findViewById(R.id.Eteventlocation);
+        savebutton = view.findViewById(R.id.savebtn);
 
         // get event object from previous fragment
         Bundle bundle = this.getArguments();
-        assert bundle != null;
-        myevent = (Event) bundle.getSerializable("event");
+        if (bundle!=null) {
+            myevent = (Event) bundle.getSerializable("event");
+        }
+
+
+
+        String time = "Time: " + myevent.getEventTime();
+        String date = "Date: " + myevent.getEventDate();
+        String location = "Location: " + myevent.getLocation();
+
+        eventnametxt.setText(myevent.getEventname());
+        eventdetails.setText(myevent.getEventDetails());
+        eventDate.setText(date);
+        eventTime.setText(time);
+        eventlocation.setText(location);
+
+
 
         if (myevent.getPoster().equals("")){
             //no poster for this event
             //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
             posterbutton.setText("No Poster Available");
         }
+
+        savebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String eventName = eventnametxt.getText().toString().trim();
+                String eventDateStr = eventDate.getText().toString().trim();
+                String eventTimeStr = eventTime.getText().toString().trim();
+                String eventDetailsStr = eventdetails.getText().toString().trim();
+                String eventlocationStr = eventlocation.getText().toString().trim();
+
+                myevent.setEventDate(eventDateStr);
+                myevent.setEventTime(eventTimeStr);
+                myevent.setEventDetails(eventDetailsStr);
+                myevent.setLocation(eventlocationStr);
+                myevent.setEventname(eventName);
+                Toast.makeText(getContext(), "Details Saved!", Toast.LENGTH_LONG).show();
+            }
+        });
 
         detailscodebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,8 +183,7 @@ public class EventsDetailOrg extends Fragment {
             }
         });
 
-        eventnametxt.setText(myevent.getEventname());
-        eventdetails.setText(myevent.getEventDetails());
+
 
         return view;
 

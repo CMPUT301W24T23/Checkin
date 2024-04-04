@@ -73,6 +73,9 @@ public class Database {
         Map<String, Long> checkins = a.getCheckIns();
         data.put("Checkins", checkins);
 
+        Map<String, String> signups = a.getSubList();
+        data.put("Signups", signups);
+
         attendeeRef.document(a.getUserId()).set(data);
 
         Log.d("New Attendee", String.format("Added Attendee to Firebase, ID: %s", a.getUserId()));
@@ -223,6 +226,11 @@ public class Database {
         Map<String, Object> data = doc.getData();
         Map<String, Long> CheckIns = (Map<String, Long>)data.get("Checkins");
         a.setCheckInHist(CheckIns);
+
+
+        Map<String, Object> data2 = doc.getData();
+        Map<String, String> signups = (Map<String, String>)data2.get("Signups");
+        a.setSubList(signups);
 
         return a;
     }

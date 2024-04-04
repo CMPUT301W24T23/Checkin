@@ -39,6 +39,7 @@ public class Attendee implements User, Serializable {
     private String homepage;
     private String email;
     private String phoneNumber;
+    private Map<String, String> SubList = new Hashtable<>();
 
     public Attendee(String name) {
         this.name = name;
@@ -163,6 +164,16 @@ public class Attendee implements User, Serializable {
 
     }
 
+    public void EventSub(Event event) {
+        //User subscribes to event, consents to receive notifications
+        //User signs up to event
+        if (SubList == null) {
+            SubList = new Hashtable<>(); // Initialize SubList if it's null
+        }
+        event.userSubs(this);
+        SubList.put(String.valueOf(event.getEventId()), "");
+    }
+
     //GEOLOCATION===========================================================
 
     /**
@@ -256,6 +267,11 @@ public class Attendee implements User, Serializable {
         return Objects.equals(userId, otherAttendee.userId);
     }
 
+    public Map<String, String> getSubList() {
+        return SubList;
+    }
 
-
+    public void setSubList(Map<String, String> subList) {
+        SubList = subList;
+    }
 }

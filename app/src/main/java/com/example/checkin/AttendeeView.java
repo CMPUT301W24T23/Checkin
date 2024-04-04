@@ -5,7 +5,6 @@ package com.example.checkin;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import android.Manifest;
@@ -59,13 +58,14 @@ public class AttendeeView extends AppCompatActivity {
         // create homepage and announcements fragments
         AttendeeFragment1 att_frg1 = new AttendeeFragment1();
         Announcements ann_frg1 = new Announcements();
+        AttendeeEventOptions options_frag = new AttendeeEventOptions();
 
 
 
         // move to home page fragment
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.atten_view, att_frg1)
+                .replace(R.id.atten_view, options_frag)
                 .commit();
 
 
@@ -80,7 +80,7 @@ public class AttendeeView extends AppCompatActivity {
                 if (item.getItemId() == R.id.home2){
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.atten_view, att_frg1)
+                            .replace(R.id.atten_view, options_frag)
                             .commit();
                     return true;
                 }
@@ -254,6 +254,9 @@ public class AttendeeView extends AppCompatActivity {
                             Event event = database.getEvent(document);
 
                             // Open the fragment for unique QR code
+
+
+
                             EventDetailAtten promofrag = new EventDetailAtten();
                             Bundle args = new Bundle();
                             args.putSerializable("event", event);

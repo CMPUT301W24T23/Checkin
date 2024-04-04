@@ -92,6 +92,7 @@ public class Event implements Serializable {
         this.CheckInList = new AttendeeList();
         this.poster = "";
         this.CheckInsId = new Hashtable<>();
+        this.attendeeCap = "";
     }
 
     /**
@@ -109,6 +110,7 @@ public class Event implements Serializable {
         this.Subscribers = new AttendeeList();
         this.CheckInList = new AttendeeList();
         this.poster = "";
+        this.attendeeCap = "";
     }
 
     //Subscription=============================================================

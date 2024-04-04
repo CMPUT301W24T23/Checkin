@@ -87,7 +87,7 @@ public class CreateEventFragment extends Fragment {
     private Event event;
     boolean createqr;
     private EditText eventlocation;
-    private EditText editTextNumber;
+    private EditText attendeeCap;
     private Switch switchVisible;
 
 
@@ -129,18 +129,18 @@ public class CreateEventFragment extends Fragment {
         btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
         eventlocation = view.findViewById(R.id.etlocation);
 
-        editTextNumber = view.findViewById(R.id.editTextNumber);
+        attendeeCap = view.findViewById(R.id.attendeeCap);
         switchVisible = view.findViewById(R.id.switchSignUpLimit);
 
-        editTextNumber.setVisibility(View.GONE); // Initially hide the EditText
+        attendeeCap.setVisibility(View.GONE); // Initially hide the EditText
 
         switchVisible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    editTextNumber.setVisibility(View.VISIBLE);
+                    attendeeCap.setVisibility(View.VISIBLE);
                 } else {
-                    editTextNumber.setVisibility(View.GONE);
+                    attendeeCap.setVisibility(View.GONE);
                 }
             }
         });
@@ -242,8 +242,21 @@ public class CreateEventFragment extends Fragment {
             String eventTimeStr = eventTime.getText().toString().trim();
             String eventDetailsStr = eventDetails.getText().toString().trim();
             String eventlocationStr = eventlocation.getText().toString().trim();
+            String attendeeCapStr = attendeeCap.getText().toString();
+
 
             boolean hasError = false;
+            //if the event cap switch is checked
+            if(switchVisible.isChecked()){
+                Log.d("Get String", String.format("%s", attendeeCap.getText().toString()));
+                if(attendeeCapStr.isEmpty()){
+                    attendeeCap.setError("Required");
+                    hasError = true;
+                }
+            } else{
+                //set high cap otherwise
+                attendeeCapStr = "999999999";
+            }
 
             if (eventName.isEmpty()) {
                 eventname.setError("Required");
@@ -270,7 +283,7 @@ public class CreateEventFragment extends Fragment {
             }
 
             if (!qrCodeOptionSelected) {
-                Toast.makeText(getContext(), "Mandatory Fields have no been entered. Please also select a QR code option.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Mandatory Fields have not been entered. Please also select a QR code option.", Toast.LENGTH_SHORT).show();
                 hasError = true;
             }
 
@@ -284,6 +297,7 @@ public class CreateEventFragment extends Fragment {
             event.setEventTime(eventTimeStr);
             event.setEventDetails(eventDetailsStr);
             event.setLocation(eventlocationStr);
+            event.setAttendeeCap(attendeeCapStr);
 
             String uniquecode = generatepromotionQRCode(event, uniqueqrcodeimage, organizer);
             event.setUniquepromoqr(uniquecode);

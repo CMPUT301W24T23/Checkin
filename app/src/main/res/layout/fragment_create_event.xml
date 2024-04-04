@@ -180,7 +180,7 @@
         android:text="Create Event" />
 
     <EditText
-        android:id="@+id/editTextNumber"
+        android:id="@+id/attendeeCap"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_below="@+id/linearLayout"

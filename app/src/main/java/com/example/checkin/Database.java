@@ -135,6 +135,7 @@ public class Database {
         data.put("Date", e.getEventDate());
         data.put("Time", e.getEventTime());
         data.put("Location", e.getLocation());
+        data.put("Attendee Cap", e.getAttendeeCap());
 
 
 
@@ -373,6 +374,7 @@ public class Database {
         e.setEventTime(doc.getString("Time"));
         e.setLocation(doc.getString("Location"));
         e.setUniquepromoqr(doc.getString("Promotion QR Code Id"));
+        e.setAttendeeCap(doc.getString("Attendee Cap"));
 
         //get checkins
         Map<String, Object> data2 = doc.getData();

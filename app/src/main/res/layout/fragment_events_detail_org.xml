@@ -89,6 +89,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="410dp"
         android:text="Event Poster" />
+    
+
     <Button
         android:id="@+id/detailscode"
         android:layout_width="200dp"

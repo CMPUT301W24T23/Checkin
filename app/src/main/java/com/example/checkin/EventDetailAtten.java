@@ -159,16 +159,26 @@ public class EventDetailAtten extends Fragment {
                             if (document.exists()) {
                                 myevent = database.getEvent(document);
 
+                                Map<String, String> checkInMap = (Map<String, String>) document.get("UserCheckIn");
+                                for (String a : checkInMap.keySet()) {
+                                    retrieveAttendee(a, true, myevent);
+                                }
 
                                 Map<String, String> subbedMap = (Map<String, String>) document.get("Subscribers");
                                 for (String a : subbedMap.keySet()) {
                                     retrieveAttendee(a, false, myevent);
                                 }
 
+
                                 try {
                                     Thread.sleep(500);
                                 } catch (InterruptedException e) {
                                     throw new RuntimeException(e);
+                                }
+
+                                if (myevent.getSubscribers().getAttendees().size() >= Integer.parseInt(myevent.getAttendeeCap())){
+                                    Toast.makeText(getContext(), "This event is full.", Toast.LENGTH_LONG).show();
+                                    return;
                                 }
 
                                 fetchAttendeeFromFirestore(android_id, false);

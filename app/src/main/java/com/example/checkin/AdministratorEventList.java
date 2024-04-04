@@ -1,11 +1,18 @@
 package com.example.checkin;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+import static com.example.checkin.OnSwipeTouchListener.GestureListener.SWIPE_THRESHOLD;
+import static com.example.checkin.OnSwipeTouchListener.GestureListener.SWIPE_VELOCITY_THRESHOLD;
 import static java.util.Objects.requireNonNull;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,16 +42,16 @@ public class AdministratorEventList extends Fragment {
     FirebaseFirestore db;
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
+    private ListView listView;
     Database database = new Database();
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.admin_eventlist, container, false);
-        ListView listView = view.findViewById(R.id.admin_events);
         Button backbtn = view.findViewById(R.id.back_button);
         allevents = new EventList(); // Initialize the list of events
-
+        ListView listView = view.findViewById(R.id.admin_events);
         backbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +119,89 @@ public class AdministratorEventList extends Fragment {
 
         return view;
     }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupSwipeGesture();
+    }
+
+    // CHATGPT 3.5
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupSwipeGesture() {
+        listView.setOnTouchListener(new View.OnTouchListener() {
+            private float startX;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        float endX = event.getX();
+                        float deltaX = endX - startX;
+
+                        // Determine if it's a swipe
+                        if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > SWIPE_VELOCITY_THRESHOLD) {
+                            if (deltaX < 0) {
+                                // Left swipe
+                                int position = listView.pointToPosition((int) event.getX(), (int) event.getY());
+                                if (position != ListView.INVALID_POSITION) {
+                                    String selectedEvent = String.valueOf(EventAdapter.getItem(position));
+                                    Event selectedEvent2 = (EventAdapter.getItem(position));
+
+                                    // Show confirmation dialog
+                                    new AlertDialog.Builder(requireContext())
+                                            .setTitle("Delete Event")
+                                            .setMessage("Are you sure you want to delete this Event?")
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // User confirmed deletion
+                                                    // Remove the attendee from the adapter
+                                                    EventAdapter.remove(selectedEvent2);
+                                                    // Notify adapter about the removal
+                                                    EventAdapter.notifyDataSetChanged();
+
+                                                    // Delete the attendee from the field "Attendees".
+                                                    db.collection("Attendees")
+                                                            .whereEqualTo("Name", selectedEvent)
+                                                            .get()
+                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @SuppressLint("RestrictedApi")
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            document.getReference().delete();
+                                                                            Log.d(TAG, "Successfully deleted the event. ", task.getException());
+                                                                        }
+                                                                    } else {
+                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // User cancelled deletion
+                                                    dialog.dismiss();
+                                                }
+                                            })
+                                            .show();
+                                }
+                            }
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
 
 }
 

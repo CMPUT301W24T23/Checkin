@@ -1,10 +1,14 @@
 package com.example.checkin;
 
+import static android.content.ContentValues.TAG;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -131,6 +135,7 @@ public class Database {
         data.put("Date", e.getEventDate());
         data.put("Time", e.getEventTime());
         data.put("Location", e.getLocation());
+
 
 
 

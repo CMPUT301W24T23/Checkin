@@ -36,9 +36,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -84,8 +86,10 @@ public class CreateEventFragment extends Fragment {
     private EventList events;
     private Event event;
     boolean createqr;
-
     private EditText eventlocation;
+    private EditText editTextNumber;
+    private Switch switchVisible;
+
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -124,6 +128,22 @@ public class CreateEventFragment extends Fragment {
         uniqueqrcodeimage = view.findViewById(R.id.uniquecodeimage);
         btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
         eventlocation = view.findViewById(R.id.etlocation);
+
+        editTextNumber = view.findViewById(R.id.editTextNumber);
+        switchVisible = view.findViewById(R.id.switchSignUpLimit);
+
+        editTextNumber.setVisibility(View.GONE); // Initially hide the EditText
+
+        switchVisible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editTextNumber.setVisibility(View.VISIBLE);
+                } else {
+                    editTextNumber.setVisibility(View.GONE);
+                }
+            }
+        });
 
         Database database = new Database();
         btnAddPoster.setOnClickListener(v -> mGetContent.launch("image/*"));

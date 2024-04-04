@@ -11,9 +11,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 
+import android.Manifest;
+
+import androidx.test.espresso.IdlingRegistry;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,32 +29,107 @@ import org.junit.runner.RunWith;
 // need to comment out line 129 in Database class before testing
 // as it causes the app to close due to unique id generated not being set yet
 public class OrganizerViewTest {
+
+    @Rule
+    public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS);
+
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
+    private ViewIdlingResource idlingResource = new ViewIdlingResource(R.id.progress);
     @Test
     public void testchangeorganizer(){
-
+        idlingResource.increment();
         // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
+
+        // Wait for the progress bar to be displayed
+        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
+
         // check if switches to organizer view
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+
+        IdlingRegistry.getInstance().unregister(idlingResource);
+
     }
 
     @Test
     public void testbackbutton(){
 
-        // click on attendee button
+        idlingResource.increment();
+
+        // Perform click action to navigate to the attendee view
         onView(withId(R.id.organizerbtn)).perform(click());
+        // Wait for the progress bar to be displayed
+        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
+        // click on back button
 
 
         // click on back button
-        onView(withId(R.id.backbtn)).perform(click());
+        onView(withId(R.id.backbtn)).check(matches(isDisplayed())).perform(click());
+
 
         // check if it goes to homepage
         onView(withId(R.id.main_activity_page)).check(matches(isDisplayed()));
 
+        IdlingRegistry.getInstance().unregister(idlingResource);
 
+
+
+    }
+
+
+    @Test
+    public void testMessages() {
+        idlingResource.increment();
+        onView(withId(R.id.organizerbtn)).perform(click());
+
+        // Wait for the progress bar to be displayed
+        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+
+        onView(withId(R.id.messages)).perform(click());
+
+        // Check if the announcements fragment is displayed
+        onView(withId(R.id.messageslisted_frag)).check(matches(isDisplayed()));
+        IdlingRegistry.getInstance().unregister(idlingResource);
+    }
+
+    @Test
+    public void testAttendees() {
+        idlingResource.increment();
+        onView(withId(R.id.organizerbtn)).perform(click());
+
+        // Wait for the progress bar to be displayed
+        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
+
+        onView(withId(R.id.attendees)).perform(click());
+
+        // Check if the attendee fragment is displayed
+        onView(withId(R.id.chooseeventfrag)).check(matches(isDisplayed()));
     }
 
     @Test

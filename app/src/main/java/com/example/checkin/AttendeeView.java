@@ -65,7 +65,7 @@ public class AttendeeView extends AppCompatActivity {
         // move to home page fragment
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.atten_view, att_frg1)
+                .replace(R.id.atten_view, att_frg1,"attendee_fragment_tag")
                 .commit();
 
 
@@ -80,7 +80,7 @@ public class AttendeeView extends AppCompatActivity {
                 if (item.getItemId() == R.id.home2){
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.atten_view, att_frg1)
+                            .replace(R.id.atten_view, att_frg1, "attendee_fragment_tag")
                             .commit();
                     return true;
                 }

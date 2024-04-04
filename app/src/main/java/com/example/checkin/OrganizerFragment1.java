@@ -61,7 +61,7 @@ public class OrganizerFragment1 extends Fragment {
         p = view.findViewById(R.id.progress);
         maincontent = view.findViewById(R.id.maincontent);
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
-        bottomNavigationView.setVisibility(View.GONE);
+        //bottomNavigationView.setVisibility(View.GONE);
 
         SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getContext());
         int attendeeCount = preferences2.getInt("attendeeCount", 0);

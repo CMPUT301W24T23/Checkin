@@ -4,6 +4,11 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.isInternal;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -17,15 +22,21 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+import static java.util.EnumSet.allOf;
+
 import android.Manifest;
 import android.content.Context;
+import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.idling.CountingIdlingResource;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -51,8 +62,8 @@ import java.util.List;
 
 public class AttendeeViewTest {
 
-    //@Mock
-    //private Database mockDatabase;
+    @Mock
+    private Database mockDatabase;
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA);
@@ -97,10 +108,12 @@ public class AttendeeViewTest {
     public void testbackbutton(){
 
         idlingResource.increment();
-        onView(withId(R.id.attendeebtn)).perform(click());
 
+        // Perform click action to navigate to the attendee view
+        onView(withId(R.id.attendeebtn)).perform(click());
         // Wait for the progress bar to be displayed
         onView(withId(R.id.progress)).check(matches(isDisplayed()));
+
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
         IdlingRegistry.getInstance().register(idlingResource);
@@ -108,7 +121,10 @@ public class AttendeeViewTest {
         idlingResource.reset();
         IdlingRegistry.getInstance().unregister(idlingResource);
         // click on back button
-        onView(withId(R.id.backbtn)).perform(click());
+
+
+        // click on back button
+        onView(withId(R.id.backbtn)).check(matches(isDisplayed())).perform(click());
 
 
         // check if it goes to homepage
@@ -129,17 +145,47 @@ public class AttendeeViewTest {
 
 
 
-
+        idlingResource.increment();
         onView(withId(R.id.attendeebtn)).perform(click());
+
+        // Wait for the progress bar to be displayed
+        onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
-        //doReturn(mockEventList).when(mockDatabase).updateEvent(event);
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
 
-        Espresso.onView(withId(R.id.progress)).check(matches(isDisplayed()));
+
+        EventArrayAdapter arrayadapter = new EventArrayAdapter(InstrumentationRegistry.getInstrumentation().getTargetContext(), mockEventList);
+        scenario.getScenario().onActivity(activity -> {
+            View rootView = activity.findViewById(android.R.id.content);
+
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            AttendeeFragment1 fragment = (AttendeeFragment1) fragmentManager.findFragmentByTag("attendee_fragment_tag");
+            if (fragment != null && fragment.getView() != null) {
+
+                ListView listView = fragment.getView().findViewById(R.id.events);
+                listView.setAdapter(arrayadapter);
+            }
+        });
+
+
+
+
+       // doReturn(mockEventList).when(mockDatabase).updateEvent(event);
+
+        //onData(instanceOf(Event.class))
+             //   .inAdapterView(withId(R.id.events))
+               // .atPosition(1)
+               // .perform(click());
+
 
         onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events)).perform(click());
         onView(withId(R.id.eventdet_frag)).check(matches(isDisplayed()));
         onView(withId(R.id.eventname_text)).check(matches(withText("Test Event1")));
+
     }
 
 
@@ -160,9 +206,11 @@ public class AttendeeViewTest {
 
         onView(withId(R.id.messages2)).perform(click());
 
-        // Check if the announcements list is displayed
-        onView(withId(R.id.announcements_list)).check(matches(isDisplayed()));
+        // Check if the announcements fragment is displayed
+        onView(withId(R.id.announce_frag)).check(matches(isDisplayed()));
     }
+
+
 
 
 

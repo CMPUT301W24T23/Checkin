@@ -5,6 +5,7 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
 android {
     namespace = "com.example.checkin"
     compileSdk = 34
@@ -43,13 +44,12 @@ android {
             }
         }
     }
-
 }
 
 
 
 dependencies {
-
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.google.android.gms:play-services-maps:17.0.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.gms:play-services-maps:17.0.0")

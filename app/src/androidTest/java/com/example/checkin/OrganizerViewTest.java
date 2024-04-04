@@ -71,6 +71,12 @@ public class OrganizerViewTest {
 
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         IdlingRegistry.getInstance().register(idlingResource);
         idlingResource.decrement();
         idlingResource.reset();

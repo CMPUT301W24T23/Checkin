@@ -116,6 +116,12 @@ public class AttendeeViewTest {
 
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         IdlingRegistry.getInstance().register(idlingResource);
         idlingResource.decrement();
         idlingResource.reset();
@@ -152,6 +158,12 @@ public class AttendeeViewTest {
         onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         IdlingRegistry.getInstance().register(idlingResource);
         idlingResource.decrement();
         idlingResource.reset();
@@ -160,7 +172,6 @@ public class AttendeeViewTest {
 
         EventArrayAdapter arrayadapter = new EventArrayAdapter(InstrumentationRegistry.getInstrumentation().getTargetContext(), mockEventList);
         scenario.getScenario().onActivity(activity -> {
-            View rootView = activity.findViewById(android.R.id.content);
 
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
             AttendeeFragment1 fragment = (AttendeeFragment1) fragmentManager.findFragmentByTag("attendee_fragment_tag");
@@ -171,18 +182,15 @@ public class AttendeeViewTest {
             }
         });
 
-
-
-
        // doReturn(mockEventList).when(mockDatabase).updateEvent(event);
 
-        //onData(instanceOf(Event.class))
-             //   .inAdapterView(withId(R.id.events))
-               // .atPosition(1)
-               // .perform(click());
+        onData(instanceOf(Event.class))
+                .inAdapterView(withId(R.id.events))
+                .atPosition(1)
+                .perform(click());
 
 
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events)).perform(click());
+       //onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events)).perform(click());
         onView(withId(R.id.eventdet_frag)).check(matches(isDisplayed()));
         onView(withId(R.id.eventname_text)).check(matches(withText("Test Event1")));
 
@@ -198,6 +206,12 @@ public class AttendeeViewTest {
         // Wait for the progress bar to be displayed
         onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         IdlingRegistry.getInstance().register(idlingResource);
         idlingResource.decrement();

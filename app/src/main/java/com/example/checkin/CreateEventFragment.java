@@ -10,6 +10,8 @@
 // https://www.youtube.com/watch?v=pHCZpw9JQHk&t=492s
 package com.example.checkin;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,8 +36,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,9 +56,11 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class CreateEventFragment extends Fragment {
 
@@ -67,6 +75,7 @@ public class CreateEventFragment extends Fragment {
     private Bitmap poster;
     private ImageEncoder encoder = new ImageEncoder();
     private ImageView qrcodeimage;
+    private ImageView uniqueqrcodeimage;
     private boolean posterAdded = false;
     private Button backbutton;
     private Button addeventbutton;
@@ -76,6 +85,11 @@ public class CreateEventFragment extends Fragment {
     private boolean qrCodeOptionSelected = false;
     private EventList events;
     private Event event;
+    boolean createqr;
+    private EditText eventlocation;
+    private EditText attendeeCap;
+    private Switch switchVisible;
+
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -111,7 +125,25 @@ public class CreateEventFragment extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
         btnMap = view.findViewById(R.id.btnMap);
         qrcodeimage = view.findViewById(R.id.qrcodeimage);
+        uniqueqrcodeimage = view.findViewById(R.id.uniquecodeimage);
         btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
+        eventlocation = view.findViewById(R.id.etlocation);
+
+        attendeeCap = view.findViewById(R.id.attendeeCap);
+        switchVisible = view.findViewById(R.id.switchSignUpLimit);
+
+        attendeeCap.setVisibility(View.GONE); // Initially hide the EditText
+
+        switchVisible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    attendeeCap.setVisibility(View.VISIBLE);
+                } else {
+                    attendeeCap.setVisibility(View.GONE);
+                }
+            }
+        });
 
         Database database = new Database();
         btnAddPoster.setOnClickListener(v -> mGetContent.launch("image/*"));
@@ -144,6 +176,55 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        // choose event qr code to be generated
+
+        // create new event and open list of events
+        addeventbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //create event with event name and ID
+                if (eventname.getText().toString().equals("")) {
+                    eventname.setError("Event name required");
+                    Log.d("Event Name Required", "User did not supply event name");
+                    return;
+                }
+                event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+                //get details if any
+
+                if (createqr == true) {
+                    String qrcodevalue = generateQRCode(event, qrcodeimage);
+                    event.setQrcodeid(qrcodevalue);
+                }
+
+                //convert image to string and add to event
+                if (posterAdded) {
+                    event.setPoster(encoder.BitmapToBase64(poster));
+                } else {
+                    //empty string if no poster is added
+                    event.setPoster("");
+                }
+
+                //Add poster to database
+                database.updatePoster(event.getPoster(), event.getEventId());
+
+
+                events.addEvent(event);
+                database.updateEvent(event);
+                Log.d("Event Creation", String.format("Adding organizer %s event %s to the database", organizer.getUserId(), event.getEventId()));
+
+                organizer.EventCreate(event.getEventId());
+                database.updateOrganizer(organizer);
+
+                OrganizerFragment1 organizerfrag = new OrganizerFragment1();
+                Bundle args = new Bundle();
+                args.putSerializable("organizer", organizer);
+                args.putSerializable("eventslist", events);
+                organizerfrag.setArguments(args);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
+
+            }
+        });
+
         qrcodebutton.setOnClickListener(view12 -> {
             qrCodeOptionSelected = true;
             qrcodebutton.setBackgroundColor(Color.GRAY);
@@ -160,11 +241,29 @@ public class CreateEventFragment extends Fragment {
             String eventDateStr = eventDate.getText().toString().trim();
             String eventTimeStr = eventTime.getText().toString().trim();
             String eventDetailsStr = eventDetails.getText().toString().trim();
+            String eventlocationStr = eventlocation.getText().toString().trim();
+            String attendeeCapStr = attendeeCap.getText().toString();
+
 
             boolean hasError = false;
+            //if the event cap switch is checked
+            if(switchVisible.isChecked()){
+                Log.d("Get String", String.format("%s", attendeeCap.getText().toString()));
+                if(attendeeCapStr.isEmpty()){
+                    attendeeCap.setError("Required");
+                    hasError = true;
+                }
+            } else{
+                //set high cap otherwise
+                attendeeCapStr = "999999999";
+            }
 
             if (eventName.isEmpty()) {
                 eventname.setError("Required");
+                hasError = true;
+            }
+            if (eventlocationStr.isEmpty()) {
+                eventlocation.setError("Required");
                 hasError = true;
             }
 
@@ -184,7 +283,7 @@ public class CreateEventFragment extends Fragment {
             }
 
             if (!qrCodeOptionSelected) {
-                Toast.makeText(getContext(), "Mandatory Fields have no been entered. Please also select a QR code option.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Mandatory Fields have not been entered. Please also select a QR code option.", Toast.LENGTH_SHORT).show();
                 hasError = true;
             }
 
@@ -197,6 +296,17 @@ public class CreateEventFragment extends Fragment {
             event.setEventDate(eventDateStr);
             event.setEventTime(eventTimeStr);
             event.setEventDetails(eventDetailsStr);
+            event.setLocation(eventlocationStr);
+            event.setAttendeeCap(attendeeCapStr);
+
+            String uniquecode = generatepromotionQRCode(event, uniqueqrcodeimage, organizer);
+            event.setUniquepromoqr(uniquecode);
+
+
+            if (createqr == true) {
+                String qrcodevalue = generateQRCode(event, qrcodeimage);
+                event.setQrcodeid(qrcodevalue);
+            }
 
             if (posterAdded) {
                 event.setPoster(encoder.BitmapToBase64(poster));
@@ -226,12 +336,66 @@ public class CreateEventFragment extends Fragment {
             startActivity(intent);
         });
 
-        return view;
-    }
+        qrcodebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                qrCodeOptionSelected = true;
+                createqr = true;
+                qrcodebutton.setBackgroundColor(Color.GRAY);
+            }
+        });
 
+        eventTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog();
+            }
+        });
+
+        eventDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+
+        return view;
+
+    }
 
     public String generateQRCode(Event myevent, ImageView imageCode) {
         String myText = myevent.getEventId();
+
+        // Appending timestamp
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        myText += "_" + timestamp;
+        myText += "_" + myevent.getEventname();
+
+        // Appending user's ID
+        //String userid = "123456"; // Change 123456 to user's ID
+        //  myText += "_" + userid;
+
+        // Initializing MultiFormatWriter for QR code
+
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            BitMatrix matrix = writer.encode(myText, BarcodeFormat.QR_CODE, 600, 600);
+            BarcodeEncoder mEncoder = new BarcodeEncoder();
+            Bitmap mBitmap = mEncoder.createBitmap(matrix);
+            imageCode.setImageBitmap(mBitmap);
+
+            InputMethodManager manager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(imageCode.getApplicationWindowToken(), 0);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return myText;
+    }
+
+    public String generatepromotionQRCode(Event myevent, ImageView imageCode, Organizer organizer) {
+        String myText = myevent.getEventId();
+        myText += "_" + organizer.getUserId();
 
         // Appending timestamp
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -252,4 +416,49 @@ public class CreateEventFragment extends Fragment {
         }
         return myText;
     }
+
+    private void showTimePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String amPm;
+                if (hourOfDay >= 12) {
+                    amPm = "PM";
+                    hourOfDay -= 12;
+                } else {
+                    amPm = "AM";
+                }
+                if (hourOfDay == 0) {
+                    hourOfDay = 12;
+                }
+                String time = String.format(Locale.getDefault(), "%02d:%02d %s", hourOfDay, minute, amPm);
+                eventTime.setText(time);
+            }
+        }, hour, minute, false);
+
+        timePickerDialog.show();
+    }
+
+    private void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                String date = String.format(Locale.getDefault(), "%d-%02d-%02d", year, month + 1, dayOfMonth);
+                eventDate.setText(date);
+            }
+        }, year, month, day);
+
+        datePickerDialog.show();
+    }
+
+
 }

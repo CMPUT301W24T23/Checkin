@@ -6,8 +6,10 @@ import android.media.Image;
 import java.io.Serializable;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -28,6 +30,8 @@ public class Attendee implements User, Serializable {
 
     private String userId;     //the user's ID
     private String profilePicture;              //user's profile picture as an encoded 64bit string
+    private Long checkInValue;
+
     private Map<String, Long> CheckInHist = new Hashtable<>();
     private boolean geoTracking;
     //Optional information the user can provide
@@ -35,8 +39,7 @@ public class Attendee implements User, Serializable {
     private String homepage;
     private String email;
     private String phoneNumber;
-    private String country;
-
+    private Map<String, String> SubList = new Hashtable<>();
 
     public Attendee(String name) {
         this.name = name;
@@ -53,14 +56,13 @@ public class Attendee implements User, Serializable {
         this.name = name;
         this.homepage = homepage;
         this.email = email;
-        this.country = country;
         this.geoTracking = geoTracking;
     }
 
      /* Empty constructor for attendee
      */
     public Attendee() {
-        this.userId = "";
+        this.userId = String.valueOf(generateUserId());
         this.name = "";
         this.homepage = "";
         this.email = "";
@@ -96,27 +98,15 @@ public class Attendee implements User, Serializable {
         this.CheckInHist = new Hashtable<>();
     }
 
-
-    //Event subscription===========================================================================
-
     /**
-     * Subscribes a user to an event, consenting to receive notifications
+     * Generates a new unique identifier for the user
      *
-     * @param event a valid event object
+     * @return their assigned id.
      */
-    public void EventSub(Event event) {
-        //User subscribes to event, consents to receive notifications
-        event.userSubs(this);
-    }
-
-    /**
-     * Unsubscribes the user from an event
-     *
-     * @param event a valid event object
-     */
-    public void EventUnSub(Event event) {
-        //User unsubscribes from event
-        event.userUnSubs(this);
+    private String generateUserId() {
+        //Random ID for the empty constructor
+        Random rand = new Random();
+        return Integer.toString(rand.nextInt(1000));
     }
 
     //CheckedInList=================================================================================
@@ -139,7 +129,11 @@ public class Attendee implements User, Serializable {
      * @param event
      * an event object
      */
-    public void CheckIn(Event event) {
+    public void updateCheckInCount(Event event) {
+        if (CheckInHist == null) {
+            // Initialize CheckInHist if it's null
+            CheckInHist = new HashMap<>();
+        }
         //increment user check in count
         if (this.CheckInHist.isEmpty()) {
             // If the CheckInHist map is empty, initialize the count to 1
@@ -168,6 +162,16 @@ public class Attendee implements User, Serializable {
         //the event or not
         return event.IsCheckedIn(this);
 
+    }
+
+    public void EventSub(Event event) {
+        //User subscribes to event, consents to receive notifications
+        //User signs up to event
+        if (SubList == null) {
+            SubList = new Hashtable<>(); // Initialize SubList if it's null
+        }
+        event.userSubs(this);
+        SubList.put(String.valueOf(event.getEventId()), "");
     }
 
     //GEOLOCATION===========================================================
@@ -242,5 +246,32 @@ public class Attendee implements User, Serializable {
         CheckInHist = checkInHist;
     }
 
+    public Long getCheckInValue() {
+        return checkInValue;
+    }
 
+    public void setCheckInValue(Long checkInValue) {
+        this.checkInValue = checkInValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Attendee otherAttendee = (Attendee) obj;
+        // Compare user IDs for equality
+        return Objects.equals(userId, otherAttendee.userId);
+    }
+
+    public Map<String, String> getSubList() {
+        return SubList;
+    }
+
+    public void setSubList(Map<String, String> subList) {
+        SubList = subList;
+    }
 }

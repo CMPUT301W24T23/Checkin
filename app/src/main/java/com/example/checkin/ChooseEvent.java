@@ -1,6 +1,5 @@
 package com.example.checkin;
 
-// displays events to select from and send message or view milestones for
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,61 +23,55 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 
-import kotlinx.coroutines.channels.Send;
 
-public class SelectEventMessages extends Fragment {
-
+public class ChooseEvent extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
     Button backbutton;
-
+    Button addeventbutton;
     Organizer organizer;
 
     private FirebaseFirestore db;
-
     ProgressBar p;
 
     RelativeLayout maincontent;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_select_event_messages, container, false);
+        View view = inflater.inflate(R.layout.fragment_choose_event, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
-        p = view.findViewById(R.id.progress);
-        maincontent = view.findViewById(R.id.maincontent);
+        //EventList allevents  = new EventList();
+        
+
 
 
         allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
+        p = view.findViewById(R.id.progress);
+        maincontent = view.findViewById(R.id.maincontent);
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
+        bottomNavigationView.setVisibility(View.GONE);
 
-        /*
         // Add attendees and check them in/ sign up to test functionality
         Attendee attendee1 = new Attendee("Amy");
         Attendee attendee2 = new Attendee("John");
         attendees1.add(attendee1);
         Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
-        attendee1.CheckIn(event1);
-        attendee2.CheckIn(event1);
-        event1.userCheckIn(attendee1);
-        event1.userCheckIn(attendee2);
-        event1.userSubs(attendee2);
         allevents.addEvent(event1);
-
-         */
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -112,13 +105,12 @@ public class SelectEventMessages extends Fragment {
                 .whereEqualTo("Creator", android_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         p.setVisibility(View.GONE);
                         maincontent.setVisibility(View.VISIBLE);
+                        bottomNavigationView.setVisibility(View.VISIBLE);
                         if (task.isSuccessful()) {
-
                             for (DocumentSnapshot document : task.getResult()) {
                                 Event event = database.getEvent(document);
                                 allevents.addEvent(event);
@@ -149,7 +141,8 @@ public class SelectEventMessages extends Fragment {
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -176,12 +169,12 @@ public class SelectEventMessages extends Fragment {
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SendNotification send_frag = new SendNotification();
+                AttendeesOptions attendeeoptions_frag = new AttendeesOptions();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
-                send_frag.setArguments(args);
+                attendeeoptions_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, send_frag).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, attendeeoptions_frag).addToBackStack(null).commit();
 
 
             }

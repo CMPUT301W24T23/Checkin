@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -23,11 +24,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class SignedInList extends Fragment {
@@ -37,10 +42,11 @@ public class SignedInList extends Fragment {
     private ArrayAdapter<Attendee> AttendeesAdapter;
     Event myevent;
 
-    Organizer organizer;
     Button backbutton;
 
     private FirebaseFirestore db;
+
+    private TextView totalsignups;
 
 
     @Override
@@ -51,35 +57,36 @@ public class SignedInList extends Fragment {
 
         backbutton = view.findViewById(R.id.backbtn);
         attendeesList = view.findViewById(R.id.signedin_attendees_list);
+        totalsignups = view.findViewById(R.id.total_signup);
 
         attendeedatalist = new AttendeeList();
 
-        ArrayList<Attendee> attendees = new ArrayList<>();
+
+        if (attendeedatalist != null) {
+            AttendeesAdapter = new ArrayAdapter<Attendee>(getActivity(), R.layout.content2, attendeedatalist.getAttendees()) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = convertView;
+                    if (view == null) {
+                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        view = inflater.inflate(R.layout.content2, null);
+                    }
+                    TextView textView = view.findViewById(R.id.attendee_name);
+                    textView.setText(attendeedatalist.getAttendees().get(position).getName());
+                    TextView textView2 = view.findViewById(R.id.checkin_times);
+                    textView2.setVisibility(View.GONE);
+                    return view;
+                }
+            };
+            attendeesList.setAdapter(AttendeesAdapter);
+
+        }
+
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             myevent = (Event) bundle.getSerializable("event");
         }
-
-
-        // if event exists, get checked in list of attendees
-        if (myevent !=null) {
-            attendeedatalist = myevent.getSubscribers();
-        }
-
-
-
-
-
-
-        // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
-        if (attendeedatalist!= null) {
-            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendeedatalist.getAttendees());
-            attendeesList.setAdapter(AttendeesAdapter);
-        }
-
-        String eventid = myevent.getEventId();
-
 
 
 
@@ -95,29 +102,36 @@ public class SignedInList extends Fragment {
         });
         db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
-        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        eventRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Retrieve subscribers from the document
-                        Map<String, String> subscribersMap = (Map<String, String>) document.get("Subscribers");
-                        if (subscribersMap != null) {
-                            for (String attendeeId : subscribersMap.keySet()) {
-                                // Fetch each attendee document and create Attendee objects
-                                fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("Listener", "Listen failed.", e);
+                    return;
+                }
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    // Retrieve subscribers from the document
+                    Map<String, String> subscribersMap = (Map<String, String>) documentSnapshot.get("Subscribers");
+                    if (subscribersMap != null) {
+                        for (String attendeeId : subscribersMap.keySet()) {
+                            // Fetch each attendee document and create Attendee objects
+                            fetchAttendeeFromFirestore(attendeeId, attendeedatalist);
+                        }
+
+                            for (Attendee existingAttendee : attendeedatalist.getAttendees()) {
+                               if (!subscribersMap.containsKey(existingAttendee.getUserId())) {
+                                    attendeedatalist.removeAttendee(existingAttendee);
+                                }
                             }
                         }
-                    } else {
-                        Log.d("Firestore", "No such document");
-                    }
+                        AttendeesAdapter.notifyDataSetChanged();
+                    String text = "Total Signed Up Attendees: " + attendeedatalist.getAttendees().size();
+                    totalsignups.setText(text);
                 } else {
-                    Log.d("Firestore", "get failed with ", task.getException());
+                    Log.d("Firestore", "No such document");
                 }
             }
         });
-
         return view;
     }
 
@@ -136,13 +150,13 @@ public class SignedInList extends Fragment {
                         attendees.clear();
 
                         // Add the attendee to the list
-                        attendees.addAttendee(attendee);
-                        // Update the UI with the attendees list
-
-                        if (attendeedatalist!= null) {
-                            AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendees.getAttendees());
-                            attendeesList.setAdapter(AttendeesAdapter);
+                        if (!attendees.contains(attendee)) {
+                            attendees.addAttendee(attendee);
                         }
+
+                        AttendeesAdapter.notifyDataSetChanged();
+                        String text = "Total Signed Up Attendees: " + attendeedatalist.getAttendees().size();
+                        totalsignups.setText(text);
                     } else {
                         Log.d("Firestore", "No such document");
                     }

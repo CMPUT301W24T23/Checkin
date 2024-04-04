@@ -5,7 +5,6 @@ package com.example.checkin;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import android.Manifest;
@@ -17,7 +16,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.CollectionReference;
@@ -29,10 +30,15 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.Map;
+
 // Represents the Attendee Perspective of the app
 public class AttendeeView extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private static final int PERMISSION_REQUEST_NOTIFICATION = 2;
+    private FirebaseFirestore db;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +54,18 @@ public class AttendeeView extends AppCompatActivity {
         }
 
 
+        db = FirebaseFirestore.getInstance();
         // create homepage and announcements fragments
         AttendeeFragment1 att_frg1 = new AttendeeFragment1();
         Announcements ann_frg1 = new Announcements();
+        AttendeeEventOptions options_frag = new AttendeeEventOptions();
 
 
 
         // move to home page fragment
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.atten_view, att_frg1)
+                .replace(R.id.atten_view, options_frag)
                 .commit();
 
 
@@ -72,7 +80,7 @@ public class AttendeeView extends AppCompatActivity {
                 if (item.getItemId() == R.id.home2){
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.atten_view, att_frg1)
+                            .replace(R.id.atten_view, options_frag)
                             .commit();
                     return true;
                 }
@@ -104,33 +112,33 @@ public class AttendeeView extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        // if the intentResult is null then
-        // toast a message as "cancelled"
+
+     super.onActivityResult(requestCode, resultCode, data);
+    IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String android_id = preferences.getString("ID", "");
+    // if the intentResult is null then
+    // toast a message as "cancelled"
         if (intentResult != null) {
-            if (intentResult.getContents() == null) {
-                Toast.makeText(getBaseContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-            } else {
-                // if the intentResult is not null we'll set
-                // the content and format of scan message
-                String qrCodeContent = intentResult.getContents();
-                System.out.println("content"+ qrCodeContent);
-                getEventDetailsFromFirebase(qrCodeContent);
-
-
-
-
-                // check in attendee using firebase- use event id and attendee id to get
-                // event and attendee from firebase, and update both
-
-                EventDetailAtten eventfragment = new EventDetailAtten();
-                Bundle args = new Bundle();
-                args.putString("event", intentResult.getContents());
-                eventfragment.setArguments(args);
-            }
+        if (intentResult.getContents() == null) {
+            Toast.makeText(getBaseContext(), "Cancelled", Toast.LENGTH_SHORT).show();
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            // if the intentResult is not null we'll set
+            // the content and format of scan message
+            String qrCodeContent = intentResult.getContents();
+            System.out.println("content"+ qrCodeContent);
+            getEventDetailsFromFirebase(qrCodeContent, android_id);
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar2);
+            bottomNavigationView.setSelectedItemId(R.id.home2);
+
+
+            // check in attendee using firebase- use event id and attendee id to get
+            // event and attendee from firebase, and update both
+
+
+        }
+    } else {
+        super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -139,20 +147,50 @@ public class AttendeeView extends AppCompatActivity {
      * retrieve event to get the scanned qr code from firebase
      * @param qrCodeId
      */
-    private void getEventDetailsFromFirebase(String qrCodeId) {
+    private void getEventDetailsFromFirebase(String qrCodeId, String attendeeid) {
         Database database = new Database();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String androidId = preferences.getString("ID", "");
         CollectionReference eventsRef = db.collection("Events");
 
-        eventsRef.whereEqualTo("Qr Code Id", qrCodeId)
+        eventsRef.whereEqualTo("Event Qr Code Id", qrCodeId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             // retrieve event
                             Event event = database.getEvent(document);
+
+                            Map<String, String> checkInMap = (Map<String, String>) document.get("UserCheckIn");
+                            for(String a : checkInMap.keySet()){
+                                //Check each user in to the event
+                                //db.getAttendee(document);
+                                retrieveAttendee(a, true, event);
+                                //myevent.userCheckIn();
+                                //Log.d("Retrieved event checkin", String.format("Checkin %s", a));
+                            }
+
+                            Map<String, String> subbedMap = (Map<String, String>) document.get("Subscribers");
+                            for(String a : subbedMap.keySet()){
+                                //Check each user in to the event
+                                //db.getAttendee(document);
+                                retrieveAttendee(a, false, event);
+                                //Log.d("Retrieved event Sub", String.format("Sub %s", a));
+                                //myevent.userCheckIn();
+                            }
+                            //wait for execution FOR TESTING
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+
+
+                            //get current attendee and upload
+                            fetchAttendeeFromFirestore(attendeeid, true, event);
+
+                            
                             // fetch the attendee details
                             DocumentReference attendeeRef = db.collection("Attendees").document(androidId);
                             attendeeRef.get().addOnCompleteListener(attendeeTask -> {
@@ -165,11 +203,12 @@ public class AttendeeView extends AppCompatActivity {
 
                                         // get both the event and the attendee
                                         if (attendee != null) {
-                                            attendee.CheckIn(event);
-                                            event.userCheckIn(attendee);
-                                            System.out.println("Checked In Attendee");
-                                            database.updateEvent(event);
+                                            attendee.updateCheckInCount(event);
+                                            //event.userCheckIn(attendee);
+                                            //System.out.println("Checked In Attendee");
+                                            //database.updateEvent(event);
                                             database.updateAttendee(attendee);
+
 
                                             FirebaseMessaging.getInstance().subscribeToTopic(event.getEventId()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -188,6 +227,7 @@ public class AttendeeView extends AppCompatActivity {
                                                     .replace(R.id.atten_view, eventfragment)
                                                     .addToBackStack(null)
                                                     .commit();
+                                            Toast.makeText(this, "Check In Successful!", Toast.LENGTH_LONG).show();
 
                                         }
                                     } else {
@@ -204,6 +244,110 @@ public class AttendeeView extends AppCompatActivity {
                         Log.e("Firebase", "Error fetching event details", task.getException());
                     }
                 });
+
+        eventsRef.whereEqualTo("Promotion QR Code Id", qrCodeId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Retrieve event
+                            Event event = database.getEvent(document);
+
+                            // Open the fragment for unique QR code
+
+
+
+                            EventDetailAtten promofrag = new EventDetailAtten();
+                            Bundle args = new Bundle();
+                            args.putSerializable("event", event);
+                            promofrag.setArguments(args);
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.atten_view, promofrag)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    } else {
+                        // Error fetching event details
+                        Toast.makeText(this, "Error fetching event details from Firebase", Toast.LENGTH_SHORT).show();
+                        Log.e("Firebase", "Error fetching event details", task.getException());
+                    }
+                });
+
+
+    }
+
+    private void fetchAttendeeFromFirestore(String attendeeid, boolean CheckIn, Event myevent) {
+
+        Database d = new Database();
+
+        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeid);
+        attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Attendee object using Database class method
+                        Attendee attendee = d.getAttendee(document);
+
+                        //User is checking in/out
+                        if(CheckIn){
+                            Log.d("Test Current Checkin", "NUMBERS BEFORE" + myevent.getCheckInList().getAttendees().size());
+                            myevent.userCheckIn(attendee);
+                            System.out.println("NUMBERS " + myevent.getCheckInList().getAttendees().size());
+                        } else{
+                            //otherwise they are subbing/unsubbing
+                            myevent.userSubs(attendee);
+                        }
+
+
+                        Log.d("Test Current Checkin", "NUMBERS AFTER" + myevent.getCheckInList().getAttendees().size());
+
+                        //attendee.CheckIn(event);
+                        d.updateEvent(myevent);
+                        d.updateAttendee(attendee);
+
+
+
+                    }
+
+                }
+            }
+
+
+        });
+    }
+
+    public void retrieveAttendee(String id, boolean CheckIn, Event myevent){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Attendees").document(id);
+        Database fireBase = new Database();
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
+                        Attendee a = fireBase.getAttendee(document);
+
+                        //If the user is to be checked in, check them in
+                        //Otherwise sub them
+                        if(CheckIn){
+                            myevent.userCheckIn(a);
+                        } else{
+                            myevent.userSubs(a);
+                        }
+
+
+                    } else {
+                        Log.d("Firebase", "No such document");
+                    }
+                } else {
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
+                }
+            }
+        });
     }
     @Override
     protected void onNewIntent(Intent intent) {
@@ -226,6 +370,30 @@ public class AttendeeView extends AppCompatActivity {
 
         }
 
+    }
+
+    private boolean isEventQRCode(String qrCodeContent) {
+        // Return true if it's an event QR code, false otherwise
+        Database database = new Database();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String androidId = preferences.getString("ID", "");
+        CollectionReference eventsRef = db.collection("Events");
+
+        eventsRef.whereEqualTo("Event Qr Code Id", qrCodeContent)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // retrieve event
+                            Event event = database.getEvent(document);
+                            //return true;
+                        }
+                    }
+                   // return false;
+                });
+
+        return false; // Default return value if the task is not successful or no event is found
     }
 
     /**

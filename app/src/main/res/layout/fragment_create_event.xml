@@ -19,37 +19,50 @@
     <EditText
         android:id="@+id/etEventName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:hint="Event Name *"
         android:layout_below="@id/tvCreateEvent"
         android:layout_marginTop="16dp"
         android:textColor="@color/black"
         android:inputType="text"/>
 
+
+    <EditText
+        android:id="@+id/etlocation"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Event Location *"
+        android:layout_below="@id/etEventdetails"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:inputType="text"/>
+
     <EditText
         android:id="@+id/etEventDate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:hint="Event Date (e.g., 2024-03-28) *"
         android:layout_below="@id/etEventName"
         android:layout_marginTop="8dp"
         android:textColor="@color/black"
+        android:focusable="false"
         android:inputType="date"/>
 
     <EditText
         android:id="@+id/etEventTime"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:hint="Event Time (e.g., 14:00) *"
         android:layout_below="@id/etEventDate"
         android:layout_marginTop="8dp"
         android:textColor="@color/black"
+        android:focusable="false"
         android:inputType="time"/>
 
     <EditText
         android:id="@+id/etEventdetails"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:hint="Event Details *"
         android:layout_below="@id/etEventTime"
         android:layout_marginTop="8dp"
@@ -59,15 +72,15 @@
     <Button
         android:id="@+id/btnAddPoster"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Event Poster"
+        android:layout_height="48dp"
         android:layout_below="@id/etEventdetails"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="63dp"
+        android:text="Add Event Poster" />
 
     <ImageView
         android:id="@+id/ivEventPoster"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="90dp"
         android:layout_below="@id/btnAddPoster"
         android:layout_marginTop="8dp"
         android:scaleType="centerCrop"
@@ -79,6 +92,13 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="100dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/uniquecodeimage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="300dp"
         android:visibility="gone" />
 
     <Button
@@ -102,51 +122,73 @@
         android:layout_height="wrap_content"
         android:text="Use Existing Event QR Code"
         android:layout_below="@id/btnGenerateQR"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="10dp"/>
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_below="@id/btnUseExistingQR"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
         android:paddingStart="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="Geolocation\nTracking"
-            android:textSize="24sp"
             android:textColor="@color/black"
-            android:layout_gravity="center_vertical"/>
+            android:textSize="24sp" />
 
         <CheckBox
             android:id="@+id/checkbox_geo_tracking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@android:color/darker_gray"
+            android:layout_gravity="center_vertical"
             android:layout_marginStart="10dp"
+            android:buttonTint="@android:color/darker_gray"
             android:scaleX="1.5"
-            android:scaleY="1.5"
-            android:layout_gravity="center_vertical"/>
+            android:scaleY="1.5" />
 
         <Button
             android:id="@+id/btnMap"
             android:layout_width="117dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/btnUseExistingQR"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="8dp"
             android:text="Map" />
 
     </LinearLayout>
 
+
+    <Switch
+        android:id="@+id/switchSignUpLimit"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginTop="2dp"
+        android:text="Set SignUp Limit" />
+
     <Button
         android:id="@+id/createeventbtn"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Create Event"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="530dp"/>
+        android:layout_height="48dp"
+        android:layout_below="@+id/switchSignUpLimit"
+        android:layout_marginTop="5dp"
+        android:text="Create Event" />
+
+    <EditText
+        android:id="@+id/attendeeCap"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="7dp"
+        android:layout_toEndOf="@+id/switchSignUpLimit"
+        android:ems="10"
+        android:hint="Enter Limit"
+        android:inputType="number" />
 
 </RelativeLayout>

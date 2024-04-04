@@ -164,6 +164,10 @@ public class UserProfileFragment extends Fragment {
             newImage = true;
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+
+                //resize to 100x100
+                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+
                 myImageView.setImageBitmap(bitmap);
                 removePictureButton.setVisibility(View.VISIBLE);
 
@@ -189,14 +193,9 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
-
     /**
-     * Saves the user's profile information and picture.
-     * Citing: Took the help of Chat gpt in order to understand and learn new concepts about Bitmap and
-     * how to work with it.
+     * Saves the user information on screen to the database
      */
-    private Bitmap originalBitmap; // Store the original Bitmap here
-
     private void saveUserProfile() {
         // Get user-entered information
         String name = nameEdit.getText().toString();
@@ -213,16 +212,19 @@ public class UserProfileFragment extends Fragment {
         }
 
         String imageBase64 = currentUser.getProfilePicture();
-        // Check if an image is uploaded
+
         if (imageUri != null && newImage) {
             try {
                 //A new image has been uploaded
 
-                originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                myImageView.setImageBitmap(originalBitmap);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+
+                //resize image and update view
+                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+                myImageView.setImageBitmap(bitmap);
 
                 //encode and save to user
-                imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+                imageBase64 = imgEncode.BitmapToBase64(bitmap);
                 currentUser.setProfilePicture(imageBase64);
 
             } catch (IOException e) {
@@ -236,7 +238,6 @@ public class UserProfileFragment extends Fragment {
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
             Bitmap bitmap = generateImageWithInitials(name);
             myImageView.setImageBitmap(bitmap);
-            originalBitmap = bitmap;
             imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
             newImage = false;
 
@@ -245,7 +246,7 @@ public class UserProfileFragment extends Fragment {
             editPictureButton.setVisibility(View.VISIBLE);
 
             //save to cyurrent user
-            imageBase64 = imgEncode.BitmapToBase64(originalBitmap);
+            imageBase64 = imgEncode.BitmapToBase64(bitmap);
             currentUser.setProfilePicture(imageBase64);
             // Log the visibility of the ImageView
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());

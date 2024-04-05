@@ -36,6 +36,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+
     sourceSets {
         getByName("main") {
             assets {
@@ -50,6 +52,7 @@ android {
 
 dependencies {
 
+    //implementation(files("/Users/samirasalman/Library/Android/sdk/platforms/android-34/android.jar")) // need for creating javadocs
     implementation("com.google.android.gms:play-services-maps:17.0.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.gms:play-services-maps:17.0.0")

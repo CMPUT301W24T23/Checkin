@@ -103,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
        // }
 
 
+        // check if device id, exists in organizer or attendee database collections
+        // if yes, do not do anything
+        // if not, add them to the database
         database = FirebaseFirestore.getInstance();
 
         DocumentReference organizerRef = database.collection("Organizers").document(id);

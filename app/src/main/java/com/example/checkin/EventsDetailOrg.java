@@ -84,9 +84,9 @@ public class EventsDetailOrg extends Fragment {
                         myevent = (Event) bundle.getSerializable("event");
                     }
 
-                    String time = myevent.getEventTime();
-                    String date = myevent.getEventDate();
-                    String location = myevent.getLocation();
+                    String time = "Time: " + myevent.getEventTime();
+                    String date = "Date: "+ myevent.getEventDate();
+                    String location = "Location: " +myevent.getLocation();
 
                     eventnametxt.setText(myevent.getEventname());
                     eventdetails.setText(myevent.getEventDetails());

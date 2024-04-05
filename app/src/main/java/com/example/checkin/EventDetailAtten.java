@@ -265,6 +265,7 @@ public class EventDetailAtten extends Fragment {
                         } else {
                             myevent.userSubs(a);
                             a.EventSub(myevent);
+                            //fireBase.updateAttendee(a);
                         }
                     } else {
                         Log.d("Firebase", "No such document");

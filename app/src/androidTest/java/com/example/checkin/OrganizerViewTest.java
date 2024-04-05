@@ -455,7 +455,7 @@ public class OrganizerViewTest {
         idlingResource.reset();
         IdlingRegistry.getInstance().unregister(idlingResource);
 
-        // click on name for event previosuly added
+        // click on name for event previously added
         onView(withText("Soccer Game")).perform(click());
 
         // check if it shows attendees list fragment
@@ -507,7 +507,7 @@ public class OrganizerViewTest {
 
         // check if it shows attendees list fragment
         onView(withId(R.id.attendeeslisted_frag)).check(matches(isDisplayed()));
-        // click on checked in attendees button 
+        // click on checked in attendees button
         onView(withId(R.id.checkedinbtn)).perform(click());
         // check to see checked in list of attendees
         onView(withId(R.id.checkinlist_frag)).check(matches(isDisplayed()));

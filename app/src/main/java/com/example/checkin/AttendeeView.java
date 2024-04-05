@@ -86,6 +86,7 @@ public class AttendeeView extends AppCompatActivity {
                 }
                 else if (item.getItemId() == R.id.qrcodes2){
                     startQRScan();
+
                     return true;
                 }
                 else if (item.getItemId() == R.id.messages2){
@@ -117,6 +118,8 @@ public class AttendeeView extends AppCompatActivity {
     IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar2);
+        bottomNavigationView.setSelectedItemId(R.id.home2);
     // if the intentResult is null then
     // toast a message as "cancelled"
         if (intentResult != null) {
@@ -128,8 +131,8 @@ public class AttendeeView extends AppCompatActivity {
             String qrCodeContent = intentResult.getContents();
             System.out.println("content"+ qrCodeContent);
             getEventDetailsFromFirebase(qrCodeContent, android_id);
-            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar2);
-            bottomNavigationView.setSelectedItemId(R.id.home2);
+            BottomNavigationView bottomNavigationView2 = findViewById(R.id.bottomnavbar2);
+            bottomNavigationView2.setSelectedItemId(R.id.home2);
 
 
             // check in attendee using firebase- use event id and attendee id to get

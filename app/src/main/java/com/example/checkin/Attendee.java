@@ -1,6 +1,7 @@
 
 package com.example.checkin;
 
+import android.location.Location;
 import android.media.Image;
 
 import java.io.Serializable;
@@ -27,6 +28,8 @@ import java.util.UUID;
 public class Attendee implements User, Serializable {
     //TODO:
     //      - current geolocation
+    private double lat;
+    private double lon;
 
     private String userId;     //the user's ID
     private String profilePicture;              //user's profile picture as an encoded 64bit string
@@ -273,5 +276,21 @@ public class Attendee implements User, Serializable {
 
     public void setSubList(Map<String, String> subList) {
         SubList = subList;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 }

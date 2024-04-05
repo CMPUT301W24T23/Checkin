@@ -2,6 +2,7 @@ package com.example.checkin;
 
 import static android.content.ContentValues.TAG;
 
+import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -70,8 +71,11 @@ public class Database {
         Log.d("Firebase Upload", "Attendee: " + a.getPhoneNumber());
         data.put("Tracking", a.trackingEnabled());
         Log.d("Firebase Upload", "Attendee: " + a.trackingEnabled());
-
         data.put("ProfilePic", a.getProfilePicture());
+
+        data.put("Latitude", a.getLat());
+        data.put("Longitude", a.getLon());
+
         //DocumentReference picRef = attendeeRef.document("ProfilePic");
         //Upload check in counts
         Map<String, Long> checkins = a.getCheckIns();
@@ -81,6 +85,7 @@ public class Database {
         data.put("Signups", signups);
 
         attendeeRef.document(a.getUserId()).set(data);
+        
 
         Log.d("New Attendee", String.format("Added Attendee to Firebase, ID: %s", a.getUserId()));
     }
@@ -220,6 +225,13 @@ public class Database {
         Log.d("Firebase Retrieve", "DocumentSnapshot data: " + doc.getString("Email") + ": " + a.getEmail());
 
         a.setProfilePicture(doc.getString("ProfilePic"));
+
+        a.setLon(doc.getDouble("Longitude"));
+        a.setLat(doc.getDouble("Latitude"));
+        Log.d("Firebase Retrieve", String.format("Get Location, LAT: %f, LON: %f", a.getLat(), a.getLon()));
+
+        //data.put("Latitude", a.getLat());
+        //data.put("Longitude", a.getLon());
 
         //set the tracking status of the attendee
         //the empty constructor has tracking as true by default

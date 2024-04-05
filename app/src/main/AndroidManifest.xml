@@ -39,6 +39,11 @@
             android:exported="false"/>
 
         <activity
+            android:name=".AdministratorMainView"
+            android:exported="false">
+        </activity>
+
+        <activity
             android:name=".AttendeeView"
             android:exported="false" />
 

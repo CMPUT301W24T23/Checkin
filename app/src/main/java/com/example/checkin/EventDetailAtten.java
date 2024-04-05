@@ -261,11 +261,12 @@ public class EventDetailAtten extends Fragment {
                         if (CheckIn) {
                             myevent.addToCheckIn(a);
                             //a.CheckIn(myevent);
-                            fireBase.updateAttendee(a);
+
                         } else {
                             myevent.userSubs(a);
                             a.EventSub(myevent);
                         }
+                        fireBase.updateAttendee(a);
                     } else {
                         Log.d("Firebase", "No such document");
                     }
@@ -275,6 +276,8 @@ public class EventDetailAtten extends Fragment {
             }
         });
     }
+
+
 
     private void fetchAttendeeFromFirestore(String attendeeid, boolean CheckIn) {
         Database d = new Database();

@@ -124,6 +124,9 @@ public class AttendeeFragment1 extends Fragment {
                 EventDetailAtten event_frag1= new EventDetailAtten();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
+
+                // Passing the frame layout so that the fragment will inflate the events details on this particular view later on.
+                args.putSerializable("frameLayout", R.id.atten_view);
                 event_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.atten_view, event_frag1).addToBackStack(null).commit();

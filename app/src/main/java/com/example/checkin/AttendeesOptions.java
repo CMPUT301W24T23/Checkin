@@ -20,6 +20,7 @@ public class AttendeesOptions extends Fragment {
     Event myevent;
     Button backbutton;
     Button signedinlistbtn;
+    int frameLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,8 +33,12 @@ public class AttendeesOptions extends Fragment {
 
         // get event object from previous fragment
         Bundle bundle = this.getArguments();
+
         if (bundle != null){
             myevent = (Event) bundle.getSerializable("event");
+
+            // Frame layout on which to display the other sub informational fragment.
+            frameLayout = (int) bundle.getSerializable("frameLayout");
         }
         // checked in list button, switches to fragment that displays, attendees checked into the event
         checkedinlistbtn.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +49,7 @@ public class AttendeesOptions extends Fragment {
                 args.putSerializable("event", myevent);
                 check_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, check_frag).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, check_frag).addToBackStack(null).commit();
 
             }
         });
@@ -57,7 +62,7 @@ public class AttendeesOptions extends Fragment {
                 args.putSerializable("event", myevent);
                 sign_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, sign_frag).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, sign_frag).addToBackStack(null).commit();
 
 
             }

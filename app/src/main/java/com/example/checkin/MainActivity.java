@@ -43,7 +43,17 @@ public class MainActivity extends AppCompatActivity {
 
     Button organizerbutton;
     Button attendeebutton;
+    Button adminButton;
+
+    static String AttendId;         //User's Attendee ID
+    static String OrgId;            //User's Organizer ID
+
+    //boolean attendExists = false;                 //User exists as Attendee in the database
+    //boolean organizerExists;                 //User exists as Attendee in the database
     boolean exists = false;
+
+    private FirebaseFirestore database;
+
 
 
 
@@ -55,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         organizerbutton = findViewById(R.id.organizerbtn);
         attendeebutton = findViewById(R.id.attendeebtn);
 
+        adminButton = findViewById(R.id.adminbtn);
+
+        //String android_id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
 
@@ -62,87 +75,93 @@ public class MainActivity extends AppCompatActivity {
 
         Database db = new Database();
 
-
-
-        //if (android_id.equals(id3)){
-        //create attendee profile
-        // Attendee a = new Attendee();
-        //  a.setUserId(id3);
-        //   db.updateAttendee(a);
-
-        //create organizer profile
-        // Organizer o = new Organizer();
-        //   o.setUserId(id3);
-        //  db.updateOrganizer(o);
-
-        // }
-
-
-
-
-
-
-
         String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        System.out.println("ID" + id);
 
 
 
-        if(!(android_id == "")){
+       // if(!(android_id == "")){
             //if ID is stored locally, then user exists already
-            Log.d("Attendee Exists", String.format("Attendee Exists, ID: %s ", android_id));
-            exists = true;
+          //  Log.d("Attendee Exists", String.format("Attendee Exists, ID: %s ", android_id));
+          //  exists = true;
 
-        }
+       // }
 
-        String id2 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        //String id2 = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
 
 
-        System.out.println(android_id);
+       // System.out.println(android_id);
 
-        if (!(exists)){
+       // if (!(exists)){
             //if the uid is not saved then create their attendee and organizer profiles
             //String id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-            Log.d("Not in Database", String.format("Generating Organizer and Attendee, ID: %s ", android_id));
+           // Log.d("Not in Database", String.format("Generating Organizer and Attendee, ID: %s ", android_id));
             //create attendee profile
-            Attendee a = new Attendee();
-            a.setUserId(id);
-            db.updateAttendee(a);
+            //Attendee a = new Attendee();
+           // a.setUserId(id);
+           // db.updateAttendee(a);
 
             //create organizer profile
-            Organizer o = new Organizer();
-            o.setUserId(id);
-            db.updateOrganizer(o);
+           // Organizer o = new Organizer();
+           // o.setUserId(id);
+          //  db.updateOrganizer(o);
 
 
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("ID", id);
-            editor.apply();
-        }
+          //  SharedPreferences.Editor editor = preferences.edit();
+          //  editor.putString("ID", id);
+           // editor.apply();
+       // }
 
 
+        // check if device id, exists in organizer or attendee database collections
+        // if yes, do not do anything
+        // if not, add them to the database
+        database = FirebaseFirestore.getInstance();
 
-        FirebaseMessaging.getInstance().subscribeToTopic("event").addOnSuccessListener(new OnSuccessListener<Void>() {
+        DocumentReference organizerRef = database.collection("Organizers").document(id);
+        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(Void unused) {
-                Log.d("Subscribe", "subscribe to event");
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Organizer object using Database class method
+                        Log.d("document", "Exists");
+                        // Proceed with setting up the UI using the retrieved organizer object
+                    } else {
+                        Organizer o = new Organizer();
+                        o.setUserId(id);
+                        db.updateOrganizer(o);
+
+                    }
+                } else {
+                    Log.d("error", "get failed with ", task.getException());
+                }
             }
         });
 
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("message", "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
 
-                        // Get new FCM registration token
-                        String token = task.getResult();
-                        Log.d("message", token);
-                        System.out.println(token);
+        DocumentReference AttendeeRef = database.collection("Attendees").document(id);
+        AttendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Convert the document snapshot to an Organizer object using Database class method
+                        Log.d("document", "Exists");
+                        // Proceed with setting up the UI using the retrieved organizer object
+                    } else {
+                        Attendee a = new Attendee();
+                        a.setUserId(id);
+                        db.updateAttendee(a);
+
                     }
-                });
+                } else {
+                    Log.d("error", "get failed with ", task.getException());
+                }
+            }
+        });
 
 
 
@@ -200,6 +219,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), OrganizerView.class);
+                startActivity(intent);
+            }
+        });
+
+        // Move to administrator screen when administrator button is clicked.
+        adminButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MainActivity.this, AdministratorMainView.class);
                 startActivity(intent);
             }
         });

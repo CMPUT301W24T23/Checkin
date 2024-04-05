@@ -41,8 +41,6 @@ public class AttendeeSignUpEvents extends Fragment {
     String eventId;
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

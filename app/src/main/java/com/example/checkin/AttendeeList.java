@@ -15,6 +15,13 @@ public class AttendeeList implements Serializable {
     //see # of checked-in users when passed an event
     private ArrayList<Attendee> Attendees = new ArrayList<Attendee>();
 
+    /**
+     * Clears the list of attendees.
+     */
+    public void clear() {
+        Attendees.clear();
+    }
+
     public AttendeeList(){}
 
     /**

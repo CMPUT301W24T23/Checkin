@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -62,6 +63,37 @@ public class EventsDetailOrg extends Fragment {
                 public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                          Bundle savedInstanceState) {
 
+//<<<<<<< HEAD
+
+//
+//        if (myevent.getPoster().equals("")){
+//            //no poster for this event
+//            //posterbutton.setError(String.format("%s has no poster.", myevent.getEventname()));
+//            posterbutton.setText("No Poster Available");
+//        }
+//
+//
+//
+//        // move back to pevious fragment when clicked
+//        backbutton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getActivity().getSupportFragmentManager().popBackStack();
+//            }
+//        });
+//
+//        // move to fragment where qr code is displayed
+//        qrcodebutton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ShareCode code_frag = new ShareCode();
+//                Bundle args = new Bundle();
+//                args.putSerializable("event", myevent);
+//                code_frag.setArguments(args);
+//                getParentFragmentManager().setFragmentResult("event",args);
+//
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, code_frag).addToBackStack(null).commit();
+//=======
                     View view = inflater.inflate(R.layout.fragment_events_detail_org, container, false);
                     // Inflate the layout for this fragment
                     attendeelistbutton = (Button) view.findViewById(R.id.attendeeslistbtn);
@@ -102,6 +134,7 @@ public class EventsDetailOrg extends Fragment {
                         posterbutton.setText("No Poster Available");
                     }
                     editPoster.setOnClickListener(v -> mGetContent.launch("image/*"));
+//>>>>>>> main
 
 
                     savebutton.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +154,14 @@ public class EventsDetailOrg extends Fragment {
                             myevent.setEventname(eventName);
                             myevent.setAttendeeCap(AttendeeCapStr);
 
+//<<<<<<< HEAD
+//                Bundle args = new Bundle();
+//                args.putSerializable("event", myevent);
+//                args.putSerializable("frameLayout", frameLayout);
+//                list_frag.setArguments(args);
+//                getParentFragmentManager().setFragmentResult("event",args);
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, list_frag).addToBackStack(null).commit();
+//=======
                             Database db = new Database();
                             db.updateEvent(myevent);
                             Toast.makeText(getContext(), "Details Saved!", Toast.LENGTH_LONG).show();
@@ -132,11 +173,14 @@ public class EventsDetailOrg extends Fragment {
                         public void onClick(View view) {
                             PromotionQrShare sharefrag = new PromotionQrShare();
                             Bundle args = new Bundle();
+                            // Frame layout on which to display the other sub informational fragment.
+                            int frameLayout = (int) bundle.getSerializable("frameLayout");
+                            args.putSerializable("frameLayout", frameLayout);
                             args.putSerializable("event", myevent);
                             sharefrag.setArguments(args);
                             getParentFragmentManager().setFragmentResult("event", args);
 
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, sharefrag).addToBackStack(null).commit();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, sharefrag).addToBackStack(null).commit();
 
                         }
                     });
@@ -157,10 +201,13 @@ public class EventsDetailOrg extends Fragment {
                             ShareCode code_frag = new ShareCode();
                             Bundle args = new Bundle();
                             args.putSerializable("event", myevent);
+                            // Frame layout on which to display the other sub informational fragment.
+                            int frameLayout = (int) bundle.getSerializable("frameLayout");
+                            args.putSerializable("frameLayout", frameLayout);
                             code_frag.setArguments(args);
                             getParentFragmentManager().setFragmentResult("event", args);
 
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, code_frag).addToBackStack(null).commit();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, code_frag).addToBackStack(null).commit();
 
 
                         }
@@ -175,9 +222,12 @@ public class EventsDetailOrg extends Fragment {
 
                             Bundle args = new Bundle();
                             args.putSerializable("event", myevent);
+                            // Frame layout on which to display the other sub informational fragment.
+                            int frameLayout = (int) bundle.getSerializable("frameLayout");
+                            args.putSerializable("frameLayout", frameLayout);
                             list_frag.setArguments(args);
                             getParentFragmentManager().setFragmentResult("event", args);
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, list_frag).addToBackStack(null).commit();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, list_frag).addToBackStack(null).commit();
 
                         }
                     });
@@ -198,9 +248,12 @@ public class EventsDetailOrg extends Fragment {
                             UserImage poster = new UserImage();
                             poster.setImageB64(myevent.getPoster());
                             poster.setID(myevent.getEventId());
+                            // Frame layout on which to display the other sub informational fragment.
+                            int frameLayout = (int) bundle.getSerializable("frameLayout");
 
                             Bundle args = new Bundle();
                             args.putSerializable("Poster", poster);
+
 
                             posterShareFrag.setArguments(args);
                             //ShareCode code_frag = new ShareCode();
@@ -209,7 +262,7 @@ public class EventsDetailOrg extends Fragment {
                             //code_frag.setArguments(args);
                             getParentFragmentManager().setFragmentResult("Poster", args);
 
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, posterShareFrag).addToBackStack(null).commit();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, posterShareFrag).addToBackStack(null).commit();
 
 
                             //getActivity().getSupportFragmentManager().popBackStack();
@@ -218,8 +271,45 @@ public class EventsDetailOrg extends Fragment {
 
 
                     return view;
-
-
+////>>>>>>> main
+////
+////
                 }
-
+////
+////<<<<<<< HEAD
+//                //Create fragment
+//                EventPosterFrag posterShareFrag = new EventPosterFrag();
+//
+//                UserImage poster = new UserImage();
+//                poster.setImageB64(myevent.getPoster());
+//                poster.setID(myevent.getEventId());
+//
+//                Bundle args = new Bundle();
+//                args.putSerializable("Poster", poster);
+//
+//                posterShareFrag.setArguments(args);
+//                //ShareCode code_frag = new ShareCode();
+//                //Bundle args = new Bundle();
+//                //args.putSerializable("event", myevent);
+//                //code_frag.setArguments(args);
+//                getParentFragmentManager().setFragmentResult("Poster",args);
+//
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, posterShareFrag).addToBackStack(null).commit();
+//
+//
+//
+//                //getActivity().getSupportFragmentManager().popBackStack();
+//            }
+//        });
+//
+//        eventnametxt.setText(myevent.getEventname());
+//        eventdetails.setText(myevent.getEventDetails());
+//
+//        return view;
+//
+//
+//    }
+//}
+//=======
 }
+//>>>>>>> main

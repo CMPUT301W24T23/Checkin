@@ -43,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
 
     Button organizerbutton;
     Button attendeebutton;
+    Button adminButton;
+
+    static String AttendId;         //User's Attendee ID
+    static String OrgId;            //User's Organizer ID
+
+    //boolean attendExists = false;                 //User exists as Attendee in the database
+    //boolean organizerExists;                 //User exists as Attendee in the database
     boolean exists = false;
 
     private FirebaseFirestore database;
@@ -58,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         organizerbutton = findViewById(R.id.organizerbtn);
         attendeebutton = findViewById(R.id.attendeebtn);
 
+        adminButton = findViewById(R.id.adminbtn);
+
+        //String android_id = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
 
@@ -209,6 +219,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), OrganizerView.class);
+                startActivity(intent);
+            }
+        });
+
+        // Move to administrator screen when administrator button is clicked.
+        adminButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MainActivity.this, AdministratorMainView.class);
                 startActivity(intent);
             }
         });

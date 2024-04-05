@@ -61,14 +61,8 @@ public class AttendeeFragment1 extends Fragment {
 
         allevents = new EventList();
         datalist = new ArrayList<>();
-        // Add mock attendee and event for testing purposes
+
         ArrayList<Attendee> attendees1 = new ArrayList<>();
-        attendees1.add(new Attendee("Amy"));
-        Event event1 = new Event("Show", "Starts at 7", attendees1);
-        allevents.addEvent(event1);
-        datalist.add(event1);
-
-
 
         db = FirebaseFirestore.getInstance();
         Database database = new Database();

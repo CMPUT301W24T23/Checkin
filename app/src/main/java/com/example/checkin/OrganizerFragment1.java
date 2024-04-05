@@ -61,7 +61,7 @@ public class OrganizerFragment1 extends Fragment {
         p = view.findViewById(R.id.progress);
         maincontent = view.findViewById(R.id.maincontent);
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
-        //bottomNavigationView.setVisibility(View.GONE);
+        bottomNavigationView.setVisibility(View.GONE);
 
         SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getContext());
         int attendeeCount = preferences2.getInt("attendeeCount", 0);
@@ -76,20 +76,7 @@ public class OrganizerFragment1 extends Fragment {
         allevents = new EventList();
         ArrayList<Attendee> attendees1 = new ArrayList<>();
 
-        /*
-        // Add attendees and check them in/ sign up to test functionality
-        Attendee attendee1 = new Attendee("Amy");
-        Attendee attendee2 = new Attendee("John");
-        attendees1.add(attendee1);
-        Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
-        attendee1.CheckIn(event1);
-        attendee2.CheckIn(event1);
-        event1.userCheckIn(attendee1);
-        event1.userCheckIn(attendee2);
-        event1.userSubs(attendee2);
-        allevents.addEvent(event1);
 
-         */
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());

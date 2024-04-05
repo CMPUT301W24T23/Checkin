@@ -67,11 +67,7 @@ public class ChooseEvent extends Fragment {
         bottomNavigationView.setVisibility(View.GONE);
 
         // Add attendees and check them in/ sign up to test functionality
-        Attendee attendee1 = new Attendee("Amy");
-        Attendee attendee2 = new Attendee("John");
-        attendees1.add(attendee1);
-        Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
-        allevents.addEvent(event1);
+
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());

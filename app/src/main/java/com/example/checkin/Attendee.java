@@ -170,7 +170,7 @@ public class Attendee implements User, Serializable {
         if (SubList == null) {
             SubList = new Hashtable<>(); // Initialize SubList if it's null
         }
-        event.userSubs(this);
+        //event.userSubs(this);
         SubList.put(String.valueOf(event.getEventId()), "");
     }
 

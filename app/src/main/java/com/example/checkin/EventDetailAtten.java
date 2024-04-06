@@ -266,7 +266,7 @@ public class EventDetailAtten extends Fragment {
 
                         } else {
                             myevent.userSubs(a);
-                            a.EventSub(myevent);
+                            //a.EventSub(myevent);
                         }
                         fireBase.updateAttendee(a);
                     } else {

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,8 +65,7 @@ public class Announcements extends Fragment {
 
         // retrieve attendee from firebase and get the checkinlist for each attendee
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
+        String android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         DocumentReference attendeeRef = db.collection("Attendees").document(android_id);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

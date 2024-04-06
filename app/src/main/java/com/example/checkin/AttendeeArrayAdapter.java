@@ -3,7 +3,7 @@
 // (attendee_name) to the name of the attendee at the corresponding position in the list.
 package com.example.checkin;
 
-
+// This class represents an adapter that stores attendees
 
 import android.content.Context;
 import android.view.LayoutInflater;

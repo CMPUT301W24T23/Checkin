@@ -124,8 +124,13 @@ public class CheckedInListOrg extends Fragment {
     }
 
 
+    /**
+     * Retreives attendee from firebase
+     * @param attendeeId
+     * @param attendees
+     * @param eventId
+     */
     private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees, String eventId) {
-
 
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

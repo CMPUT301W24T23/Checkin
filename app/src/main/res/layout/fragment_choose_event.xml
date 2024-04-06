@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OrganizerFragment1"
-    android:id="@+id/org_frag1">
+    android:id="@+id/chooseeventfrag">
 
 
     <ProgressBar

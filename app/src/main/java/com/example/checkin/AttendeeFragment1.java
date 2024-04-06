@@ -36,7 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-// Home page for Attendee Perspective
+// Fragment that displays all events retrieved from firebase
 public class AttendeeFragment1 extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
@@ -61,13 +61,6 @@ public class AttendeeFragment1 extends Fragment {
 
         allevents = new EventList();
         datalist = new ArrayList<>();
-        // Add mock attendee and event for testing purposes
-        ArrayList<Attendee> attendees1 = new ArrayList<>();
-        attendees1.add(new Attendee("Amy"));
-        Event event1 = new Event("Show", "Starts at 7", attendees1);
-        allevents.addEvent(event1);
-        datalist.add(event1);
-
 
 
         db = FirebaseFirestore.getInstance();
@@ -77,10 +70,8 @@ public class AttendeeFragment1 extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-        // Query events collection based on organizer ID
 
         // Query all events from firebase
-
         db.collection("Events")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -111,7 +102,7 @@ public class AttendeeFragment1 extends Fragment {
             }
         });
 
-        // if eventlist is not null set EventAdapter to custom EventArrayAdapter
+        // if eventlist is not null set EventAdapter to EventArrayAdapter
         if (allevents!= null) {
             EventAdapter = new EventArrayAdapter(getActivity(), allevents.getEvents());
             eventslist.setAdapter(EventAdapter);

@@ -54,6 +54,7 @@ public class AttendeesOptions extends Fragment {
             }
         });
 
+        // moves to fragment that shows signed up attendees for an event
         signedinlistbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,6 +68,7 @@ public class AttendeesOptions extends Fragment {
 
             }
         });
+        // moves back to previous fragment
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

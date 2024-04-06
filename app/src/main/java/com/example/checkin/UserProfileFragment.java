@@ -215,6 +215,17 @@ public class UserProfileFragment extends Fragment {
             return;
         }
 
+
+        // Updating/Saving the new/changed user information of the current Attendee.
+        currentUser.setName(name);
+        currentUser.setEmail(email);
+        currentUser.setHomepage(homepage);
+        currentUser.setPhoneNumber(phone);
+        if(!(currentUser.trackingEnabled() == locationPermission)) {
+            currentUser.toggleTracking();
+        }
+
+
         String imageBase64 = currentUser.getProfilePicture();
 
         if (imageUri != null && newImage) {
@@ -230,14 +241,26 @@ public class UserProfileFragment extends Fragment {
                 //encode and save to user
                 imageBase64 = imgEncode.BitmapToBase64(bitmap);
                 currentUser.setProfilePicture(imageBase64);
+                currentUser.setHasDefaultAvi(false);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (currentUser.isHasDefaultAvi()){
+            Bitmap bitmap = generateImageWithInitials(name);
+            myImageView.setImageBitmap(bitmap);
+            imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
+            newImage = false;
+            Button editPictureButton = getView().findViewById(R.id.editPictureButton);
+            editPictureButton.setVisibility(View.VISIBLE);
+            //save to cyurrent user
+            imageBase64 = imgEncode.BitmapToBase64(bitmap);
+            currentUser.setProfilePicture(imageBase64);
+
         } else if (!(currentUser.getProfilePicture().isEmpty())){
             //if no new image is uploaded and an image is saved locally
             imageBase64 = currentUser.getProfilePicture();
-        } else{
+        } else {
             //otherwise generate a new image
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
             Bitmap bitmap = generateImageWithInitials(name);
@@ -261,14 +284,7 @@ public class UserProfileFragment extends Fragment {
 
         }
 
-        // Updating/Saving the new/changed user information of the current Attendee.
-        currentUser.setName(name);
-        currentUser.setEmail(email);
-        currentUser.setHomepage(homepage);
-        currentUser.setPhoneNumber(phone);
-        if(!(currentUser.trackingEnabled() == locationPermission)){
-            currentUser.toggleTracking();
-        }
+
         currentUser.setProfilePicture(imageBase64);
         removePictureButton.setVisibility(View.VISIBLE);
 
@@ -343,6 +359,9 @@ public class UserProfileFragment extends Fragment {
         }
         Log.d("BitmapContent", "Bitmap content:\n" + bitmapContent.toString());
         Log.d("BitmapSize", "Bitmap width: " + bitmap.getWidth() + ", height: " + bitmap.getHeight());
+
+        //user has default picture
+        currentUser.setHasDefaultAvi(true);
 
         // Log the visibility of the ImageView
 //        Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());

@@ -70,7 +70,6 @@ import org.mockito.junit.MockitoRule;
 
 public class AttendeeViewTest {
 
-    private View decorView;
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA);
@@ -80,14 +79,13 @@ public class AttendeeViewTest {
 
 
     @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
-    @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
 
 
 
     private ViewIdlingResource idlingResource = new ViewIdlingResource(R.id.progress);
+
     // test whether view switches to attendee view of app
     @Test
     public void testchangeattendee(){
@@ -96,8 +94,7 @@ public class AttendeeViewTest {
         idlingResource.increment();
         onView(withId(R.id.attendeebtn)).perform(click());
 
-        // Wait for the progress bar to be displayed
-        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
+
         // Check if the attendee view is displayed
 
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));

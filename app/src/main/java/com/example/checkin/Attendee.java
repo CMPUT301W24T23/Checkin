@@ -37,6 +37,8 @@ public class Attendee implements User, Serializable {
 
     private Map<String, Long> CheckInHist = new Hashtable<>();
     private boolean geoTracking;
+    private boolean hasDefaultAvi = true;
+
     //Optional information the user can provide
     private String name;
     private String homepage;
@@ -283,5 +285,13 @@ public class Attendee implements User, Serializable {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    public boolean isHasDefaultAvi() {
+        return hasDefaultAvi;
+    }
+
+    public void setHasDefaultAvi(boolean hasDefaultAvi) {
+        this.hasDefaultAvi = hasDefaultAvi;
     }
 }

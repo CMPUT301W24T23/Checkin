@@ -73,8 +73,12 @@ public class Database {
         Log.d("Firebase Upload", "Attendee: " + a.trackingEnabled());
         data.put("ProfilePic", a.getProfilePicture());
 
+        //upload tracking data
         data.put("Latitude", a.getLat());
         data.put("Longitude", a.getLon());
+
+        //upload profile picture data
+        data.put("Tracking", a.isHasDefaultAvi());
 
         //DocumentReference picRef = attendeeRef.document("ProfilePic");
         //Upload check in counts
@@ -239,6 +243,8 @@ public class Database {
         if(!(track == a.trackingEnabled())){
             a.toggleTracking();
         }
+
+        a.setHasDefaultAvi(Boolean.TRUE.equals(doc.getBoolean("HasDefaultAvi")));
 
         //get checkins
         Map<String, Object> data = doc.getData();

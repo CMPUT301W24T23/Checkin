@@ -160,6 +160,7 @@ public class ChooseEvent extends Fragment {
                 AttendeesOptions attendeeoptions_frag = new AttendeesOptions();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
+                args.putSerializable("frameLayout", R.id.org_view);
                 attendeeoptions_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, attendeeoptions_frag).addToBackStack(null).commit();

@@ -12,12 +12,12 @@ import android.widget.Button;
 
 import org.checkerframework.checker.units.qual.A;
 
-
+// Fragment that provides attendee with options to browse all events
+// or signed up events
 public class AttendeeEventOptions extends Fragment {
 
     Button browsebutton;
     Button signupevents;
-
     Button backbutton;
 
 
@@ -30,6 +30,7 @@ public class AttendeeEventOptions extends Fragment {
         signupevents = view.findViewById(R.id.signedupeventsbtn);
         backbutton = view.findViewById(R.id.backbtn);
 
+        // move to signed up events fragment
         signupevents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,6 +40,7 @@ public class AttendeeEventOptions extends Fragment {
             }
         });
 
+        // move to events fragment
         browsebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,6 +50,7 @@ public class AttendeeEventOptions extends Fragment {
             }
         });
 
+        // move to previous activity
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,12 +58,6 @@ public class AttendeeEventOptions extends Fragment {
                 startActivity(intent);
             }
         });
-
-
-
-
-
-
 
         return view;
     }

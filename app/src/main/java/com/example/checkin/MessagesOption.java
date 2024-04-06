@@ -36,6 +36,7 @@ public class MessagesOption extends Fragment {
             myevent = (Event) bundle.getSerializable("event");
         }
 
+        // button to send notifcation to attendees for a certain event
         sendmessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,6 +49,7 @@ public class MessagesOption extends Fragment {
             }
         });
 
+        //button that allows organizers to view past milestones
         viewmilestonebtn.setOnClickListener(new View.OnClickListener() {
             DisplayMilestones milestones_frag = new DisplayMilestones();
             @Override
@@ -57,6 +59,7 @@ public class MessagesOption extends Fragment {
             }
         });
 
+        // goes back to previous fragment
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

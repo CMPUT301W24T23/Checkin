@@ -28,6 +28,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Map;
 
+// fragment that displays all events attendee has signed up for
 public class AttendeeSignUpEvents extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
@@ -62,6 +63,7 @@ public class AttendeeSignUpEvents extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
+        // retrieve signed up events for attendee
         db.collection("Attendees").document(android_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -84,8 +86,6 @@ public class AttendeeSignUpEvents extends Fragment {
                                     retrieveevent(eventId, android_id);
                                 }
 
-
-                                    // Query the Events collection using the event ID
                                 }
 
                             } else {
@@ -106,7 +106,6 @@ public class AttendeeSignUpEvents extends Fragment {
             }
         });
 
-        // if eventlist is not null set EventAdapter to custom EventArrayAdapter
 
 
         // When event is selected from list, move to fragment that show event details
@@ -125,6 +124,11 @@ public class AttendeeSignUpEvents extends Fragment {
         return view;
     }
 
+    /**
+     * Retrieves event from firebase
+     * @param eventId
+     * @param attendeeId
+     */
     public void retrieveevent(String eventId, String attendeeId) {
         Database database = new Database();
         db.collection("Events").document(eventId)

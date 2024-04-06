@@ -274,6 +274,12 @@ public class AttendeeView extends AppCompatActivity {
 
     }
 
+    /**
+     * Retreives attendee from firebase and checks them in
+     * @param attendeeid
+     * @param CheckIn
+     * @param myevent
+     */
     private void fetchAttendeeFromFirestore(String attendeeid, boolean CheckIn, Event myevent) {
 
         Database d = new Database();
@@ -311,6 +317,12 @@ public class AttendeeView extends AppCompatActivity {
         });
     }
 
+    /**
+     * Retrieves attendee from firebase
+     * @param id
+     * @param CheckIn
+     * @param myevent
+     */
     public void retrieveAttendee(String id, boolean CheckIn, Event myevent){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
@@ -342,6 +354,7 @@ public class AttendeeView extends AppCompatActivity {
             }
         });
     }
+    // opens announcements fragment when a notification is clicked on
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

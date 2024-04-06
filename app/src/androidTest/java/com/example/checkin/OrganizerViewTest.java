@@ -178,71 +178,13 @@ public class OrganizerViewTest {
 
     }
 
-
-    /*@Test
-    public void addeventTest(){
-
-        idlingResource.increment();
-        // click on organizer button
-        onView(withId(R.id.organizerbtn)).perform(click());
-
-        // Wait for the progress bar to be displayed
-        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
-        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
-
-        // wait for data to load
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        IdlingRegistry.getInstance().register(idlingResource);
-        idlingResource.decrement();
-        idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
-
-        // add event, and put in information
-        onView(withId(R.id.addeventbtn)).perform(click());
-        onView(withId(R.id.createfragment)).check(matches(isDisplayed()));
-        onView(ViewMatchers.withId(R.id.etEventName)).perform(ViewActions.clearText()).perform(ViewActions.typeText("Soccer Game"));
-        onView(ViewMatchers.withId(R.id.etEventDate)).perform(ViewActions.clearText()).perform(ViewActions.typeText("2024-06-08"));
-        onView(ViewMatchers.withId(R.id.etEventTime)).perform(ViewActions.clearText()).perform(ViewActions.typeText("9:00"));
-        onView(ViewMatchers.withId(R.id.etEventdetails)).perform(ViewActions.clearText()).perform(ViewActions.typeText("Come early."));
-        onView(ViewMatchers.withId(R.id.etlocation)).perform(ViewActions.clearText()).perform(ViewActions.typeText("University Gym."));
-        // close keyboard
-        Espresso.closeSoftKeyboard();
-        // click on generate qr code
-        onView(withId(R.id.btnGenerateQR)).perform(click());
-        //click on create event
-        onView(withId(R.id.createeventbtn)).perform(click());
-
-        // wait for data to load
-        idlingResource.increment();
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        IdlingRegistry.getInstance().register(idlingResource);
-        idlingResource.decrement();
-        idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
-        // check if fragment that lists events is displayed
-        onView(withId(R.id.org_frag1)).check(matches(isDisplayed()));
-
-    }*/
-
     @Test
     public void testNotitificationFragment() {
         idlingResource.increment();
         // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
 
-        // Wait for the progress bar to be displayed
-        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
+
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // wait for event data to load
@@ -281,8 +223,7 @@ public class OrganizerViewTest {
         // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
 
-        // Wait for the progress bar to be displayed
-        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
+
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // wait for event data to load
@@ -336,22 +277,17 @@ public class OrganizerViewTest {
         events.add(mockevent);
 
 
-        // Launch OrganizerViewActivity
+        // Launch OrganizerViewActivity to add mockevent
         ActivityScenario<OrganizerView> organizerActivityScenario = ActivityScenario.launch(OrganizerView.class);
 
         EventArrayAdapter arrayadapter = new EventArrayAdapter(InstrumentationRegistry.getInstrumentation().getTargetContext(), events);
         organizerActivityScenario.onActivity(activity -> {
 
-
-
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
             OrganizerFragment1 fragment = (OrganizerFragment1) fragmentManager.findFragmentByTag("organizer_fragment_tag");
-            // if (fragment != null && fragment.getView() != null) {
-
             fragment.addEvent(mockevent);
             ListView listView = fragment.getView().findViewById(R.id.events);
             listView.setAdapter(arrayadapter);
-            //}
         });
         idlingResource.increment();
 
@@ -378,7 +314,6 @@ public class OrganizerViewTest {
 
         addevent();
         // click on event that was added (called Event Name, previously added)
-        //onView(withText("Basketball Game")).perform(click());
 
         // check if it switches to event details page
         onView(withId(R.id.eventdet_org)).check(matches(isDisplayed()));
@@ -412,11 +347,26 @@ public class OrganizerViewTest {
 
     @Test
     public void testGeoLocationTracking() {
-        // click on the organizer button to navigate to the organizer view
+        idlingResource.increment();
+        // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
 
-        // check if the organizer view is displayed
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+        // wait for event data to load
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
+
+        // Click on the button to add an event poster
+        onView(withId(R.id.addeventbtn)).perform(click());
 
         // click on the CheckBox to enable GeoLocation tracking
         onView(withId(R.id.checkbox_geo_tracking)).perform(click());
@@ -451,8 +401,6 @@ public class OrganizerViewTest {
         // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
 
-        // Wait for the progress bar to be displayed
-        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // wait for event data to load

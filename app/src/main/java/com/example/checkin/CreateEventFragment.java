@@ -61,7 +61,7 @@ import java.util.Date;
 
 import java.io.IOException;
 import java.util.Locale;
-
+//represents a class that allows for new events to be created
 public class CreateEventFragment extends Fragment {
 
     private CheckBox checkBoxGeoTracking;
@@ -363,6 +363,12 @@ public class CreateEventFragment extends Fragment {
 
     }
 
+    /**
+     * generates new qr code for event
+     * @param myevent
+     * @param imageCode
+     * @return
+     */
     public String generateQRCode(Event myevent, ImageView imageCode) {
         String myText = myevent.getEventId();
 
@@ -393,6 +399,13 @@ public class CreateEventFragment extends Fragment {
         return myText;
     }
 
+    /**
+     * Generates new promotion qr code
+     * @param myevent
+     * @param imageCode
+     * @param organizer
+     * @return
+     */
     public String generatepromotionQRCode(Event myevent, ImageView imageCode, Organizer organizer) {
         String myText = myevent.getEventId();
         myText += "_" + organizer.getUserId();

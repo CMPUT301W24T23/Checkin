@@ -1,5 +1,5 @@
 package com.example.checkin;
-// shows list of milestones reached for events
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 
+// Fragment that displays milestones for an organizer
 public class DisplayMilestones extends Fragment {
 
     ListView milestones;
@@ -45,6 +46,7 @@ public class DisplayMilestones extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
 
 
+        // back button that moves to previous fragments
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,11 +54,7 @@ public class DisplayMilestones extends Fragment {
             }
         });
 
-        // Add example announcements
-        //announcelist.add("First Message");
-        //announcelist.add("Second Message");
 
-        // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
 
 
         // retrieve organizer's events from firebase
@@ -98,7 +96,6 @@ public class DisplayMilestones extends Fragment {
         });
 
         // if list of announcements is not null, then add messages to Announcements
-        // Represented as strings now, will create announcement objects in next part
         if (announcelist != null) {
             Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
             milestones.setAdapter(Announcements_Adapter);
@@ -147,9 +144,13 @@ public class DisplayMilestones extends Fragment {
                 });
     }
 
-
+    /**
+     * Checks if a given milesone exists
+     * @param message
+     * @param announcelist
+     * @return
+     */
     public boolean checkmilestoneexists(Message message, ArrayList<Message> announcelist){
-
         for (Message existingMessage : announcelist) {
             if (existingMessage.getTitle().equals(message.getTitle()) && existingMessage.getBody().equals(message.getBody())) {
                 return true;

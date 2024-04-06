@@ -37,15 +37,11 @@ public class EventDetailAtten extends Fragment {
     TextView eventnametxt;
     TextView eventdetails;
     Button backbutton;
-    Button eventmessagesbtn;
-
     Button checkinbutton;
     Button signupbutton;
     Button posterbutton;
     Attendee attendee;
-
     String eventid;
-
 
     private FirebaseFirestore db;
 
@@ -87,6 +83,7 @@ public class EventDetailAtten extends Fragment {
         System.out.println("checkincount first " + myevent.getCheckInList().getAttendees().size());
         String eventid = myevent.getEventId();
 
+        // --- Remove -----
         checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,6 +142,7 @@ public class EventDetailAtten extends Fragment {
 
         System.out.println("checkincount first " + myevent.getCheckInList().getAttendees().size());
 
+        // sign up button that signs up attendee for an event
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -244,8 +242,12 @@ public class EventDetailAtten extends Fragment {
     }
 
 
-
-
+    /**
+     * Retrieves attendee from firebase and checks them in
+     * @param id
+     * @param CheckIn
+     * @param event
+     */
     public void retrieveAttendee(String id, boolean CheckIn, Event event) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
@@ -278,7 +280,11 @@ public class EventDetailAtten extends Fragment {
     }
 
 
-
+    /**
+     * Retrieves attendee from firebase
+     * @param attendeeid
+     * @param CheckIn
+     */
     private void fetchAttendeeFromFirestore(String attendeeid, boolean CheckIn) {
         Database d = new Database();
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeid);

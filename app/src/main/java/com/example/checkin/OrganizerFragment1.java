@@ -240,7 +240,11 @@ public class OrganizerFragment1 extends Fragment {
         milestones.add(50);
         milestones.add(75);
         milestones.add(100);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        SharedPreferences sharedPreferences =null;
+        if (getContext() != null) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        }
+
 
         // Retrieve the set of reached milestones for this event
         Set<String> reachedMilestones = sharedPreferences.getStringSet("reachedMilestones_" + myevent.getEventId(), new HashSet<>());
@@ -268,11 +272,6 @@ public class OrganizerFragment1 extends Fragment {
 
     }
 
-    private void removeNotificationFlag(String eventId) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        String notificationKey = "milestone_" + eventId;
-        sharedPreferences.edit().remove(notificationKey).apply();
-    }
 
     private void sendMilestoneNotification(String title, String body, Event myevent, int attendeecount) {
         // Create an intent and call the MileStone class's method to send a notification

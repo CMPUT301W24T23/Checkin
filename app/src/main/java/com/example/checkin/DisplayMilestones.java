@@ -134,10 +134,12 @@ public class DisplayMilestones extends Fragment {
                         }
                     }
 
-                   // if (announcelist != null) {
-                     //  Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
-                     //   milestones.setAdapter(Announcements_Adapter);
-                   // }
+                    if (getActivity() != null) {
+                        if (announcelist != null) {
+                            Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
+                            milestones.setAdapter(Announcements_Adapter);
+                        }
+                    }
 
                 })
                 .addOnFailureListener(e -> {

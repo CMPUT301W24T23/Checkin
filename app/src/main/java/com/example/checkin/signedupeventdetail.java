@@ -82,7 +82,7 @@ public class signedupeventdetail extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
-        
+
 
 
         // move back to previous fragment when clicked

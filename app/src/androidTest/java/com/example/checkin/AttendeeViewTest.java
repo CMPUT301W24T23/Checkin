@@ -89,14 +89,11 @@ public class AttendeeViewTest {
     // test whether view switches to attendee view of app
     @Test
     public void testchangeattendee(){
-
-
+        // start idling resource
         idlingResource.increment();
         onView(withId(R.id.attendeebtn)).perform(click());
 
-
         // Check if the attendee view is displayed
-
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
         // pause for data loading to complete and be visible
@@ -112,6 +109,7 @@ public class AttendeeViewTest {
 
 
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
+        // unregister idling resource
         IdlingRegistry.getInstance().unregister(idlingResource);
         try {
             Thread.sleep(10000);
@@ -124,7 +122,6 @@ public class AttendeeViewTest {
     // test back button
     @Test
     public void testbackbutton(){
-
 
         idlingResource.increment();
 
@@ -158,6 +155,7 @@ public class AttendeeViewTest {
     }
 
 
+    // test event details when clicking on event
     @Test
     public void testeventinfo(){
 
@@ -196,9 +194,9 @@ public class AttendeeViewTest {
 
 
 
+    // test signing up for an event
     @Test
     public void testsignupbutton(){
-
 
         idlingResource.increment();
         // click on attendee button
@@ -236,9 +234,7 @@ public class AttendeeViewTest {
 
     }
 
-
-
-// Announcement Page Tests
+    // test announcements page fragment
     @Test
     public void testAnnouncementsList() {
 
@@ -260,7 +256,7 @@ public class AttendeeViewTest {
 
         onView(withId(R.id.messages2)).perform(click());
 
-        // Check if the announcements list is displayed
+        // Check if the announcements fragment  is displayed
         onView(withId(R.id.announce_frag)).check(matches(isDisplayed()));
     }
 

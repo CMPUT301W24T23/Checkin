@@ -93,6 +93,7 @@ public class AttendeeView extends AppCompatActivity {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.atten_view, ann_frg1)
+                            .addToBackStack(null)
                             .commit();
                     return true;
 

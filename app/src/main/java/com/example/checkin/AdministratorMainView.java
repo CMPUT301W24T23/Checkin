@@ -14,8 +14,6 @@ public class AdministratorMainView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_main_layout);
 
-        Button homebtn = findViewById(R.id.adminhomebtn);
-
         // Making a new instance of the administrator view.
         AdministratorView admin_menu = new AdministratorView();
 
@@ -25,14 +23,5 @@ public class AdministratorMainView extends AppCompatActivity {
                 .replace(R.id.adminFrame, admin_menu)
                 .commit();
 
-        // Setting the functionality of the home button.
-        homebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Jump back to the main screen.
-                Intent intent = new Intent(AdministratorMainView.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 }

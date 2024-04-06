@@ -100,12 +100,7 @@ public class AdministratorPosterImgList extends Fragment {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String imageString = document.getString("Image"); // Assuming the field name is "image"
-                        if (imageString == ""){
-                            noImgMap = BitmapFactory.decodeResource(getResources(), R.drawable.download);
-                            noImagePic = imageEncoder.BitmapToBase64(noImgMap);
-                            imageAdapter.add(noImgMap);
-                        }
-                        else if (imageString != null) {
+                        if (imageString != null) {
                             Bitmap bitmap = base64ToBitmap(imageString);
                             if (bitmap != null) {
                                 imageAdapter.add(bitmap);

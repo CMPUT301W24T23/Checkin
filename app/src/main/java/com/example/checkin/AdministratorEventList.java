@@ -81,13 +81,15 @@ public class AdministratorEventList extends Fragment {
                                 public View getView(int position, View convertView, ViewGroup parent) {
                                     View view = convertView;
                                     if (view == null) {
-                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                        // Sets the view to the content layout.
-                                        view = inflater.inflate(R.layout.content, null);
+
+                                        view = LayoutInflater.from(getContext()).inflate(R.layout.admin_list_layout, parent, false);
+//                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                                        // Sets the view to the content layout.
+//                                        view = inflater.inflate(R.layout.content, null);
                                     }
 
                                     // Setting the text of content layout to the name of the event.
-                                    TextView textView = view.findViewById(R.id.event_text);
+                                    TextView textView = view.findViewById(R.id.admin_text_view);
                                     textView.setText(allevents.getEvents().get(position).getEventname());
 
                                     return view;
@@ -117,8 +119,35 @@ public class AdministratorEventList extends Fragment {
             }
         });
 
+        // Long click to delete an event
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Event eventToDelete = allevents.getEvents().get(position);
+                // Confirm deletion with the organizer
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Delete Event")
+                        .setMessage("Are you sure you want to delete this event?")
+                        .setPositiveButton("Yes", (dialog, which) -> deleteEvent(eventToDelete))
+                        .setNegativeButton("No", null)
+                        .show();
+                return true;
+            }
+        });
+
         return view;
     }
+
+    // Deletes an event
+    private void deleteEvent(Event event) {
+        String eventId = event.getEventId();
+        allevents.removeEvent(event);
+        EventAdapter.notifyDataSetChanged(); // Refresh the list
+        db.collection("Events").document(eventId).delete()
+                .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted"))
+                .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
+    }
+
 
 //
 //    @Override

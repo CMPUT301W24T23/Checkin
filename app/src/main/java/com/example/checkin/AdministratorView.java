@@ -1,5 +1,6 @@
 package com.example.checkin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ public class AdministratorView extends Fragment {
         Button adminprofiles = view.findViewById(R.id.adminprofile);
         Button adminimages = view.findViewById(R.id.adminimages);
         Button adminposters = view.findViewById(R.id.adminposter);
+        Button homeButton = view.findViewById(R.id.adminhomebtn);
 
 
         adminimages.setOnClickListener(new View.OnClickListener() {
@@ -38,6 +40,16 @@ public class AdministratorView extends Fragment {
                         .addToBackStack(null)
                         .commit();
 
+            }
+        });
+
+        // Setting the functionality of the home button.
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Jump back to the main screen.
+                Intent intent = new Intent(requireActivity(), MainActivity.class);
+                startActivity(intent);
             }
         });
 

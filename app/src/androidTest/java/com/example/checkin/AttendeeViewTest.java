@@ -222,11 +222,8 @@ public class AttendeeViewTest {
         IdlingRegistry.getInstance().unregister(idlingResource);
 
 
-        // click on first event listed
-        onData(instanceOf(Event.class))
-                .inAdapterView(withId(R.id.events))
-                .atPosition(0)
-                .perform(click());
+        // click on event listed
+        onView(withText("Charity Event")).perform(click());
 
 
         // click on event, and sign up for event
@@ -261,11 +258,10 @@ public class AttendeeViewTest {
         idlingResource.reset();
         IdlingRegistry.getInstance().unregister(idlingResource);
 
-        // Wait for the progress bar to be displayed
-        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        onView(withId(R.id.messages2)).perform(click());
 
         // Check if the announcements list is displayed
-        onView(withId(R.id.announcements_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.announce_frag)).check(matches(isDisplayed()));
     }
 
 

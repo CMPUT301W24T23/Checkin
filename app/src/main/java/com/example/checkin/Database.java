@@ -146,9 +146,6 @@ public class Database {
         data.put("Location", e.getLocation());
         data.put("Attendee Cap", e.getAttendeeCap());
 
-
-
-
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
         for (Attendee a: e.getSubscribers().getAttendees()){
@@ -201,6 +198,16 @@ public class Database {
 
         Log.d("UpdatePoster", String.format("Upload Poster(%s)", eventID));
         profilePicRef.document(eventID).set(data);
+    }
+
+    public void uploadDeletedQR(String qrCodeID, String organizerID){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference DeletedQRRef = db.collection("DeletedQR");
+        Map<String, String> data = new HashMap<>();
+        data.put("Organizer", organizerID);
+
+        Log.d("UpdateDeletedQR", String.format("Upload Deleted QR Code(%s)", qrCodeID));
+        DeletedQRRef.document(qrCodeID).set(data);
     }
 
     //Functions for dealing with retrieving users ==================================================
@@ -351,6 +358,24 @@ public class Database {
         poster.setImageB64(doc.getString("Image"));
 
         return poster;
+    }
+
+    /**
+     * For retrieving a deleted QR code
+     * @param doc
+     * a document snapshot from the Deleted QR code collection
+     * @return
+     * returns a map containing the deleted QR code and the associated organizer ID
+     */
+    public Map<String, String> retrieveDeletedQR(DocumentSnapshot doc){
+        Map<String, String> data = new HashMap<>();
+        String org = doc.getString("Organizer");
+        String code = doc.getString("DeletedQR");
+        data.put("Organizer", org);
+        data.put("DeletedQR", code);
+
+        Log.d("Retrieve Deleted QR", String.format("Retrieve Deleted QR Code, Organizer: %s, Code, %s", org, code));
+        return data;
     }
 
     //template snapshot listener function content for retrieving an organizer

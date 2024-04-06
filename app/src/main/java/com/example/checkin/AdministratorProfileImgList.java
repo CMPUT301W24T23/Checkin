@@ -48,6 +48,7 @@ public class AdministratorProfileImgList extends Fragment {
     UserProfileFragment userProfileFragment = new UserProfileFragment();
     CollectionReference imagesCollectionRef;
     CollectionReference attendeeProfileCollectionRef;
+    String finalNewPic;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -136,57 +137,55 @@ public class AdministratorProfileImgList extends Fragment {
         imageAdapter.notifyDataSetChanged();
         attendeeProfileCollectionRef = db.collection("Attendees");
 
-//        attendeeProfileCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @SuppressLint("RestrictedApi")
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                        // Get the value of the "Name" subsection
-//                        String imageString = document.getString("ProfilePic"); // Assuming the field name is "image"
-//
-//                        assert imageString != null;
-//                        if (imageString.equals(profilePic2)){
-////                             Convert string to bitmap and add to the list
-////                            document.getReference().update("ProfilePic", "");
-//
-//                            String name = document.getString("Name");
-//                            if (name != null) {
-//                                // Generated a new default profile pic.
-//                                Bitmap newPic = userProfileFragment.generateImageWithInitials(name);
-//
-//
-//                                // Converted the bitmap to strong 64 (Compatible to firebase).
-//                                String finalNewPic = imageEncoder.BitmapToBase64(newPic);
-//                                Log.d(TAG, finalNewPic);
-//
-//                                //
-//                                document.getReference().update("ProfilePic", finalNewPic)
-//                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void unused) {
-//                                                Log.d(TAG, "Default Profile picture generated successfully");
-//                                                imageAdapter.add(newPic);
-//                                                imageAdapter.notifyDataSetChanged();
-//                                            }
-//                                        }).addOnFailureListener(new OnFailureListener() {
-//                                            @Override
-//                                            public void onFailure(@NonNull Exception e) {
-//                                                Log.e(TAG, "Error updating profile picture", e);
-//                                            }
-//                                        });
-//                            }
-//                            else {
-//                                Log.d(TAG, "Error generating default image (No Name).");
-//                            }
-//
-//                        }
-//                    }
-//                } else {
-//                    Log.d(TAG, "Error getting the profile pic: ", task.getException());
-//                }
-//            }
-//        });
+        attendeeProfileCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        // Get the value of the "Name" subsection
+                        String imageString = document.getString("ProfilePic"); // Assuming the field name is "image"
+
+                        assert imageString != null;
+                        if (imageString.equals(profilePic2)){
+//                             Convert string to bitmap and add to the list
+//                            document.getReference().update("ProfilePic", "");
+
+                            String name = document.getString("Name");
+                            if (name != null) {
+                                // Generated a new default profile pic.
+                                Bitmap newPic = userProfileFragment.generateImageWithInitials(name);
+
+                                // Converted the bitmap to strong 64 (Compatible to firebase).
+                                finalNewPic = imageEncoder.BitmapToBase64(newPic);
+
+                                //
+                                document.getReference().update("ProfilePic", finalNewPic)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Log.d(TAG, "Default Profile picture generated successfully");
+                                                imageAdapter.add(newPic);
+                                                imageAdapter.notifyDataSetChanged();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.e(TAG, "Error updating profile picture", e);
+                                            }
+                                        });
+                            }
+                            else {
+                                Log.d(TAG, "Error generating default image (No Name).");
+                            }
+
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "Error getting the profile pic: ", task.getException());
+                }
+            }
+        });
 
         // Removing the profile pic from the profilePic field in the firebase.
         imagesCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -198,7 +197,7 @@ public class AdministratorProfileImgList extends Fragment {
 
                         if (imageString.equals(profilePic2)) {
                             // Convert string to bitmap and add to the list
-                            document.getReference().update("Image", "");
+                            document.getReference().update("Image", finalNewPic);
                         }
                     }
                 }

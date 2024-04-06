@@ -7,8 +7,6 @@
     android:id="@+id/main_activity_page">
 
 
-
-
     <TextView
         android:id="@+id/checkin_text"
         android:layout_width="wrap_content"
@@ -28,6 +26,16 @@
         android:textColor="@color/pink"
         android:text="Welcome"
         android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/adminbtn"
+        android:layout_width="138dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="142dp"
+        android:layout_marginBottom="161dp"
+        android:text="Administrator" />
 
     <Button
         android:id="@+id/attendeebtn"

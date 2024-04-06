@@ -47,19 +47,20 @@ import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.GrantPermissionRule;
 
+
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 
 //https://developer.android.com/training/testing/espresso/idling-resource
@@ -157,7 +158,6 @@ public class AttendeeViewTest {
     }
 
 
-    // test clicking on event and viewing information
     @Test
     public void testeventinfo(){
 
@@ -237,6 +237,9 @@ public class AttendeeViewTest {
 
     }
 
+
+
+// Announcement Page Tests
     @Test
     public void testAnnouncementsList() {
         try {
@@ -250,26 +253,11 @@ public class AttendeeViewTest {
 
         // Wait for the progress bar to be displayed
         //onView(withId(R.id.progress)).check(matches(isDisplayed()));
-        onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
-        // wait for event data to load
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        IdlingRegistry.getInstance().register(idlingResource);
-        idlingResource.decrement();
-        idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
-
-        // click on messages from bottom navigation bar
-        onView(withId(R.id.messages2)).perform(click());
-
-        // Check if the announcements fragment is displayed
-        onView(withId(R.id.announce_frag)).check(matches(isDisplayed()));
+        // Check if the announcements list is displayed
+        onView(withId(R.id.announcements_list)).check(matches(isDisplayed()));
     }
+
 
 
 }

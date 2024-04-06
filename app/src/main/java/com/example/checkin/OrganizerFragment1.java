@@ -195,6 +195,7 @@ public class OrganizerFragment1 extends Fragment {
                 EventsDetailOrg eventd_frag1 = new EventsDetailOrg();
                 Bundle args = new Bundle();
                 args.putSerializable("event", allevents.getEvents().get(i));
+                args.putSerializable("frameLayout", R.id.org_view);
                 eventd_frag1.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event", args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, eventd_frag1).addToBackStack(null).commit();
@@ -223,16 +224,14 @@ public class OrganizerFragment1 extends Fragment {
     // Deletes an event
     private void deleteEvent(Event event) {
         String eventId = event.getEventId();
-        // Remove event from the organizer's list of created events
         organizer.removeEvent(eventId);
-        // Remove event from the UI list
         allevents.removeEvent(event);
-        EventAdapter.notifyDataSetChanged();
-        // Delete event from the database
+        EventAdapter.notifyDataSetChanged(); // Refresh the list
         db.collection("Events").document(eventId).delete()
                 .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
     }
+
 
     private void checkMilestone(int attendeeCount, Event myevent) {
         ArrayList<Integer> milestones = new ArrayList<>();

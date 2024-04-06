@@ -303,7 +303,7 @@ public class UserProfileFragment extends Fragment {
      * @param name The name to generate initials from.
      * @return The generated image bitmap.
      */
-    private Bitmap generateImageWithInitials(String name) {
+    public Bitmap generateImageWithInitials(String name) {
         // Generate an image with the initials of the name
         Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
         Log.d("BitmapSize", "Bitmap width: " + bitmap.getWidth() + ", height: " + bitmap.getHeight());

@@ -1,10 +1,14 @@
 package com.example.checkin;
 
+import static android.content.ContentValues.TAG;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -73,6 +77,9 @@ public class Database {
         Map<String, Long> checkins = a.getCheckIns();
         data.put("Checkins", checkins);
 
+        Map<String, String> signups = a.getSubList();
+        data.put("Signups", signups);
+
         attendeeRef.document(a.getUserId()).set(data);
 
         Log.d("New Attendee", String.format("Added Attendee to Firebase, ID: %s", a.getUserId()));
@@ -128,6 +135,8 @@ public class Database {
         data.put("Date", e.getEventDate());
         data.put("Time", e.getEventTime());
         data.put("Location", e.getLocation());
+        data.put("Attendee Cap", e.getAttendeeCap());
+
 
 
 
@@ -223,6 +232,11 @@ public class Database {
         Map<String, Object> data = doc.getData();
         Map<String, Long> CheckIns = (Map<String, Long>)data.get("Checkins");
         a.setCheckInHist(CheckIns);
+
+
+        Map<String, Object> data2 = doc.getData();
+        Map<String, String> signups = (Map<String, String>)data2.get("Signups");
+        a.setSubList(signups);
 
         return a;
     }
@@ -360,6 +374,7 @@ public class Database {
         e.setEventTime(doc.getString("Time"));
         e.setLocation(doc.getString("Location"));
         e.setUniquepromoqr(doc.getString("Promotion QR Code Id"));
+        e.setAttendeeCap(doc.getString("Attendee Cap"));
 
         //get checkins
         Map<String, Object> data2 = doc.getData();

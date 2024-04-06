@@ -10,6 +10,8 @@
 // https://www.youtube.com/watch?v=pHCZpw9JQHk&t=492s
 package com.example.checkin;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,8 +36,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,9 +56,11 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class CreateEventFragment extends Fragment {
 
@@ -78,8 +86,10 @@ public class CreateEventFragment extends Fragment {
     private EventList events;
     private Event event;
     boolean createqr;
-
     private EditText eventlocation;
+    private EditText attendeeCap;
+    private Switch switchVisible;
+
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -118,6 +128,22 @@ public class CreateEventFragment extends Fragment {
         uniqueqrcodeimage = view.findViewById(R.id.uniquecodeimage);
         btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
         eventlocation = view.findViewById(R.id.etlocation);
+
+        attendeeCap = view.findViewById(R.id.attendeeCap);
+        switchVisible = view.findViewById(R.id.switchSignUpLimit);
+
+        attendeeCap.setVisibility(View.GONE); // Initially hide the EditText
+
+        switchVisible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    attendeeCap.setVisibility(View.VISIBLE);
+                } else {
+                    attendeeCap.setVisibility(View.GONE);
+                }
+            }
+        });
 
         Database database = new Database();
         btnAddPoster.setOnClickListener(v -> mGetContent.launch("image/*"));
@@ -216,8 +242,21 @@ public class CreateEventFragment extends Fragment {
             String eventTimeStr = eventTime.getText().toString().trim();
             String eventDetailsStr = eventDetails.getText().toString().trim();
             String eventlocationStr = eventlocation.getText().toString().trim();
+            String attendeeCapStr = attendeeCap.getText().toString();
+
 
             boolean hasError = false;
+            //if the event cap switch is checked
+            if(switchVisible.isChecked()){
+                Log.d("Get String", String.format("%s", attendeeCap.getText().toString()));
+                if(attendeeCapStr.isEmpty()){
+                    attendeeCap.setError("Required");
+                    hasError = true;
+                }
+            } else{
+                //set high cap otherwise
+                attendeeCapStr = "999999999";
+            }
 
             if (eventName.isEmpty()) {
                 eventname.setError("Required");
@@ -244,7 +283,7 @@ public class CreateEventFragment extends Fragment {
             }
 
             if (!qrCodeOptionSelected) {
-                Toast.makeText(getContext(), "Mandatory Fields have no been entered. Please also select a QR code option.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Mandatory Fields have not been entered. Please also select a QR code option.", Toast.LENGTH_SHORT).show();
                 hasError = true;
             }
 
@@ -258,6 +297,7 @@ public class CreateEventFragment extends Fragment {
             event.setEventTime(eventTimeStr);
             event.setEventDetails(eventDetailsStr);
             event.setLocation(eventlocationStr);
+            event.setAttendeeCap(attendeeCapStr);
 
             String uniquecode = generatepromotionQRCode(event, uniqueqrcodeimage, organizer);
             event.setUniquepromoqr(uniquecode);
@@ -305,7 +345,22 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        eventTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog();
+            }
+        });
+
+        eventDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+
         return view;
+
     }
 
     public String generateQRCode(Event myevent, ImageView imageCode) {
@@ -361,4 +416,49 @@ public class CreateEventFragment extends Fragment {
         }
         return myText;
     }
+
+    private void showTimePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String amPm;
+                if (hourOfDay >= 12) {
+                    amPm = "PM";
+                    hourOfDay -= 12;
+                } else {
+                    amPm = "AM";
+                }
+                if (hourOfDay == 0) {
+                    hourOfDay = 12;
+                }
+                String time = String.format(Locale.getDefault(), "%02d:%02d %s", hourOfDay, minute, amPm);
+                eventTime.setText(time);
+            }
+        }, hour, minute, false);
+
+        timePickerDialog.show();
+    }
+
+    private void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                String date = String.format(Locale.getDefault(), "%d-%02d-%02d", year, month + 1, dayOfMonth);
+                eventDate.setText(date);
+            }
+        }, year, month, day);
+
+        datePickerDialog.show();
+    }
+
+
 }

@@ -46,6 +46,7 @@ public class Event implements Serializable {
     private String eventtime;
 
     private String location;
+    private String attendeeCap;
 
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
@@ -91,6 +92,7 @@ public class Event implements Serializable {
         this.CheckInList = new AttendeeList();
         this.poster = "";
         this.CheckInsId = new Hashtable<>();
+        this.attendeeCap = "";
     }
 
     /**
@@ -108,6 +110,7 @@ public class Event implements Serializable {
         this.Subscribers = new AttendeeList();
         this.CheckInList = new AttendeeList();
         this.poster = "";
+        this.attendeeCap = "";
     }
 
     //Subscription=============================================================
@@ -334,6 +337,14 @@ public class Event implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getAttendeeCap() {
+        return attendeeCap;
+    }
+
+    public void setAttendeeCap(String attendeeCap) {
+        this.attendeeCap = attendeeCap;
     }
 }
 

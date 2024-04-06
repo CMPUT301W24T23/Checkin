@@ -44,4 +44,11 @@
         android:layout_below="@id/adminimages"
         android:text="Event Poster Image" />
 
+
+    <Button
+        android:id="@+id/adminhomebtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home" />
+
 </RelativeLayout>

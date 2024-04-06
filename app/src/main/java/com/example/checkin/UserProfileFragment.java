@@ -185,6 +185,10 @@ public class UserProfileFragment extends Fragment {
             // If no picture is uploaded but a name is saved, generate an image with initials
             String name = nameEdit.getText().toString();
             Bitmap bitmap = generateImageWithInitials(name);
+
+            // Set ImageView visibility to VISIBLE
+            myImageView.setVisibility(View.VISIBLE);
+
             myImageView.setImageBitmap(bitmap);
             imageUri = null; // Set the imageUri to null
             newImage = false;
@@ -237,6 +241,10 @@ public class UserProfileFragment extends Fragment {
             //otherwise generate a new image
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
             Bitmap bitmap = generateImageWithInitials(name);
+
+            // Set ImageView visibility to VISIBLE
+            myImageView.setVisibility(View.VISIBLE);
+
             myImageView.setImageBitmap(bitmap);
             imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
             newImage = false;
@@ -287,6 +295,10 @@ public class UserProfileFragment extends Fragment {
         // Generate default image
         Log.d("UserProfileFragment", "Generating image with initials for name: " + currentUser.getName()); // Add this line
         Bitmap bitmap = generateImageWithInitials(currentUser.getName());
+
+        // Set ImageView visibility to VISIBLE
+        myImageView.setVisibility(View.VISIBLE);
+
         myImageView.setImageBitmap(bitmap);
         String imageBase64 = imgEncode.BitmapToBase64(bitmap);
         imageUri = Uri.parse("temp"); // Use a placeholder URI for the temporary image
@@ -320,12 +332,6 @@ public class UserProfileFragment extends Fragment {
         int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
         canvas.drawText(String.valueOf(name.charAt(0)), xPos - 1, yPos, paint);
 
-        // Set ImageView visibility to VISIBLE
-        myImageView.setVisibility(View.VISIBLE);
-
-        // Set the bitmap to the ImageView
-        myImageView.setImageBitmap(bitmap);
-
         // Log the content of the bitmap
         StringBuilder bitmapContent = new StringBuilder();
         for (int y = 0; y < bitmap.getHeight(); y++) {
@@ -339,7 +345,7 @@ public class UserProfileFragment extends Fragment {
         Log.d("BitmapSize", "Bitmap width: " + bitmap.getWidth() + ", height: " + bitmap.getHeight());
 
         // Log the visibility of the ImageView
-        Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
+//        Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
 
         return bitmap;
     }

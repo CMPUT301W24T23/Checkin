@@ -1,6 +1,6 @@
 package com.example.checkin;
 
-// shows signed in list of attendees to an event
+// shows signed up list of attendees to an event
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -89,17 +89,17 @@ public class SignedInList extends Fragment {
         }
 
 
-
-        Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
 
+        // move to previous fragment
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+        // retrive events from firebase, and get Subscribers list
         db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
         eventRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -135,6 +135,11 @@ public class SignedInList extends Fragment {
         return view;
     }
 
+    /**
+     * fetch attendee from firebase
+     * @param attendeeId
+     * @param attendees
+     */
     private void fetchAttendeeFromFirestore(String attendeeId, AttendeeList attendees) {
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

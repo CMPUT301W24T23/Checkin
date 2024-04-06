@@ -98,10 +98,9 @@ public class OrganizerView extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-
         String action = intent.getAction();
         if (action != null && action.equals("OPEN_MILESTONES_FRAGMENT")) {
-            // Perform a fragment transaction to open the Announcements fragment
+            // Perform a fragment transaction to open the display milestones fragment
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar);
 
             DisplayMilestones dispmile_frag = new DisplayMilestones();

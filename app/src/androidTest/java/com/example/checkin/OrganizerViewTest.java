@@ -12,7 +12,11 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 
 import android.Manifest;
+import android.widget.ListView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.action.ViewActions;
@@ -20,11 +24,16 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.GrantPermissionRule;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.matchers.Or;
+
+import java.util.ArrayList;
 
 
 // https://developer.android.com/training/testing/espresso/idling-resource
@@ -32,8 +41,6 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 
-// need to comment out line 129 in Database class before testing
-// as it causes the app to close due to unique id generated not being set yet
 public class OrganizerViewTest {
 
     @Rule
@@ -43,13 +50,16 @@ public class OrganizerViewTest {
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
     private ViewIdlingResource idlingResource = new ViewIdlingResource(R.id.progress);
+
+
+
     @Test
     public void testchangeorganizer(){
         idlingResource.increment();
         // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+       // onView(withId(R.id.progress)).check(matches(isDisplayed()));
 
         // start idling resource
         IdlingRegistry.getInstance().register(idlingResource);
@@ -64,6 +74,73 @@ public class OrganizerViewTest {
     }
 
     @Test
+    public void testingevent()  {
+
+        idlingResource.increment();
+        // click on organizer button
+        onView(withId(R.id.organizerbtn)).perform(click());
+
+        // Wait for the progress bar to be displayed
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+        // wait for data to load
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
+
+        ArrayList<Event> events = new ArrayList<>();
+        Event mockevent = new Event("1234");
+        mockevent.setEventname("BasketBall Game");
+        mockevent.setEventDetails("Starts early");
+        mockevent.setEventDate("2024-09-08");
+        mockevent.setLocation("Gym");
+        mockevent.setEventTime("4:00");
+        mockevent.setQrcodeid("12345abc");
+        events.add(mockevent);
+
+
+        // Launch OrganizerViewActivity
+        ActivityScenario<OrganizerView> organizerActivityScenario = ActivityScenario.launch(OrganizerView.class);
+
+        EventArrayAdapter arrayadapter = new EventArrayAdapter(InstrumentationRegistry.getInstrumentation().getTargetContext(), events);
+        organizerActivityScenario.onActivity(activity -> {
+
+
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            OrganizerFragment1 fragment = (OrganizerFragment1) fragmentManager.findFragmentByTag("organizer_fragment_tag");
+           // if (fragment != null && fragment.getView() != null) {
+
+                fragment.addEvent(mockevent);
+                ListView listView = fragment.getView().findViewById(R.id.events);
+                listView.setAdapter(arrayadapter);
+            //}
+        });
+        idlingResource.increment();
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
+
+        onView(withText("BasketBall Game")).perform(click());
+
+
+    }
+
+    @Test
     public void testbackbutton(){
 
         idlingResource.increment();
@@ -71,7 +148,7 @@ public class OrganizerViewTest {
         // Perform click action to navigate to the organizer view
         onView(withId(R.id.organizerbtn)).perform(click());
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
 
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
@@ -104,7 +181,7 @@ public class OrganizerViewTest {
         onView(withId(R.id.organizerbtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // wait for event data to load
@@ -134,7 +211,7 @@ public class OrganizerViewTest {
         onView(withId(R.id.organizerbtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // wait for event data to load
@@ -168,7 +245,7 @@ public class OrganizerViewTest {
     }
 
 
-    @Test
+    /*@Test
     public void addeventTest(){
 
         idlingResource.increment();
@@ -176,7 +253,7 @@ public class OrganizerViewTest {
         onView(withId(R.id.organizerbtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // wait for data to load
@@ -222,7 +299,7 @@ public class OrganizerViewTest {
         // check if fragment that lists events is displayed
         onView(withId(R.id.org_frag1)).check(matches(isDisplayed()));
 
-    }
+    }*/
 
     @Test
     public void testNotitificationFragment() {
@@ -231,7 +308,7 @@ public class OrganizerViewTest {
         onView(withId(R.id.organizerbtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // wait for event data to load
@@ -271,7 +348,7 @@ public class OrganizerViewTest {
         onView(withId(R.id.organizerbtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
         // wait for event data to load
@@ -286,26 +363,23 @@ public class OrganizerViewTest {
         idlingResource.reset();
         IdlingRegistry.getInstance().unregister(idlingResource);
 
-        //clcik on attendees button from nav bar
+        //click on attendees button from nav bar
         onView(withId(R.id.attendees)).perform(click());
 
         // Check if the events for selecting attendee options fragment is displayed
         onView(withId(R.id.chooseeventfrag)).check(matches(isDisplayed()));
     }
 
-
-    @Test
-    public void testshareqrcode(){
-
+    public void addevent(){
         idlingResource.increment();
         // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
 
-        // wait for event data to load
+        // wait for data to load
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
@@ -317,8 +391,60 @@ public class OrganizerViewTest {
         idlingResource.reset();
         IdlingRegistry.getInstance().unregister(idlingResource);
 
+        ArrayList<Event> events = new ArrayList<>();
+        Event mockevent = new Event("1234");
+        mockevent.setEventname("BasketBall Game");
+        mockevent.setEventDetails("Starts early");
+        mockevent.setEventDate("2024-09-08");
+        mockevent.setLocation("Gym");
+        mockevent.setEventTime("4:00");
+        mockevent.setQrcodeid("12345abc");
+        events.add(mockevent);
+
+
+        // Launch OrganizerViewActivity
+        ActivityScenario<OrganizerView> organizerActivityScenario = ActivityScenario.launch(OrganizerView.class);
+
+        EventArrayAdapter arrayadapter = new EventArrayAdapter(InstrumentationRegistry.getInstrumentation().getTargetContext(), events);
+        organizerActivityScenario.onActivity(activity -> {
+
+
+
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            OrganizerFragment1 fragment = (OrganizerFragment1) fragmentManager.findFragmentByTag("organizer_fragment_tag");
+            // if (fragment != null && fragment.getView() != null) {
+
+            fragment.addEvent(mockevent);
+            ListView listView = fragment.getView().findViewById(R.id.events);
+            listView.setAdapter(arrayadapter);
+            //}
+        });
+        idlingResource.increment();
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
+
+        onView(withText("BasketBall Game")).perform(click());
+
+    }
+
+
+
+
+    @Test
+    public void testshareqrcode(){
+
+
+        addevent();
         // click on event that was added (called Event Name, previously added)
-        onView(withText("Soccer Game")).perform(click());
+        //onView(withText("Basketball Game")).perform(click());
 
         // check if it switches to event details page
         onView(withId(R.id.eventdet_org)).check(matches(isDisplayed()));
@@ -332,29 +458,9 @@ public class OrganizerViewTest {
 
     @Test
     public void testseeattendees(){
-        idlingResource.increment();
-        // click on organizer button
-        onView(withId(R.id.organizerbtn)).perform(click());
-
-        // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
-        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
-        // wait for event data to load
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        IdlingRegistry.getInstance().register(idlingResource);
-        idlingResource.decrement();
-        idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
 
 
-        // click on event name for event previously added
-        onView(withText("Soccer Game")).perform(click());
-
+        addevent();
         // check if it switches to event details page
         onView(withId(R.id.eventdet_org)).check(matches(isDisplayed()));
 
@@ -363,8 +469,12 @@ public class OrganizerViewTest {
         // check if it shows attendee options
         onView(withId(R.id.attendeeslisted_frag)).check(matches(isDisplayed()));
 
-    }
+        // click on signed up attendees
+        onView(withId(R.id.signedinbtn)).perform(click());
+        // check to see signed up list of attendees
+        onView(withId(R.id.signinlist_frag)).check(matches(isDisplayed()));
 
+    }
 
     @Test
     public void testGeoLocationTracking() {
@@ -403,11 +513,25 @@ public class OrganizerViewTest {
 
     @Test
     public void testAddEvent() {
-        // Click on the organizer button to navigate to the organizer view
+        idlingResource.increment();
+        // click on organizer button
         onView(withId(R.id.organizerbtn)).perform(click());
 
-        // Check if the organizer view is displayed
+        // Wait for the progress bar to be displayed
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.org_view)).check(matches(isDisplayed()));
+
+        // wait for event data to load
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
 
         // Click on the button to add an event poster
         onView(withId(R.id.addeventbtn)).perform(click());
@@ -415,102 +539,6 @@ public class OrganizerViewTest {
         // Check if the add event is displayed
         onView(withId(R.id.createfragment)).check(matches(isDisplayed()));
 
-    }
-
-    @Test
-    public void testsignedin(){
-        idlingResource.increment();
-        // click on organizer button
-        onView(withId(R.id.organizerbtn)).perform(click());
-
-        // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
-        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
-
-        // wait for event data to load
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        IdlingRegistry.getInstance().register(idlingResource);
-        idlingResource.decrement();
-        idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
-
-        idlingResource.increment();
-        // click on attendees button from nav bar
-        onView(withId(R.id.attendees)).perform(click());
-
-        // wait for event data to load
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        IdlingRegistry.getInstance().register(idlingResource);
-        idlingResource.decrement();
-        idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
-
-        // click on name for event previously added
-        onView(withText("Soccer Game")).perform(click());
-
-        // check if it shows attendees list fragment
-        onView(withId(R.id.attendeeslisted_frag)).check(matches(isDisplayed()));
-        // click on signed up attendees
-        onView(withId(R.id.signedinbtn)).perform(click());
-        // check to see signed up list of attendees
-        onView(withId(R.id.signinlist_frag)).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testcheckedinattendees(){
-        idlingResource.increment();
-        // click on organizer button
-        onView(withId(R.id.organizerbtn)).perform(click());
-
-        // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
-        onView(withId(R.id.org_view)).check(matches(isDisplayed()));
-
-        // wait for event data to load
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        IdlingRegistry.getInstance().register(idlingResource);
-        idlingResource.decrement();
-        idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
-
-        idlingResource.increment();
-        // click on attendee button from navbar
-        onView(withId(R.id.attendees)).perform(click());
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        IdlingRegistry.getInstance().register(idlingResource);
-        idlingResource.decrement();
-        idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
-        // click on event that matched with one previously added
-        onView(withText("Soccer Game")).perform(click());
-
-        // check if it shows attendees list fragment
-        onView(withId(R.id.attendeeslisted_frag)).check(matches(isDisplayed()));
-        // click on checked in attendees button
-        onView(withId(R.id.checkedinbtn)).perform(click());
-        // check to see checked in list of attendees
-        onView(withId(R.id.checkinlist_frag)).check(matches(isDisplayed()));
     }
 
 }

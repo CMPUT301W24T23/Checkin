@@ -53,7 +53,7 @@ public class OrganizerView extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
+                .replace(R.id.org_view, org_frag1, "organizer_fragment_tag")
                 .commit();
 
         // set navbar
@@ -67,7 +67,7 @@ public class OrganizerView extends AppCompatActivity {
                     org_frag1.setArguments(args);
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
+                            .replace(R.id.org_view, org_frag1, "organizer_fragment_tag")
                             .commit();
                     return true;
 
@@ -83,7 +83,7 @@ public class OrganizerView extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.attendees) {
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.org_view, choose_eventfrag)
+                            .replace(R.id.org_view, choose_eventfrag, "organizer_attendees_tag")
                             .commit();
                     return true;
                 }

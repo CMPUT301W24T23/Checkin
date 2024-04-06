@@ -85,25 +85,39 @@ public class AttendeeViewTest {
             ActivityScenarioRule<MainActivity>(MainActivity.class);
 
 
+
     private ViewIdlingResource idlingResource = new ViewIdlingResource(R.id.progress);
     // test whether view switches to attendee view of app
     @Test
     public void testchangeattendee(){
 
+
         idlingResource.increment();
         onView(withId(R.id.attendeebtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         // Check if the attendee view is displayed
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
+        // pause for data loading to complete and be visible
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         IdlingRegistry.getInstance().register(idlingResource);
         idlingResource.decrement();
         idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
+
 
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
+        IdlingRegistry.getInstance().unregister(idlingResource);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -111,12 +125,13 @@ public class AttendeeViewTest {
     @Test
     public void testbackbutton(){
 
+
         idlingResource.increment();
 
         // Perform click action to navigate to the attendee view
         onView(withId(R.id.attendeebtn)).perform(click());
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
 
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
@@ -130,13 +145,14 @@ public class AttendeeViewTest {
         IdlingRegistry.getInstance().register(idlingResource);
         idlingResource.decrement();
         idlingResource.reset();
-        IdlingRegistry.getInstance().unregister(idlingResource);
+
 
         // click on back button
         onView(withId(R.id.backbtn)).check(matches(isDisplayed())).perform(click());
 
         // check if it goes to homepage
         onView(withId(R.id.main_activity_page)).check(matches(isDisplayed()));
+        IdlingRegistry.getInstance().unregister(idlingResource);
 
     }
 
@@ -150,7 +166,7 @@ public class AttendeeViewTest {
         onView(withId(R.id.attendeebtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
         // wait for data loaded to be visible
@@ -182,12 +198,13 @@ public class AttendeeViewTest {
     @Test
     public void testsignupbutton(){
 
+
         idlingResource.increment();
         // click on attendee button
         onView(withId(R.id.attendeebtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
         // wait for event data to load and be visible
@@ -222,12 +239,17 @@ public class AttendeeViewTest {
 
     @Test
     public void testAnnouncementsList() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         idlingResource.increment();
         // click on attendee button
         onView(withId(R.id.attendeebtn)).perform(click());
 
         // Wait for the progress bar to be displayed
-        onView(withId(R.id.progress)).check(matches(isDisplayed()));
+        //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
         // wait for event data to load

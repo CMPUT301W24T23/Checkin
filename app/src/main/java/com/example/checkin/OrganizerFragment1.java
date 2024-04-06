@@ -302,4 +302,10 @@ public class OrganizerFragment1 extends Fragment {
             }
         }
     }
+
+    public void addEvent(Event event) {
+        allevents.addEvent(event);
+    }
+
+
 }

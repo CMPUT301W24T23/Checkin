@@ -51,6 +51,9 @@ public class OrganizerFragment1 extends Fragment {
 
     RelativeLayout maincontent;
 
+    // List to store deleted QR codes
+    private ArrayList<String> deletedQRCodes = new ArrayList<>();
+
     // Shows the Organizer Home page, which includes list of events
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +65,13 @@ public class OrganizerFragment1 extends Fragment {
         maincontent = view.findViewById(R.id.maincontent);
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
         bottomNavigationView.setVisibility(View.GONE);
+
+        // Retrieve the previously deleted QR code IDs from SharedPreferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        Set<String> previousDeletedQRCodes = sharedPreferences.getStringSet("deletedQRCodes", new HashSet<>());
+
+        // Add the previous QR code IDs to the deletedQRCodes array
+        deletedQRCodes.addAll(previousDeletedQRCodes);
 
         SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getContext());
         int attendeeCount = preferences2.getInt("attendeeCount", 0);
@@ -237,8 +247,30 @@ public class OrganizerFragment1 extends Fragment {
     // Deletes an event
     private void deleteEvent(Event event) {
         String eventId = event.getEventId();
+        String qrCodeid = event.getQRCode();
         organizer.removeEvent(eventId);
         allevents.removeEvent(event);
+        //deletedQRCodes.add(qrCodeid);
+
+        // Retrieve the previously deleted QR code IDs from SharedPreferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        Set<String> previousDeletedQRCodes = sharedPreferences.getStringSet("deletedQRCodes", new HashSet<>());
+
+        // Add the new QR code ID to the set
+        previousDeletedQRCodes.add(qrCodeid);
+
+        // Save the updated set in SharedPreferences
+        sharedPreferences.edit().putStringSet("deletedQRCodes", previousDeletedQRCodes).apply();
+        // Log the updated set of deleted QR code IDs
+        Log.d("Deleted QR Codes", "Updated List:");
+        for (String code : previousDeletedQRCodes) {
+            Log.d("Deleted QR Codes", code);
+        }
+        Log.d("Deleted QR Codes", "List size: " + previousDeletedQRCodes.size());
+
+
+//        Log.d("Deleted QR Codes", "QR Code ID added to the list: " + qrCodeid);
+//        Log.d("Deleted QR Codes", "Current count: " + deletedQRCodes.size());
         EventAdapter.notifyDataSetChanged(); // Refresh the list
         db.collection("Events").document(eventId).delete()
                 .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted"))

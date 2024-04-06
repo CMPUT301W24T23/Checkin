@@ -37,6 +37,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+
     sourceSets {
         getByName("main") {
             assets {
@@ -49,6 +51,8 @@ android {
 
 
 dependencies {
+
+    //implementation(files("/Users/samirasalman/Library/Android/sdk/platforms/android-34/android.jar")) // need for creating javadocs
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.google.android.gms:play-services-maps:17.0.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")
@@ -67,6 +71,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
     implementation("com.google.firebase:firebase-firestore")
     androidTestImplementation("com.jayway.android.robotium:robotium-solo:5.3.1")
+    androidTestImplementation("org.mockito:mockito-android:5.11.0")
     androidTestImplementation("org.mockito:mockito-core:5.11.0")
     implementation("androidx.preference:preference:1.2.1")
     implementation ("com.google.firebase:firebase-messaging:23.4.1")

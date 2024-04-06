@@ -28,7 +28,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+// Fragment that displays promotion qr code for an event
 public class PromotionQrShare extends Fragment {
     Event myevent;
     Button sharebutton;

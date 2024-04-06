@@ -32,18 +32,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 
+// Fragment that provides list of attendees so organizer can select
+// and view options for attendees checked in or signed up
 public class ChooseEvent extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
     Button backbutton;
-    Button addeventbutton;
     Organizer organizer;
-
     private FirebaseFirestore db;
     ProgressBar p;
-
     RelativeLayout maincontent;
 
 
@@ -54,24 +53,14 @@ public class ChooseEvent extends Fragment {
         View view = inflater.inflate(R.layout.fragment_choose_event, container, false);
         ListView eventslist = (ListView) view.findViewById(R.id.events);
         backbutton = view.findViewById(R.id.backbtn);
-        //EventList allevents  = new EventList();
-        
-
-
-
         allevents = new EventList();
-        ArrayList<Attendee> attendees1 = new ArrayList<>();
         p = view.findViewById(R.id.progress);
         maincontent = view.findViewById(R.id.maincontent);
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
         bottomNavigationView.setVisibility(View.GONE);
 
-        // Add attendees and check them in/ sign up to test functionality
-        Attendee attendee1 = new Attendee("Amy");
-        Attendee attendee2 = new Attendee("John");
-        attendees1.add(attendee1);
-        Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
-        allevents.addEvent(event1);
+
+
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -79,6 +68,7 @@ public class ChooseEvent extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference organizerRef = db.collection("Organizers").document(android_id);
+        // retrieve organizer from firebase
         organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -96,8 +86,6 @@ public class ChooseEvent extends Fragment {
                 }
             }
         });
-
-        // Replace "organizerId" with the actual ID of the organizer
 
 
         // Query events collection based on organizer ID
@@ -165,7 +153,7 @@ public class ChooseEvent extends Fragment {
             eventslist.setAdapter(EventAdapter);
         }
 
-        // move to details of event fragment when an event is selected
+        // move to details of attendee options fragment when an event is selected
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -176,7 +164,6 @@ public class ChooseEvent extends Fragment {
                 attendeeoptions_frag.setArguments(args);
                 getParentFragmentManager().setFragmentResult("event",args);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, attendeeoptions_frag).addToBackStack(null).commit();
-
 
             }
         });

@@ -1,6 +1,6 @@
 package com.example.checkin;
 
-// send notification to attendees usinf firebase messaging
+// send notification to attendees using firebase messaging
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -116,7 +116,14 @@ public class SendNotification extends Fragment {
     // https://infyom.com/blog/send-device-to-device-push-notification-using-firebase-cloud-messaging
     // https://firebase.google.com/docs/cloud-messaging/migrate-v1
     // https://www.youtube.com/watch?v=e9llz2TXBz8
+    // https://www.youtube.com/watch?v=hKGLCdSEi9Y
 
+    /**
+     * Sends notification to attendees checked into an event
+     * @param topic
+     * @throws JSONException
+     * @throws IOException
+     */
     private void sendNotification(String topic) throws JSONException, IOException {
         // json object
 
@@ -131,6 +138,7 @@ public class SendNotification extends Fragment {
         JSONObject mainObject2 = new JSONObject();
         mainObject2.put("message", message2);
 
+        // https://stackoverflow.com/questions/13814503/reading-a-json-file-in-android
         String json = null;
         InputStream is = getContext().getAssets().open("checkin.json");
 

@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 
+// Fragment that represents event details for an event signed up for
 public class signedupeventdetail extends Fragment {
 
     Event myevent;
@@ -60,6 +61,7 @@ public class signedupeventdetail extends Fragment {
             myevent = (Event) bundle.getSerializable("event");
         }
 
+        // initalize and set up the event details
         String time = "Time: " + myevent.getEventTime();
         String date = "Date: " + myevent.getEventDate();
         String location = "Location: " + myevent.getLocation();
@@ -81,8 +83,6 @@ public class signedupeventdetail extends Fragment {
         String android_id = preferences.getString("ID", "");
 
 
-
-        // get event object from previous fragment
 
 
         // move back to previous fragment when clicked

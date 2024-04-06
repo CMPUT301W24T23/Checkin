@@ -78,7 +78,7 @@ public class Announcements extends Fragment {
                             Map<String, Long> checkedInMap = (Map<String, Long>) data.get("Checkins"); // Cast to the appropriate type
                             List<String> eventIds = new ArrayList<>();
 
-                            // Iterate over the map entries
+                            // Iterate over the the checkins
                             for (Map.Entry<String, Long> entry : checkedInMap.entrySet()) {
                                 String eventId = entry.getKey();
                                 System.out.println("key" + eventId);

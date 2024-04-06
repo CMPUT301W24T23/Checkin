@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+// represents fragment that displays an organizer's events
 public class OrganizerFragment1 extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
@@ -67,14 +67,13 @@ public class OrganizerFragment1 extends Fragment {
         int attendeeCount = preferences2.getInt("attendeeCount", 0);
 
         //EventList allevents  = new EventList();
-        Bundle bundle = this.getArguments();
+        //Bundle bundle = this.getArguments();
         // if (bundle != null) {
         //    allevents = (EventList) bundle.getSerializable("eventslist");
         //   } else {
         //  allevents = new EventList(); // Initialize only if bundle is null
         //  }
         allevents = new EventList();
-        ArrayList<Attendee> attendees1 = new ArrayList<>();
 
 
         db = FirebaseFirestore.getInstance();
@@ -233,6 +232,12 @@ public class OrganizerFragment1 extends Fragment {
     }
 
 
+    /**
+     * Checks if an event has reached any milestones
+     * @param attendeeCount
+     * @param myevent
+     */
+    // checks if event has reached any milestones
     private void checkMilestone(int attendeeCount, Event myevent) {
         ArrayList<Integer> milestones = new ArrayList<>();
         milestones.add(1);
@@ -263,7 +268,7 @@ public class OrganizerFragment1 extends Fragment {
                     sharedPreferences.edit().putStringSet("reachedMilestones_" + myevent.getEventId(), reachedMilestones).apply();
                 }
             } else {
-                // If the attendee count drops below the milestone, remove it from the set
+                // If the attendee count drops below the milestone, remove it from the set, so milestones trigger once
                 String milestoneKey = "milestone_" + milestone;
                 reachedMilestones.remove(milestoneKey);
                 sharedPreferences.edit().putStringSet("reachedMilestones_" + myevent.getEventId(), reachedMilestones).apply();
@@ -273,9 +278,15 @@ public class OrganizerFragment1 extends Fragment {
     }
 
 
+    /**
+     * Sends notifcation for milestones
+     * @param title
+     * @param body
+     * @param myevent
+     * @param attendeecount
+     */
     private void sendMilestoneNotification(String title, String body, Event myevent, int attendeecount) {
         // Create an intent and call the MileStone class's method to send a notification
-
 
         if (getContext() != null) {
             Intent intent = new Intent(getContext(), OrganizerView.class);
@@ -295,12 +306,15 @@ public class OrganizerFragment1 extends Fragment {
 
                 int notificationId = 1;
                 MileStone.sendMilestoneNotification(requireContext(), title, body, myevent.getEventId(), intent, notificationId);
-                //sharedPreferences.edit().putBoolean(notificationKey, true).apply();
-                // }
+
             }
         }
     }
 
+    /**
+     * Adds event to eventlist
+     * @param event
+     */
     public void addEvent(Event event) {
         allevents.addEvent(event);
     }

@@ -200,6 +200,13 @@ public class Database {
         profilePicRef.document(eventID).set(data);
     }
 
+    /**
+     * Upload a QR code that was deleted into a separate database collection
+     * @param qrCodeID
+     * the ID used to generate that qr code
+     * @param organizerID
+     * the organizer ID of the organizer that created that QR code
+     */
     public void uploadDeletedQR(String qrCodeID, String organizerID){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference DeletedQRRef = db.collection("DeletedQR");

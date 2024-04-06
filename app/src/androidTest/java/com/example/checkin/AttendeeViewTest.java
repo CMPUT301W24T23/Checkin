@@ -99,7 +99,9 @@ public class AttendeeViewTest {
         // Wait for the progress bar to be displayed
         //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         // Check if the attendee view is displayed
+
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
+
         // pause for data loading to complete and be visible
         try {
             Thread.sleep(10000);
@@ -136,6 +138,7 @@ public class AttendeeViewTest {
 
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
 
+
         // pause for data loading to complete and be visible
         try {
             Thread.sleep(10000);
@@ -168,6 +171,7 @@ public class AttendeeViewTest {
         // Wait for the progress bar to be displayed
         //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
+        onView(withId(R.id.browseeventsbtn)).perform(click());
 
         // wait for data loaded to be visible
         try {
@@ -206,6 +210,7 @@ public class AttendeeViewTest {
         // Wait for the progress bar to be displayed
         //onView(withId(R.id.progress)).check(matches(isDisplayed()));
         onView(withId(R.id.atten_view)).check(matches(isDisplayed()));
+        onView(withId(R.id.browseeventsbtn)).perform(click());
 
         // wait for event data to load and be visible
         try {
@@ -242,14 +247,22 @@ public class AttendeeViewTest {
 // Announcement Page Tests
     @Test
     public void testAnnouncementsList() {
+
+        idlingResource.increment();
+        // click on attendee button
+        onView(withId(R.id.attendeebtn)).perform(click());
+
+        // wait for event data to load and be visible
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        idlingResource.increment();
-        // click on attendee button
-        onView(withId(R.id.attendeebtn)).perform(click());
+
+        IdlingRegistry.getInstance().register(idlingResource);
+        idlingResource.decrement();
+        idlingResource.reset();
+        IdlingRegistry.getInstance().unregister(idlingResource);
 
         // Wait for the progress bar to be displayed
         //onView(withId(R.id.progress)).check(matches(isDisplayed()));

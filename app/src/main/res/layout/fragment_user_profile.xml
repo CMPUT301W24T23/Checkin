@@ -11,7 +11,7 @@
         android:text="User Profile"
         android:gravity="center"
         android:layout_marginTop="10dp"
-        android:textSize="40dp"
+        android:textSize="30dp"
         android:textColor="@color/black"
         android:layout_marginBottom="3dp"/>
 
@@ -38,10 +38,11 @@
     <Button
         android:id="@+id/editPictureButton"
         android:layout_width="380dp"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_marginStart="16dp"
         android:onClick="onUploadImageButtonClick"
         android:text="Edit Picture" />
+
     <Button
         android:id="@+id/removePictureButton"
         android:layout_width="380dp"
@@ -113,30 +114,45 @@
     <EditText
         android:id="@+id/phoneEdit"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="45dp"
         android:hint="  Your Phone Number"
         android:layout_marginBottom="16dp"
         android:layout_marginHorizontal="10dp"
         android:inputType="phone" />
 
     <!-- CheckBox -->
+
     <CheckBox
         android:id="@+id/locationBox"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:text="Geolocation Tracking Permission"
         android:layout_gravity="center"
-        android:textSize="20dp"
+        android:layout_marginTop="1dp"
+        android:text="Geolocation Tracking Permission"
         android:textColor="@color/black"
-        />
+        android:textSize="15dp" />
+
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="0dp"
         android:onClick="onSaveButtonClick"
         android:text="Save" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomnavbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemBackground="@color/lightpink"
+        android:background="@color/lightpink"
+        app:itemTextColor="@color/black"
+        app:itemIconTint="@drawable/selection"
+        android:layout_gravity="bottom"
+        app:menu="@menu/attendeemenu" />
+
 
 
     <!-- Will add more UI elements as needed -->

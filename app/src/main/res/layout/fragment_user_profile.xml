@@ -62,7 +62,7 @@
     <EditText
         android:id="@+id/nameEdit"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="40dp"
         android:hint="  Your Name"
         android:layout_marginBottom="16dp"
         android:layout_marginHorizontal="10dp"/>
@@ -71,15 +71,16 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="2dp"
         android:text="Email"
-        android:textSize="20dp"
         android:textColor="@color/black"
-        android:layout_marginHorizontal="10dp"/>
+        android:textSize="20dp" />
 
     <EditText
         android:id="@+id/emailEdit"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="42dp"
         android:hint="  Your email"
         android:layout_marginBottom="16dp"
         android:layout_marginHorizontal="10dp"/>
@@ -96,7 +97,7 @@
     <EditText
         android:id="@+id/homeEdit"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="42dp"
         android:hint="  Your Homepage URL"
         android:inputType="textUri"
         android:layout_marginBottom="16dp"
@@ -113,7 +114,7 @@
     <EditText
         android:id="@+id/phoneEdit"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="42dp"
         android:hint="  Your Phone Number"
         android:layout_marginBottom="16dp"
         android:layout_marginHorizontal="10dp"
@@ -125,6 +126,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:text="Geolocation Tracking Permission"
+        android:layout_marginTop="2dp"
         android:layout_gravity="center"
         android:textSize="20dp"
         android:textColor="@color/black"

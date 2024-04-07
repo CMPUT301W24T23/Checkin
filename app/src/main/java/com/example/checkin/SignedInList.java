@@ -72,7 +72,8 @@ public class SignedInList extends Fragment {
                         view = inflater.inflate(R.layout.content2, null);
                     }
                     TextView textView = view.findViewById(R.id.attendee_name);
-                    textView.setText(attendeedatalist.getAttendees().get(position).getName());
+                    String name = "Name: " + attendeedatalist.getAttendees().get(position).getName();
+                    textView.setText(name);
                     TextView textView2 = view.findViewById(R.id.checkin_times);
                     textView2.setVisibility(View.GONE);
                     return view;

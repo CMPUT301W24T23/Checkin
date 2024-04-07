@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -116,9 +117,8 @@ public class AttendeeView extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
      super.onActivityResult(requestCode, resultCode, data);
-    IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String android_id = preferences.getString("ID", "");
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        String android_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar2);
         bottomNavigationView.setSelectedItemId(R.id.home2);
     // if the intentResult is null then
@@ -149,8 +149,7 @@ public class AttendeeView extends AppCompatActivity {
     private void getEventDetailsFromFirebase(String qrCodeId, String attendeeid) {
         Database database = new Database();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String androidId = preferences.getString("ID", "");
+        String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         CollectionReference eventsRef = db.collection("Events");
 
         // search for event qr code in database

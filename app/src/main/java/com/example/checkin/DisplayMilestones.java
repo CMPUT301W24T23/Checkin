@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,8 +61,7 @@ public class DisplayMilestones extends Fragment {
         // retrieve organizer's events from firebase
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
+        String android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         DocumentReference OrganizerRef = db.collection("Organizers").document(android_id);
         OrganizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

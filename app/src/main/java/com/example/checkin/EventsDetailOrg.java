@@ -50,6 +50,7 @@ public class EventsDetailOrg extends Fragment {
                     if (uri != null) {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 2000, false);
                             ImageEncoder imgEncoder = new ImageEncoder();
                             myevent.setPoster(imgEncoder.BitmapToBase64(bitmap));
                         } catch (IOException e) {

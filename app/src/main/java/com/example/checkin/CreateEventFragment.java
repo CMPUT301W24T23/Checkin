@@ -99,6 +99,7 @@ public class CreateEventFragment extends Fragment {
                     if (uri != null) {
                         try {
                             poster = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                            poster = Bitmap.createScaledBitmap(poster, 1000, 2000, false);
                             ivEventPoster.setImageBitmap(poster);
                             posterAdded = true;
                         } catch (IOException e) {
@@ -155,8 +156,7 @@ public class CreateEventFragment extends Fragment {
 
         backbutton.setOnClickListener(view1 -> getActivity().getSupportFragmentManager().popBackStack());
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
+        String android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference organizerRef = db.collection("Organizers").document(android_id);

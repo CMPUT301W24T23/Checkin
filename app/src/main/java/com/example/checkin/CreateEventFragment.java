@@ -98,6 +98,7 @@ public class CreateEventFragment extends Fragment {
     private EditText eventlocation;
     private EditText attendeeCap;
     private Switch switchVisible;
+    private boolean Existingqrcode;
 
     private boolean usedQR = false;
     private String retrievedQRCodeID;
@@ -211,6 +212,9 @@ public class CreateEventFragment extends Fragment {
                     event.setQrcodeid(qrcodevalue);
                 }
 
+                if (Existingqrcode == true) {
+                    retrieveDeletedCodes(android_id, event);
+                }
                 //convert image to string and add to event
                 if (posterAdded) {
                     event.setPoster(encoder.BitmapToBase64(poster));
@@ -239,6 +243,7 @@ public class CreateEventFragment extends Fragment {
 
             }
         });
+
 
 
         addeventbutton.setOnClickListener(view13 -> {
@@ -312,12 +317,16 @@ public class CreateEventFragment extends Fragment {
                 String qrcodevalue = generateQRCode(event, qrcodeimage);
                 event.setQrcodeid(qrcodevalue);
             }
+            if (Existingqrcode == true) {
+                retrieveDeletedCodes(android_id, event);
+            }
 
             if (posterAdded) {
                 event.setPoster(encoder.BitmapToBase64(poster));
             } else {
                 event.setPoster("");
             }
+
 
             database.updatePoster(event.getPoster(), event.getEventId());
 
@@ -353,7 +362,8 @@ public class CreateEventFragment extends Fragment {
         btnUseExistingQR.setOnClickListener(view12 -> {
             qrCodeOptionSelected = true;
 
-            retrieveDeletedCodes(android_id);
+            Existingqrcode = true;
+            //retrieveDeletedCodes(android_id, event);
             // Your code for using an existing QR code
 
         });
@@ -504,11 +514,12 @@ public class CreateEventFragment extends Fragment {
      * @param OrgId
      * the current organizer's ID
      */
-    public void retrieveDeletedCodes(String OrgId) {
+    public void retrieveDeletedCodes(String OrgId, Event event) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference colRef = db.collection("DeletedQR");
         Database fireBase = new Database();
-        colRef.whereEqualTo("Organizer", OrgId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        //colRef.whereEqualTo("Organizer", OrgId)
+                colRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -521,6 +532,8 @@ public class CreateEventFragment extends Fragment {
                         usedQR = true;
                         Map<String, String> retrievedQR = fireBase.retrieveDeletedQR(document);
                         retrievedQRCodeID = retrievedQR.get("DeletedQR");
+                        System.out.println("QR CODE VALUE" + retrievedQRCodeID);
+                        event.setQrcodeid(retrievedQRCodeID);
                         deleteQRCode(retrievedQRCodeID);
                         Log.d("Retrieve Deleted QR", String.format("Retrieved deleted QR Code %s", retrievedQRCodeID));
 

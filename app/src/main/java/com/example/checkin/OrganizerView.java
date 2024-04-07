@@ -53,7 +53,7 @@ public class OrganizerView extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
+                .replace(R.id.org_view, org_frag1, "organizer_fragment_tag")
                 .commit();
 
         // set navbar
@@ -67,7 +67,7 @@ public class OrganizerView extends AppCompatActivity {
                     org_frag1.setArguments(args);
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.org_view, org_frag1, "OrganizerFragment1")
+                            .replace(R.id.org_view, org_frag1, "organizer_fragment_tag")
                             .commit();
                     return true;
 
@@ -83,7 +83,7 @@ public class OrganizerView extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.attendees) {
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.org_view, choose_eventfrag)
+                            .replace(R.id.org_view, choose_eventfrag, "organizer_attendees_tag")
                             .commit();
                     return true;
                 }
@@ -98,10 +98,9 @@ public class OrganizerView extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-
         String action = intent.getAction();
         if (action != null && action.equals("OPEN_MILESTONES_FRAGMENT")) {
-            // Perform a fragment transaction to open the Announcements fragment
+            // Perform a fragment transaction to open the display milestones fragment
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar);
 
             DisplayMilestones dispmile_frag = new DisplayMilestones();

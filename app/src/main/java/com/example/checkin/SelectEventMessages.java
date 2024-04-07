@@ -1,6 +1,6 @@
 package com.example.checkin;
 
-// displays events to select from and send message or view milestones for
+// displays events to select and send notifications to
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,6 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
-import kotlinx.coroutines.channels.Send;
 
 public class SelectEventMessages extends Fragment {
 
@@ -63,27 +63,12 @@ public class SelectEventMessages extends Fragment {
 
 
         allevents = new EventList();
-        ArrayList<Attendee> attendees1 = new ArrayList<>();
 
-        /*
-        // Add attendees and check them in/ sign up to test functionality
-        Attendee attendee1 = new Attendee("Amy");
-        Attendee attendee2 = new Attendee("John");
-        attendees1.add(attendee1);
-        Event event1 = new Event("Show", "Starts at 7, ends at 9 PM", attendees1);
-        attendee1.CheckIn(event1);
-        attendee2.CheckIn(event1);
-        event1.userCheckIn(attendee1);
-        event1.userCheckIn(attendee2);
-        event1.userSubs(attendee2);
-        allevents.addEvent(event1);
-
-         */
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
+        String android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        // retrieve organizer's events from firebase
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference organizerRef = db.collection("Organizers").document(android_id);
         organizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -103,8 +88,6 @@ public class SelectEventMessages extends Fragment {
                 }
             }
         });
-
-        // Replace "organizerId" with the actual ID of the organizer
 
 
         // Query events collection based on organizer ID
@@ -172,7 +155,7 @@ public class SelectEventMessages extends Fragment {
             eventslist.setAdapter(EventAdapter);
         }
 
-        // move to details of event fragment when an event is selected
+        // move to send notfications fragment when an event is selected
         eventslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

@@ -1,6 +1,7 @@
 
 package com.example.checkin;
 
+import android.location.Location;
 import android.media.Image;
 
 import java.io.Serializable;
@@ -27,6 +28,8 @@ import java.util.UUID;
 public class Attendee implements User, Serializable {
     //TODO:
     //      - current geolocation
+    private double lat;
+    private double lon;
 
     private String userId;     //the user's ID
     private String profilePicture;              //user's profile picture as an encoded 64bit string
@@ -34,6 +37,8 @@ public class Attendee implements User, Serializable {
 
     private Map<String, Long> CheckInHist = new Hashtable<>();
     private boolean geoTracking;
+    private boolean hasDefaultAvi = true;
+
     //Optional information the user can provide
     private String name;
     private String homepage;
@@ -45,19 +50,6 @@ public class Attendee implements User, Serializable {
         this.name = name;
     }
 
-    /**
-     * Updates the profile information according to the parameters.
-     * @param geoTracking if user allows its geolocation tracking or not
-     * @param name name of the user
-     * @param homepage homepage representing as a other form of profile of the user
-     * @param email email associated to that user
-     */
-    public void updateProfile(String name, String email, String homepage, String country, boolean geoTracking ) {
-        this.name = name;
-        this.homepage = homepage;
-        this.email = email;
-        this.geoTracking = geoTracking;
-    }
 
      /* Empty constructor for attendee
      */
@@ -70,6 +62,8 @@ public class Attendee implements User, Serializable {
         this.geoTracking = true;        //on by default
         this.profilePicture = "";           //Generate a new profile picture
         this.CheckInHist = new Hashtable<>();
+        this.lat = 0;
+        this.lon = 0;
     }
 
     /**
@@ -96,6 +90,8 @@ public class Attendee implements User, Serializable {
         this.geoTracking = tracking;
         this.profilePicture = "";
         this.CheckInHist = new Hashtable<>();
+        this.lat = 0;
+        this.lon = 0;
     }
 
     /**
@@ -170,8 +166,14 @@ public class Attendee implements User, Serializable {
         if (SubList == null) {
             SubList = new Hashtable<>(); // Initialize SubList if it's null
         }
-        //event.userSubs(this);
-        SubList.put(String.valueOf(event.getEventId()), "");
+
+        if (this.SubList.isEmpty()) {
+            SubList.put(String.valueOf(event.getEventId()), "");
+        }
+        else {
+            //event.userSubs(this);
+            SubList.put(String.valueOf(event.getEventId()), "");
+        }
     }
 
     //GEOLOCATION===========================================================
@@ -273,5 +275,29 @@ public class Attendee implements User, Serializable {
 
     public void setSubList(Map<String, String> subList) {
         SubList = subList;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public boolean isHasDefaultAvi() {
+        return hasDefaultAvi;
+    }
+
+    public void setHasDefaultAvi(boolean hasDefaultAvi) {
+        this.hasDefaultAvi = hasDefaultAvi;
     }
 }

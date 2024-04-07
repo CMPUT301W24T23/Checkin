@@ -1,6 +1,7 @@
 package com.example.checkin;
 
 // represents milestone recieved by organizer for events
+// https://www.geeksforgeeks.org/how-to-push-notification-in-android-using-firebase-cloud-messaging/
 import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.app.NotificationChannel;

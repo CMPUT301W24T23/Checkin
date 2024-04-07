@@ -1,6 +1,7 @@
 package com.example.checkin;
 
-// recieves notification sent through firebase
+// class that recieves notifications sent through firebase cloud messaging
+// // https://www.geeksforgeeks.org/how-to-push-notification-in-android-using-firebase-cloud-messaging/
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -28,9 +29,6 @@ import java.util.ArrayList;
 
 public class PushNotifications extends FirebaseMessagingService {
 
-    Database d = new Database();
-    Message m = new Message();
-    private FirebaseFirestore db;
 
     @Override
     public void onNewToken(@NonNull String token) {
@@ -43,15 +41,16 @@ public class PushNotifications extends FirebaseMessagingService {
         String body = message.getNotification().getBody();
         DisplayRemoteNotification(title, body);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int attendeeCount = preferences.getInt("attendeeCount", 0);
-
-
 
         super.onMessageReceived(message);
 
     }
 
+    /**
+     * Displays notifications recieved through firebase cloud messaging
+     * @param title
+     * @param body
+     */
     private void DisplayRemoteNotification(String title, String body){
         String CHANNEL_ID = "message";
         CharSequence name;

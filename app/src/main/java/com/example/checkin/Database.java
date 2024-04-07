@@ -2,6 +2,7 @@ package com.example.checkin;
 
 import static android.content.ContentValues.TAG;
 
+import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -70,8 +71,15 @@ public class Database {
         Log.d("Firebase Upload", "Attendee: " + a.getPhoneNumber());
         data.put("Tracking", a.trackingEnabled());
         Log.d("Firebase Upload", "Attendee: " + a.trackingEnabled());
-
         data.put("ProfilePic", a.getProfilePicture());
+
+        //upload tracking data
+        data.put("Latitude", a.getLat());
+        data.put("Longitude", a.getLon());
+
+        //upload profile picture data
+        data.put("Tracking", a.isHasDefaultAvi());
+
         //DocumentReference picRef = attendeeRef.document("ProfilePic");
         //Upload check in counts
         Map<String, Long> checkins = a.getCheckIns();
@@ -81,6 +89,7 @@ public class Database {
         data.put("Signups", signups);
 
         attendeeRef.document(a.getUserId()).set(data);
+        
 
         Log.d("New Attendee", String.format("Added Attendee to Firebase, ID: %s", a.getUserId()));
     }
@@ -137,9 +146,6 @@ public class Database {
         data.put("Location", e.getLocation());
         data.put("Attendee Cap", e.getAttendeeCap());
 
-
-
-
         //Upload userIds of subscribers
         Map<String, String> subs = new HashMap<>();
         for (Attendee a: e.getSubscribers().getAttendees()){
@@ -194,6 +200,23 @@ public class Database {
         profilePicRef.document(eventID).set(data);
     }
 
+    /**
+     * Upload a QR code that was deleted into a separate database collection
+     * @param qrCodeID
+     * the ID used to generate that qr code
+     * @param organizerID
+     * the organizer ID of the organizer that created that QR code
+     */
+    public void uploadDeletedQR(String qrCodeID, String organizerID){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference DeletedQRRef = db.collection("DeletedQR");
+        Map<String, String> data = new HashMap<>();
+        data.put("Organizer", organizerID);
+
+        Log.d("UpdateDeletedQR", String.format("Upload Deleted QR Code(%s)", qrCodeID));
+        DeletedQRRef.document(qrCodeID).set(data);
+    }
+
     //Functions for dealing with retrieving users ==================================================
 
     /**
@@ -221,12 +244,21 @@ public class Database {
 
         a.setProfilePicture(doc.getString("ProfilePic"));
 
+        a.setLon(doc.getDouble("Longitude"));
+        a.setLat(doc.getDouble("Latitude"));
+        Log.d("Firebase Retrieve", String.format("Get Location, LAT: %f, LON: %f", a.getLat(), a.getLon()));
+
+        //data.put("Latitude", a.getLat());
+        //data.put("Longitude", a.getLon());
+
         //set the tracking status of the attendee
         //the empty constructor has tracking as true by default
         boolean track = Boolean.TRUE.equals(doc.getBoolean("Tracking"));
         if(!(track == a.trackingEnabled())){
             a.toggleTracking();
         }
+
+        a.setHasDefaultAvi(Boolean.TRUE.equals(doc.getBoolean("HasDefaultAvi")));
 
         //get checkins
         Map<String, Object> data = doc.getData();
@@ -333,6 +365,24 @@ public class Database {
         poster.setImageB64(doc.getString("Image"));
 
         return poster;
+    }
+
+    /**
+     * For retrieving a deleted QR code
+     * @param doc
+     * a document snapshot from the Deleted QR code collection
+     * @return
+     * returns a map containing the deleted QR code and the associated organizer ID
+     */
+    public Map<String, String> retrieveDeletedQR(DocumentSnapshot doc){
+        Map<String, String> data = new HashMap<>();
+        String org = doc.getString("Organizer");
+        String code = doc.getString("DeletedQR");
+        data.put("Organizer", org);
+        data.put("DeletedQR", code);
+
+        Log.d("Retrieve Deleted QR", String.format("Retrieve Deleted QR Code, Organizer: %s, Code, %s", org, code));
+        return data;
     }
 
     //template snapshot listener function content for retrieving an organizer
@@ -535,8 +585,6 @@ public class Database {
 
         });
     }
-
-
 
 
 }

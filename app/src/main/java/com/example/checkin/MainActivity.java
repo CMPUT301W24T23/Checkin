@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String android_id = preferences.getString("ID", "");
 
-        Log.d("android id", android_id);
+        Log.d("android id", Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID));
 
         Database db = new Database();
 

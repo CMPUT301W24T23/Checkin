@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,8 +65,7 @@ public class Announcements extends Fragment {
 
         // retrieve attendee from firebase and get the checkinlist for each attendee
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
+        String android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         DocumentReference attendeeRef = db.collection("Attendees").document(android_id);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -78,7 +78,7 @@ public class Announcements extends Fragment {
                             Map<String, Long> checkedInMap = (Map<String, Long>) data.get("Checkins"); // Cast to the appropriate type
                             List<String> eventIds = new ArrayList<>();
 
-                            // Iterate over the map entries
+                            // Iterate over the the checkins
                             for (Map.Entry<String, Long> entry : checkedInMap.entrySet()) {
                                 String eventId = entry.getKey();
                                 System.out.println("key" + eventId);

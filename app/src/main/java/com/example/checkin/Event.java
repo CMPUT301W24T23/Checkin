@@ -129,6 +129,7 @@ public class Event implements Serializable {
         } else{
             //Check the user in
             Subscribers.addAttendee(a);
+            a.EventSub(this);
         }
     }
 

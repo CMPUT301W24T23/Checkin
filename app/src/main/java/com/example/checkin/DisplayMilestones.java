@@ -1,5 +1,5 @@
 package com.example.checkin;
-// shows list of milestones reached for events
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 
+// Fragment that displays milestones for an organizer
 public class DisplayMilestones extends Fragment {
 
     ListView milestones;
@@ -45,6 +47,7 @@ public class DisplayMilestones extends Fragment {
         backbutton = view.findViewById(R.id.backbtn);
 
 
+        // back button that moves to previous fragments
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,18 +55,13 @@ public class DisplayMilestones extends Fragment {
             }
         });
 
-        // Add example announcements
-        //announcelist.add("First Message");
-        //announcelist.add("Second Message");
 
-        // if attendeeslist is not null set AttendeesAdapter to custom AttendeeArrayAdapter
 
 
         // retrieve organizer's events from firebase
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
+        String android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         DocumentReference OrganizerRef = db.collection("Organizers").document(android_id);
         OrganizerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -98,7 +96,6 @@ public class DisplayMilestones extends Fragment {
         });
 
         // if list of announcements is not null, then add messages to Announcements
-        // Represented as strings now, will create announcement objects in next part
         if (announcelist != null) {
             Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
             milestones.setAdapter(Announcements_Adapter);
@@ -134,9 +131,11 @@ public class DisplayMilestones extends Fragment {
                         }
                     }
 
-                    if (announcelist != null) {
-                        Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
-                        milestones.setAdapter(Announcements_Adapter);
+                    if (getActivity() != null) {
+                        if (announcelist != null) {
+                            Announcements_Adapter = new MessageAdapter(getActivity(), announcelist);
+                            milestones.setAdapter(Announcements_Adapter);
+                        }
                     }
 
                 })
@@ -145,9 +144,13 @@ public class DisplayMilestones extends Fragment {
                 });
     }
 
-
+    /**
+     * Checks if a given milesone exists
+     * @param message
+     * @param announcelist
+     * @return
+     */
     public boolean checkmilestoneexists(Message message, ArrayList<Message> announcelist){
-
         for (Message existingMessage : announcelist) {
             if (existingMessage.getTitle().equals(message.getTitle()) && existingMessage.getBody().equals(message.getBody())) {
                 return true;

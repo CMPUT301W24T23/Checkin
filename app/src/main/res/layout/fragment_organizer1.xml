@@ -36,12 +36,7 @@
             android:layout_height="391dp"
            android:fadeScrollbars="false"/>
 
-    <Button
-        android:id="@+id/backbtn"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-400dp"
-        android:text="Back" />
+
 
         <Button
             android:id="@+id/addeventbtn"
@@ -50,11 +45,19 @@
             android:text="Add Event"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="530dp"
-
-
             />
 
+        <Button
+            android:id="@+id/backbtn"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-400dp"
+            android:text="Back" />
+
+
+
     </RelativeLayout>
+
 
 
 

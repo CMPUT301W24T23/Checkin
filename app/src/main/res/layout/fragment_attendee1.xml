@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrganizerFragment1"
+    tools:context=".AttendeeView"
     android:id="@+id/attendeeviewfrag">
 
     <ProgressBar
@@ -16,7 +16,7 @@
         android:id="@+id/maincontent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="invisible"
          >
 
     <TextView
@@ -37,13 +37,16 @@
         android:layout_height="wrap_content"
         android:fadeScrollbars="false"/>
 
-    <Button
-        android:id="@+id/backbtn"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-400dp"
-        android:text="Back" />
+        <Button
+            android:id="@+id/backbtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="-400dp"
+            android:text="Back" />
+
 
     </RelativeLayout>
+
+
 
 </RelativeLayout>

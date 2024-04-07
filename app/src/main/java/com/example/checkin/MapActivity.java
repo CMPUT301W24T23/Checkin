@@ -11,8 +11,11 @@
 package com.example.checkin;
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,8 +30,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -37,6 +44,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private static final int REQUEST_CODE = 101;
     private Location currentLocation;
     private Button btnBack;
+    private Attendee currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +75,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLocation = location;
+                    updateAttendee();
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(MapActivity.this);
@@ -95,5 +104,43 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
                 break;
         }
+    }
+
+    /**
+     * Retrieve and update the current attendee's location to firebase
+     * Retrieves the current attendee, sets their new location, and then reuploads to the database
+     */
+    public void updateAttendee(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Database firedb = new Database();
+        String id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        DocumentReference docRef = db.collection("Attendees").document(id);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("Firebase Succeed", "(Map Activity) Retrieve attendee: " + document.getData());
+                        Database fireBase = new Database();
+                        currentUser = fireBase.getAttendee(document);
+
+                        //set new location
+                        //currentUser.setLoc(currentLocation);
+                        currentUser.setLat(currentLocation.getLatitude());
+                        currentUser.setLon(currentLocation.getLongitude());
+
+                        //update in firebase
+                        firedb.updateAttendee(currentUser);
+
+                    } else {
+                        Log.d("Firebase", "No such document");
+
+                    }
+                } else {
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 }

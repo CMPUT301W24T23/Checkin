@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Map;
 
+// fragment that displays all events attendee has signed up for
 public class AttendeeSignUpEvents extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
@@ -59,9 +61,9 @@ public class AttendeeSignUpEvents extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         Database database = new Database();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String android_id = preferences.getString("ID", "");
+        String android_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        // retrieve signed up events for attendee
         db.collection("Attendees").document(android_id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -84,8 +86,6 @@ public class AttendeeSignUpEvents extends Fragment {
                                     retrieveevent(eventId, android_id);
                                 }
 
-
-                                    // Query the Events collection using the event ID
                                 }
 
                             } else {
@@ -106,7 +106,6 @@ public class AttendeeSignUpEvents extends Fragment {
             }
         });
 
-        // if eventlist is not null set EventAdapter to custom EventArrayAdapter
 
 
         // When event is selected from list, move to fragment that show event details
@@ -125,6 +124,11 @@ public class AttendeeSignUpEvents extends Fragment {
         return view;
     }
 
+    /**
+     * Retrieves event from firebase
+     * @param eventId
+     * @param attendeeId
+     */
     public void retrieveevent(String eventId, String attendeeId) {
         Database database = new Database();
         db.collection("Events").document(eventId)

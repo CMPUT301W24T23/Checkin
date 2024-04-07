@@ -1,6 +1,8 @@
-// This file handles the functionality for displaying a map with the user's current location marked.
-// The user can also return to the previous screen using a back button. This activity utilizes the Google Maps
-// API and requires location permissions to function properly.
+/*
+ * This file handles the functionality for displaying a map with the user's current location marked.
+ * The user can also return to the previous screen using a back button. This activity utilizes the Google Maps
+ * API and requires location permissions to function properly.
+ */
 // https://stackoverflow.com/questions/18386750/map-activity-in-android
 // https://www.geeksforgeeks.org/google-maps-in-android/
 // https://www.youtube.com/watch?v=JzxjNNCYt_o

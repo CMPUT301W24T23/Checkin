@@ -446,4 +446,23 @@ public class OrganizerViewTest {
 
     }
 
+
+    // Test for Event Details
+    @Test
+    public void testEventDetails() {
+        onView(withId(R.id.organizerbtn)).perform(click());
+        onView(withId(R.id.addeventbtn)).perform(click());
+        onView(withId(R.id.etEventdetails)).perform(ViewActions.typeText("This is a test event."));
+        onView(withId(R.id.etEventdetails)).check(matches(withText("This is a test event.")));
+    }
+
+    // Test for Event Location
+    @Test
+    public void testEventLocation() {
+        onView(withId(R.id.organizerbtn)).perform(click());
+        onView(withId(R.id.addeventbtn)).perform(click());
+        onView(withId(R.id.etlocation)).perform(ViewActions.typeText("Test Location"));
+        onView(withId(R.id.etlocation)).check(matches(withText("Test Location")));
+    }
+
 }

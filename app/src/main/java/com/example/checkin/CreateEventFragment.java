@@ -10,6 +10,8 @@
 // https://www.youtube.com/watch?v=pHCZpw9JQHk&t=492s
 package com.example.checkin;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -45,10 +47,15 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -61,6 +68,8 @@ import java.util.Date;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
+
 //represents a class that allows for new events to be created
 public class CreateEventFragment extends Fragment {
 
@@ -89,6 +98,13 @@ public class CreateEventFragment extends Fragment {
     private EditText eventlocation;
     private EditText attendeeCap;
     private Switch switchVisible;
+    private boolean Existingqrcode;
+
+    private boolean usedQR = false;
+    private String retrievedQRCodeID;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
@@ -191,11 +207,16 @@ public class CreateEventFragment extends Fragment {
                 event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
                 //get details if any
 
+
+                if (Existingqrcode == true) {
+                    //retrieveDeletedCodes(android_id, event);
+                    event.setQrcodeid(retrievedQRCodeID);
+                }
+
                 if (createqr == true) {
                     String qrcodevalue = generateQRCode(event, qrcodeimage);
                     event.setQrcodeid(qrcodevalue);
                 }
-
                 //convert image to string and add to event
                 if (posterAdded) {
                     event.setPoster(encoder.BitmapToBase64(poster));
@@ -225,16 +246,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        qrcodebutton.setOnClickListener(view12 -> {
-            qrCodeOptionSelected = true;
-            qrcodebutton.setBackgroundColor(Color.GRAY);
-            // Your existing code for generating QR code
-        });
 
-        btnUseExistingQR.setOnClickListener(view12 -> {
-            qrCodeOptionSelected = true;
-            // Your code for using an existing QR code
-        });
 
         addeventbutton.setOnClickListener(view13 -> {
             String eventName = eventname.getText().toString().trim();
@@ -307,12 +319,17 @@ public class CreateEventFragment extends Fragment {
                 String qrcodevalue = generateQRCode(event, qrcodeimage);
                 event.setQrcodeid(qrcodevalue);
             }
+            if (Existingqrcode == true) {
+                //retrieveDeletedCodes(android_id, event);
+                event.setQrcodeid(retrievedQRCodeID);
+            }
 
             if (posterAdded) {
                 event.setPoster(encoder.BitmapToBase64(poster));
             } else {
                 event.setPoster("");
             }
+
 
             database.updatePoster(event.getPoster(), event.getEventId());
 
@@ -345,6 +362,17 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        btnUseExistingQR.setOnClickListener(view12 -> {
+            qrCodeOptionSelected = true;
+
+            Existingqrcode = true;
+            retrieveDeletedCodes(android_id, event);
+            btnUseExistingQR.setBackgroundColor(Color.GRAY);
+            // Your code for using an existing QR code
+
+        });
+
+
         eventTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -361,6 +389,18 @@ public class CreateEventFragment extends Fragment {
 
         return view;
 
+    }
+
+    public Bitmap generateQRCodeBitmap(String qrCodeValue) {
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            BitMatrix matrix = writer.encode(qrCodeValue, BarcodeFormat.QR_CODE, 600, 600);
+            BarcodeEncoder encoder = new BarcodeEncoder();
+            return encoder.createBitmap(matrix);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -473,5 +513,67 @@ public class CreateEventFragment extends Fragment {
         datePickerDialog.show();
     }
 
+    /**
+     * Retrieve the deleted QR Codes that match this organizer ID
+     * @param OrgId
+     * the current organizer's ID
+     */
+    public void retrieveDeletedCodes(String OrgId, Event event) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference colRef = db.collection("DeletedQR");
+        Database fireBase = new Database();
+        colRef.whereEqualTo("Organizer", OrgId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().isEmpty()) {
+                        // No QR codes found matching the organizer ID
+                        Toast.makeText(getContext(), "No QR Codes to Reuse, Please Select Generate QR Code", Toast.LENGTH_LONG).show();
+                        btnUseExistingQR.setBackgroundColor(Color.LTGRAY);
+                        Existingqrcode = false;
+
+                    } else {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            if (usedQR) {
+                                return;
+                            }
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            //retrieve first document
+                            usedQR = true;
+                            Map<String, String> retrievedQR = fireBase.retrieveDeletedQR(document);
+                            retrievedQRCodeID = retrievedQR.get("DeletedQR");
+                            System.out.println("QR CODE VALUE" + retrievedQRCodeID);
+
+                            deleteQRCode(retrievedQRCodeID);
+                            Log.d("Retrieve Deleted QR", String.format("Retrieved deleted QR Code %s", retrievedQRCodeID));
+
+                        }
+                    }
+                } else {
+                    //Toast.makeText(getContext(), "No Qr Codes to Reuse, Please Select Generate QR Code", Toast.LENGTH_LONG).show();
+
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void deleteQRCode(String QRCodeId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("DeletedQR").document(QRCodeId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
+    }
 
 }

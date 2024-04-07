@@ -70,10 +70,9 @@ public class OrganizerView extends AppCompatActivity {
                             .replace(R.id.org_view, org_frag1, "organizer_fragment_tag")
                             .commit();
                     return true;
+                }
 
-                } else if (item.getItemId() == R.id.qrcodes) {
-                    // implement when fragment is added
-                } else if (item.getItemId() == R.id.messages) {
+                 else if (item.getItemId() == R.id.messages) {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.org_view, messageopt_frag)

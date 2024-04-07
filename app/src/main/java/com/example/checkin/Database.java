@@ -377,7 +377,7 @@ public class Database {
     public Map<String, String> retrieveDeletedQR(DocumentSnapshot doc){
         Map<String, String> data = new HashMap<>();
         String org = doc.getString("Organizer");
-        String code = doc.getString("DeletedQR");
+        String code = doc.getId();
         data.put("Organizer", org);
         data.put("DeletedQR", code);
 

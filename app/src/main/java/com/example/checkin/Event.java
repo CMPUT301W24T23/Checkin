@@ -48,6 +48,7 @@ public class Event implements Serializable {
     private String location;
     private String attendeeCap;
 
+
     private AttendeeList Subscribers = new AttendeeList();
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
@@ -346,6 +347,10 @@ public class Event implements Serializable {
 
     public void setAttendeeCap(String attendeeCap) {
         this.attendeeCap = attendeeCap;
+    }
+
+    public String getQRCode() {
+            return qrcodeid;
     }
 }
 

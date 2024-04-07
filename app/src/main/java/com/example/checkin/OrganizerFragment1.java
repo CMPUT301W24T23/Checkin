@@ -54,6 +54,9 @@ public class OrganizerFragment1 extends Fragment {
 
     RelativeLayout maincontent;
 
+    // List to store deleted QR codes
+    private ArrayList<String> deletedQRCodes = new ArrayList<>();
+
     // Shows the Organizer Home page, which includes list of events
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +68,13 @@ public class OrganizerFragment1 extends Fragment {
         maincontent = view.findViewById(R.id.maincontent);
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnavbar);
         bottomNavigationView.setVisibility(View.GONE);
+
+        // Retrieve the previously deleted QR code IDs from SharedPreferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        Set<String> previousDeletedQRCodes = sharedPreferences.getStringSet("deletedQRCodes", new HashSet<>());
+
+        // Add the previous QR code IDs to the deletedQRCodes array
+        deletedQRCodes.addAll(previousDeletedQRCodes);
 
         SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getContext());
         int attendeeCount = preferences2.getInt("attendeeCount", 0);
@@ -224,15 +234,19 @@ public class OrganizerFragment1 extends Fragment {
 
     // Deletes an event
     private void deleteEvent(Event event) {
-        String eventId = event.getEventId();
-        organizer.removeEvent(eventId);
+        String qrCodeid = event.getQRCode();
+        organizer.removeEvent(event.getEventId());
         allevents.removeEvent(event);
+
+        // Upload the QR code to the DeletedQR collection in Firebase
+        Database database = new Database();
+        database.uploadDeletedQR(qrCodeid, organizer.getOrganizerId());
+
         EventAdapter.notifyDataSetChanged(); // Refresh the list
-        db.collection("Events").document(eventId).delete()
+        db.collection("Events").document(event.getEventId()).delete()
                 .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
     }
-
 
     /**
      * Checks if an event has reached any milestones

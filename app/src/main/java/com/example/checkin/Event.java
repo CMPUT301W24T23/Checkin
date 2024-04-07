@@ -6,11 +6,6 @@ The class supports QR code and poster management.
  */
 package com.example.checkin;
 
-import android.media.Image;
-import android.util.Log;
-
-import com.example.checkin.AttendeeList;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * This class outlines an Event object that stores all the information needed for an event
@@ -47,19 +41,23 @@ public class Event implements Serializable {
 
     private String location;
     private String attendeeCap;
+    private Map<String, String> userCheckInLocation;
+
 
 
     private AttendeeList Subscribers = new AttendeeList();
+    private AttendeeList CheckInList = new AttendeeList();
+
     //Notation: "Subscribers" refers attendees who
     //are 'subscribed' to receive event notifications
     private String creator;     //The organizer who created this event
 
-    private AttendeeList CheckInList = new AttendeeList();
-    //attendees CURRENTLY checked in to the event
 
     public Event(String eventname, String eventdetails, ArrayList<Attendee> checkInList) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
+        this.userCheckInLocation = new HashMap<>();
+
 
     }
 
@@ -94,6 +92,8 @@ public class Event implements Serializable {
         this.poster = "";
         this.CheckInsId = new Hashtable<>();
         this.attendeeCap = "";
+        this.userCheckInLocation = new Hashtable<>();
+
     }
 
     /**
@@ -266,11 +266,6 @@ public class Event implements Serializable {
             this.eventdetails = eventDetails;
         }
 
-        public void setCheckInList (AttendeeList checkInList){
-            CheckInList = checkInList;
-        }
-
-
         public String getPoster () {
             return poster;
         }
@@ -347,6 +342,14 @@ public class Event implements Serializable {
 
     public void setAttendeeCap(String attendeeCap) {
         this.attendeeCap = attendeeCap;
+    }
+
+    public void setUserCheckInLocation(Map<String, String> userCheckInLocation) {
+        this.userCheckInLocation = userCheckInLocation;
+    }
+
+    public Map<String, String> getUserCheckInLocation() {
+        return userCheckInLocation;
     }
 
     public String getQRCode() {

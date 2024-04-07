@@ -234,37 +234,19 @@ public class OrganizerFragment1 extends Fragment {
 
     // Deletes an event
     private void deleteEvent(Event event) {
-        String eventId = event.getEventId();
         String qrCodeid = event.getQRCode();
-        organizer.removeEvent(eventId);
+        organizer.removeEvent(event.getEventId());
         allevents.removeEvent(event);
-        //deletedQRCodes.add(qrCodeid);
 
-        // Retrieve the previously deleted QR code IDs from SharedPreferences
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        Set<String> previousDeletedQRCodes = sharedPreferences.getStringSet("deletedQRCodes", new HashSet<>());
+        // Upload the QR code to the DeletedQR collection in Firebase
+        Database database = new Database();
+        database.uploadDeletedQR(qrCodeid, organizer.getOrganizerId());
 
-        // Add the new QR code ID to the set
-        previousDeletedQRCodes.add(qrCodeid);
-
-        // Save the updated set in SharedPreferences
-        sharedPreferences.edit().putStringSet("deletedQRCodes", previousDeletedQRCodes).apply();
-        // Log the updated set of deleted QR code IDs
-        Log.d("Deleted QR Codes", "Updated List:");
-        for (String code : previousDeletedQRCodes) {
-            Log.d("Deleted QR Codes", code);
-        }
-        Log.d("Deleted QR Codes", "List size: " + previousDeletedQRCodes.size());
-
-
-//        Log.d("Deleted QR Codes", "QR Code ID added to the list: " + qrCodeid);
-//        Log.d("Deleted QR Codes", "Current count: " + deletedQRCodes.size());
         EventAdapter.notifyDataSetChanged(); // Refresh the list
-        db.collection("Events").document(eventId).delete()
+        db.collection("Events").document(event.getEventId()).delete()
                 .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
     }
-
 
     /**
      * Checks if an event has reached any milestones

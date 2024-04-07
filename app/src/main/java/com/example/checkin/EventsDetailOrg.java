@@ -1,10 +1,19 @@
+/**
+ * Fragment for displaying event details and managing event actions for organizers.
+ * Allows organizers to view and edit event details, manage attendees, and interact with event features.
+ */
+//https://www.youtube.com/watch?v=mbQd6frpC3g
+//https://developer.android.com/develop/sensors-and-location/location/retrieve-current
+//https://stackoverflow.com/questions/10311834/how-to-check-if-location-services-are-enabled
+//https://medium.com/@grudransh1/best-way-to-get-users-location-in-android-app-using-location-listener-from-java-in-android-studio-77882f8b87fd
+//https://www.geeksforgeeks.org/how-to-get-user-location-in-android/
+
 package com.example.checkin;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -18,14 +27,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Map;
 
 // Shows event information for an organizer
 public class EventsDetailOrg extends Fragment {
     Button attendeelistbutton;
     Button qrcodebutton;
+    private String userId;
     Event myevent;
     EditText eventnametxt;
     EditText eventdetails;
@@ -41,6 +53,7 @@ public class EventsDetailOrg extends Fragment {
     EditText attendeeCap;
 
     Button savebutton;
+    private Button checkInLocation;
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -97,6 +110,7 @@ public class EventsDetailOrg extends Fragment {
 //=======
                     View view = inflater.inflate(R.layout.fragment_events_detail_org, container, false);
                     // Inflate the layout for this fragment
+                    checkInLocation = view.findViewById(R.id.checkin_location_btn);
                     attendeelistbutton = (Button) view.findViewById(R.id.attendeeslistbtn);
                     qrcodebutton = (Button) view.findViewById(R.id.codebtn);
                     backbutton = view.findViewById(R.id.backbtn);
@@ -128,6 +142,24 @@ public class EventsDetailOrg extends Fragment {
                     eventlocation.setText(location);
                     attendeeCap.setText(myevent.getAttendeeCap());
 
+                    // Display user check-in locations if available
+                    Map<String, String> checkInLocations = myevent.getUserCheckInLocation();
+                    if (checkInLocations != null) {
+                        String locationString = "";
+                        for (Map.Entry<String, String> entry : checkInLocations.entrySet()) {
+                            locationString += entry.getKey() + ": " + entry.getValue() + "\n";
+                        }
+                        checkInLocation.setText(locationString);
+                    } else {
+                        checkInLocation.setText("No check-in locations available");
+                    }
+
+                    checkInLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Handle check-in location button click
+                        }
+                    });
 
                     if (myevent.getPoster().equals("")) {
                         //no poster for this event

@@ -351,7 +351,7 @@ public class Event implements Serializable {
     public Map<String, String> getUserCheckInLocation() {
         return userCheckInLocation;
     }
-    
+
     public String getQRCode() {
             return qrcodeid;
     }

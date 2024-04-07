@@ -118,4 +118,8 @@ public class Organizer implements User, Serializable {
     public void removeEvent(String eventId) {
         CreatedEvents.remove(eventId);
     }
+
+    public String getOrganizerId() {
+        return userId;
+    }
 }

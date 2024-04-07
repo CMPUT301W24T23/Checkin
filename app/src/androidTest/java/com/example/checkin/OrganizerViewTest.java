@@ -446,6 +446,37 @@ public class OrganizerViewTest {
 
     }
 
+    // Test for Event Name
+    @Test
+    public void testEventName() {
+        onView(withId(R.id.organizerbtn)).perform(click());
+        onView(withId(R.id.addeventbtn)).perform(click());
+        onView(withId(R.id.etEventName)).perform(ViewActions.typeText("Test Event"));
+        onView(withId(R.id.etEventName)).check(matches(withText("Test Event")));
+    }
+
+    // Test for Event Time
+    @Test
+    public void testEventTime() {
+        onView(withId(R.id.organizerbtn)).perform(click());
+        onView(withId(R.id.addeventbtn)).perform(click());
+        onView(withId(R.id.etEventTime)).perform(click());
+        // Assume the time picker is set to 12:00 by default
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.etEventTime)).check(matches(withText("12:00")));
+    }
+
+    // Test for Event Date
+    @Test
+    public void testEventDate() {
+        onView(withId(R.id.organizerbtn)).perform(click());
+        onView(withId(R.id.addeventbtn)).perform(click());
+        onView(withId(R.id.etEventDate)).perform(click());
+        // Assume the date picker is set to a specific date (e.g., "Sep 8, 2024") by default
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.etEventDate)).check(matches(withText("Sep 8, 2024")));
+    }
+
 
     // Test for Event Details
     @Test

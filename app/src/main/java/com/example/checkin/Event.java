@@ -44,6 +44,7 @@ public class Event implements Serializable {
     private Map<String, String> userCheckInLocation;
 
 
+
     private AttendeeList Subscribers = new AttendeeList();
     private AttendeeList CheckInList = new AttendeeList();
 
@@ -350,7 +351,9 @@ public class Event implements Serializable {
     public Map<String, String> getUserCheckInLocation() {
         return userCheckInLocation;
     }
-
-
+    
+    public String getQRCode() {
+            return qrcodeid;
+    }
 }
 

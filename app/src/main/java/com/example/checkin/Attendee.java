@@ -45,6 +45,7 @@ public class Attendee implements User, Serializable {
     private String email;
     private String phoneNumber;
     private Map<String, String> SubList = new Hashtable<>();
+    private String checkInLocation;
 
     public Attendee(String name) {
         this.name = name;
@@ -300,4 +301,15 @@ public class Attendee implements User, Serializable {
     public void setHasDefaultAvi(boolean hasDefaultAvi) {
         this.hasDefaultAvi = hasDefaultAvi;
     }
+
+    public String getCheckInLocation() {
+        return checkInLocation;
+    }
+
+    public void setCheckInLocation(String checkInLocation) {
+        this.checkInLocation = checkInLocation;
+    }
+
+
+
 }

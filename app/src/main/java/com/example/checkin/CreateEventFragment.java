@@ -207,13 +207,15 @@ public class CreateEventFragment extends Fragment {
                 event = new Event(eventname.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID));
                 //get details if any
 
+
+                if (Existingqrcode == true) {
+                    //retrieveDeletedCodes(android_id, event);
+                    event.setQrcodeid(retrievedQRCodeID);
+                }
+
                 if (createqr == true) {
                     String qrcodevalue = generateQRCode(event, qrcodeimage);
                     event.setQrcodeid(qrcodevalue);
-                }
-
-                if (Existingqrcode == true) {
-                    retrieveDeletedCodes(android_id, event);
                 }
                 //convert image to string and add to event
                 if (posterAdded) {
@@ -318,7 +320,8 @@ public class CreateEventFragment extends Fragment {
                 event.setQrcodeid(qrcodevalue);
             }
             if (Existingqrcode == true) {
-                retrieveDeletedCodes(android_id, event);
+                //retrieveDeletedCodes(android_id, event);
+                event.setQrcodeid(retrievedQRCodeID);
             }
 
             if (posterAdded) {
@@ -363,7 +366,8 @@ public class CreateEventFragment extends Fragment {
             qrCodeOptionSelected = true;
 
             Existingqrcode = true;
-            //retrieveDeletedCodes(android_id, event);
+            retrieveDeletedCodes(android_id, event);
+            btnUseExistingQR.setBackgroundColor(Color.GRAY);
             // Your code for using an existing QR code
 
         });
@@ -518,27 +522,36 @@ public class CreateEventFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference colRef = db.collection("DeletedQR");
         Database fireBase = new Database();
-        //colRef.whereEqualTo("Organizer", OrgId)
-                colRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        colRef.whereEqualTo("Organizer", OrgId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (usedQR){
-                            return;
-                        }
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-                        //retrieve first document
-                        usedQR = true;
-                        Map<String, String> retrievedQR = fireBase.retrieveDeletedQR(document);
-                        retrievedQRCodeID = retrievedQR.get("DeletedQR");
-                        System.out.println("QR CODE VALUE" + retrievedQRCodeID);
-                        event.setQrcodeid(retrievedQRCodeID);
-                        deleteQRCode(retrievedQRCodeID);
-                        Log.d("Retrieve Deleted QR", String.format("Retrieved deleted QR Code %s", retrievedQRCodeID));
+                    if (task.getResult().isEmpty()) {
+                        // No QR codes found matching the organizer ID
+                        Toast.makeText(getContext(), "No QR Codes to Reuse, Please Select Generate QR Code", Toast.LENGTH_LONG).show();
+                        btnUseExistingQR.setBackgroundColor(Color.LTGRAY);
+                        Existingqrcode = false;
 
+                    } else {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            if (usedQR) {
+                                return;
+                            }
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            //retrieve first document
+                            usedQR = true;
+                            Map<String, String> retrievedQR = fireBase.retrieveDeletedQR(document);
+                            retrievedQRCodeID = retrievedQR.get("DeletedQR");
+                            System.out.println("QR CODE VALUE" + retrievedQRCodeID);
+
+                            deleteQRCode(retrievedQRCodeID);
+                            Log.d("Retrieve Deleted QR", String.format("Retrieved deleted QR Code %s", retrievedQRCodeID));
+
+                        }
                     }
                 } else {
+                    //Toast.makeText(getContext(), "No Qr Codes to Reuse, Please Select Generate QR Code", Toast.LENGTH_LONG).show();
+
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }

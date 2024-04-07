@@ -142,17 +142,6 @@
         android:onClick="onSaveButtonClick"
         android:text="Save" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomnavbar2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:itemBackground="@color/lightpink"
-        android:background="@color/lightpink"
-        app:itemTextColor="@color/black"
-        app:itemIconTint="@drawable/selection"
-        android:layout_gravity="bottom"
-        app:menu="@menu/attendeemenu" />
-
 
 
     <!-- Will add more UI elements as needed -->

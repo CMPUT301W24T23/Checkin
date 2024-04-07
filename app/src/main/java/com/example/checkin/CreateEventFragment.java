@@ -97,9 +97,6 @@ public class CreateEventFragment extends Fragment {
     private EditText attendeeCap;
     private Switch switchVisible;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference deletedQRRef = db.collection("DeletedQR");
-    private boolean useExistingQRCode = false;
-    private String existingQRCodeId = "";
 
 
 
@@ -246,37 +243,7 @@ public class CreateEventFragment extends Fragment {
         btnUseExistingQR.setOnClickListener(view12 -> {
             qrCodeOptionSelected = true;
             // Your code for using an existing QR code
-            useExistingQRCode = true;
-            if (existingQRCodeId != null && !existingQRCodeId.isEmpty()) {
-                // Load and display the existing QR code image
-                String qrCodeValue = existingQRCodeId; // Use the existing QR code ID
-                Bitmap qrCodeBitmap = generateQRCodeBitmap(qrCodeValue); // Generate bitmap for the QR code
-                uniqueqrcodeimage.setImageBitmap(qrCodeBitmap); // Display the QR code image
-            }
 
-            // Access the values of the DeletedQR collection
-            deletedQRRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        // Access the document ID
-                        String qrCodeId = documentSnapshot.getId();
-                        Log.d(TAG, "QR Code ID: " + qrCodeId);
-
-                        // Access other fields in the document
-                        String organizerId = documentSnapshot.getString("Organizer");
-                        Log.d(TAG, "Organizer ID: " + organizerId);
-
-                        // Use the data as needed
-                        // For example, add the data to a list or display it in your UI
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error getting documents.", e);
-                }
-            });
         });
 
 

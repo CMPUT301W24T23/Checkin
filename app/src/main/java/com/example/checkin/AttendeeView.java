@@ -214,7 +214,7 @@ public class AttendeeView extends AppCompatActivity {
                                                 }
                                             });
 
-                                            EventDetailAtten eventfragment = new EventDetailAtten();
+                                            signedupeventdetail eventfragment = new signedupeventdetail();
                                             Bundle args = new Bundle();
                                             args.putSerializable("event", event);
                                             eventfragment.setArguments(args);

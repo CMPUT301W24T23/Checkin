@@ -178,6 +178,7 @@
         android:layout_below="@+id/switchSignUpLimit"
         android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/bluegreen"
         android:text="Create Event" />
 
     <EditText

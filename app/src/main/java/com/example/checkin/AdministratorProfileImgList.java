@@ -109,19 +109,22 @@ public class AdministratorProfileImgList extends Fragment {
         listView.setAdapter(imageAdapter);
 
         // Retrieve images from Firestore
-        imagesCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("Attendees").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String imageString = document.getString("Image"); // Assuming the field name is "image"
+                        String imageString = document.getString("ProfilePic"); // Assuming the field name is "image"
+                        Boolean hasDefaultAvi = document.getBoolean("HasDefaultAvi"); // Checks if the profile pic is auto-gen or not.
 
                         if (imageString != null) {
-                            // Convert string to bitmap and add to the list
-                            Bitmap bitmap = imageEncoder.base64ToBitmap(imageString);
-//                            Bitmap bitmap1 = resizeBitmap(bitmap, 20, 20);
-                            if (bitmap != null) {
-                                imageAdapter.add(bitmap);
+                            if (Boolean.FALSE.equals(hasDefaultAvi)){
+                                // Convert string to bitmap and add to the list
+                                Bitmap bitmap = imageEncoder.base64ToBitmap(imageString);
+    //                            Bitmap bitmap1 = resizeBitmap(bitmap, 20, 20);
+                                if (bitmap != null) {
+                                    imageAdapter.add(bitmap);
+                                }
                             }
                         }
                     }

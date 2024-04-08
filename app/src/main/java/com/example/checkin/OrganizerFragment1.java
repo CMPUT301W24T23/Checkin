@@ -142,11 +142,14 @@ public class OrganizerFragment1 extends Fragment {
                                 public View getView(int position, View convertView, ViewGroup parent) {
                                     View view = convertView;
                                     if (view == null) {
-                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                        view = inflater.inflate(R.layout.content, null);
+//                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                                        view = inflater.inflate(R.layout.admin_list_layout, null);
+                                        view = LayoutInflater.from(getContext()).inflate(R.layout.admin_list_layout, parent, false);
+
+
                                     }
 
-                                    TextView textView = view.findViewById(R.id.event_text);
+                                    TextView textView = view.findViewById(R.id.admin_text_view);
                                     textView.setText(allevents.getEvents().get(position).getEventname());
                                     return view;
                                 }

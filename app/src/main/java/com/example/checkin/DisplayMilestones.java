@@ -36,6 +36,15 @@ public class DisplayMilestones extends Fragment {
     private MessageAdapter Announcements_Adapter;
     Button backbutton;
 
+    /**
+     * Inflates the layout for the display milestones fragment.
+     * Retrieves and displays milestones (messages) associated with the organizer's events.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState A Bundle containing the saved state of the fragment.
+     * @return The inflated View for the fragment's UI.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

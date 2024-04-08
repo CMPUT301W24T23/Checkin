@@ -32,14 +32,21 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.Map;
 
-// Represents the Attendee Perspective of the app
+/*
+ Represents the Attendee Perspective of the app
+ */
 public class AttendeeView extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private static final int PERMISSION_REQUEST_NOTIFICATION = 2;
     private FirebaseFirestore db;
 
-
-
+    /**
+     * Initializes the activity and sets up its layout and functionality.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +119,18 @@ public class AttendeeView extends AppCompatActivity {
 
     }
 
+    /**
+     * Called when the result of an activity launched for result is received.
+     * This method is invoked after calling startActivityForResult(Intent, int).
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
@@ -355,7 +374,12 @@ public class AttendeeView extends AppCompatActivity {
             }
         });
     }
-    // opens announcements fragment when a notification is clicked on
+
+    /**
+     * opens announcements fragment when a notification is clicked on
+     * @param intent The new intent that was started for the activity.
+     *
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -379,6 +403,11 @@ public class AttendeeView extends AppCompatActivity {
 
     }
 
+    /**
+     * Checks if the provided QR code content corresponds to an event.
+     * @param qrCodeContent
+     * @return
+     */
     private boolean isEventQRCode(String qrCodeContent) {
         // Return true if it's an event QR code, false otherwise
         Database database = new Database();
@@ -406,7 +435,6 @@ public class AttendeeView extends AppCompatActivity {
     /**
      * start qr scan when scan qr code option is selected
      */
-
     //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
     private void startQRScan() {
         IntentIntegrator integrator = new IntentIntegrator(this);
@@ -416,6 +444,16 @@ public class AttendeeView extends AppCompatActivity {
         integrator.initiateScan();
     }
 
+    /**
+     * Callback for the result of requesting permissions. This method is invoked when the user responds
+     * to the permission request dialog.
+     * @param requestCode The request code passed in
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     *
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

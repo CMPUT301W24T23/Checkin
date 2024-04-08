@@ -24,7 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 
-// Fragment that represents event details for an event signed up for
+/*
+ Fragment that represents event details for an event signed up for
+ */
 public class signedupeventdetail extends Fragment {
 
     Event myevent;
@@ -42,6 +44,14 @@ public class signedupeventdetail extends Fragment {
     private FirebaseFirestore db;
 
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to. The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -140,6 +150,11 @@ public class signedupeventdetail extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches attendee data from Firestore for the current user.
+     *
+     * @param onSuccessListener Listener to handle successful attendee retrieval.
+     */
     private void fetchAttendee(OnSuccessListener<Attendee> onSuccessListener) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
@@ -165,6 +180,7 @@ public class signedupeventdetail extends Fragment {
             }
         });
     }
+
     /**
      * Retrieve attendee and sub/check in to the event
      * @param id
@@ -201,8 +217,4 @@ public class signedupeventdetail extends Fragment {
             }
         });
     }
-
-
-
-
 }

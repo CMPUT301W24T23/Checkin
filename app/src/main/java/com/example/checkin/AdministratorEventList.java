@@ -104,9 +104,6 @@ public class AdministratorEventList extends Fragment {
                                     if (view == null) {
 
                                         view = LayoutInflater.from(getContext()).inflate(R.layout.admin_list_layout, parent, false);
-//                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                                        // Sets the view to the content layout.
-//                                        view = inflater.inflate(R.layout.content, null);
                                     }
 
                                     // Setting the text of content layout to the name of the event.

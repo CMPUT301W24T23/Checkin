@@ -39,6 +39,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+This class is responsible for showing the list of the profile images of all the attendees/users signed in to the app.
+ */
 public class AdministratorProfileImgList extends Fragment {
 
     private FirebaseFirestore db;
@@ -50,6 +53,19 @@ public class AdministratorProfileImgList extends Fragment {
     CollectionReference attendeeProfileCollectionRef;
     String finalNewPic;
 
+    /**
+     * Inflates the layout showing the list of the profile pics providing the functionality of deleting them when
+     * long pressed on that particular profile pic.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout and represent the list of events.
@@ -131,7 +147,11 @@ public class AdministratorProfileImgList extends Fragment {
 
     }
 
-    private void deleteProfilePic(Bitmap profilePic){
+    /**
+     * Function responsible of deleting the selected profile picture.
+     * @param profilePic : Profile picture selected to delete.
+     */
+    private void deleteProfilePic(Bitmap profilePic) {
         String profilePic2 = imageEncoder.BitmapToBase64(profilePic);
         imageAdapter.remove(profilePic);
         imageAdapter.notifyDataSetChanged();
@@ -147,9 +167,7 @@ public class AdministratorProfileImgList extends Fragment {
                         String imageString = document.getString("ProfilePic"); // Assuming the field name is "image"
 
                         assert imageString != null;
-                        if (imageString.equals(profilePic2)){
-//                             Convert string to bitmap and add to the list
-//                            document.getReference().update("ProfilePic", "");
+                        if (imageString.equals(profilePic2)) {
 
                             String name = document.getString("Name");
                             if (name != null) {
@@ -174,8 +192,7 @@ public class AdministratorProfileImgList extends Fragment {
                                                 Log.e(TAG, "Error updating profile picture", e);
                                             }
                                         });
-                            }
-                            else {
+                            } else {
                                 Log.d(TAG, "Error generating default image (No Name).");
                             }
 
@@ -203,189 +220,5 @@ public class AdministratorProfileImgList extends Fragment {
                 }
             }
         });
-//
-//        db.collection("ProfilePics")
-//        .whereEqualTo("Image", profilePic2)
-//        .get()
-//        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @SuppressLint("RestrictedApi")
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                        document.getReference().delete();
-//                        Log.d(TAG, "Deleted Profile Pic");
-//                    }
-//                } else {
-//                    Log.d(TAG, "Error getting documents: ", task.getException());
-//                }
-//            }
-//        });
-//
-//        db.collection("Attendees")
-//        .whereEqualTo("ProfilePic", profilePic2)
-//        .get()
-//        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                        document.getReference().delete();
-//                        imageAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//            }
-//        });
-//
-
-
-
-
-
-
     }
-
- //
-//    @Override
-//    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        setupSwipeGesture();
-//    }
-//
-//
-//    // CHATGPT 3.5
-//    @SuppressLint("ClickableViewAccessibility")
-//    private void setupSwipeGesture() {
-//        listView.setOnTouchListener(new View.OnTouchListener() {
-//            private float startX;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        startX = event.getX();
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        float endX = event.getX();
-//                        float deltaX = endX - startX;
-//
-//                        // Determine if it's a swipe
-//                        if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > SWIPE_VELOCITY_THRESHOLD) {
-//                            if (deltaX < 0) {
-//                                // Left swipe
-//                                int position = listView.pointToPosition((int) event.getX(), (int) event.getY());
-//                                if (position != ListView.INVALID_POSITION) {
-//                                    Bitmap profilePic = imageAdapter.getItem(position);
-//
-//                                    // Show confirmation dialog
-//                                    new AlertDialog.Builder(requireContext())
-//                                            .setTitle("Delete Attendee")
-//                                            .setMessage("Are you sure you want to delete this Profile Pic?")
-//
-//                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(DialogInterface dialog, int which) {
-//                                                    // User confirmed deletion
-//                                                    // Remove the attendee from the adapter
-//                                                    imageAdapter.remove(profilePic);
-//                                                    // Notify adapter about the removal
-//                                                    imageAdapter.notifyDataSetChanged();
-//                                                    String profilePic2 = imageEncoder.BitmapToBase64(profilePic);
-//
-//                                                    // Delete the profile pic from the field "ProfilePics"
-//                                                    db.collection("ProfilePics")
-//                                                            .whereEqualTo("Image", profilePic2)
-//                                                            .get()
-//                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                                                @SuppressLint("RestrictedApi")
-//                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                                                    if (task.isSuccessful()) {
-//                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                                                                            document.getReference().delete();
-//                                                                            Log.d(TAG, "Deleted Profile Pic");
-//                                                                            imageAdapter.notifyDataSetChanged();
-//                                                                        }
-//                                                                    } else {
-//                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
-//                                                                    }
-//                                                                }
-//                                                            });
-//
-//                                                    // Delete the profile pic from the field "Attendees and subfield 'ProfilePic'".
-//                                                    db.collection("Attendees")
-//                                                            .whereEqualTo("ProfilePic", profilePic2)
-//                                                            .get()
-//                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                                                @Override
-//                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                                                    if (task.isSuccessful()) {
-//                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                                                                            document.getReference().delete();
-//                                                                            imageAdapter.notifyDataSetChanged();
-//                                                                        }
-//                                                                    }
-//                                                                }
-//                                                            });
-//
-//                                                    // Generates a new profile pic based on the initials of the name and replace it with the deleted profile pic.
-//                                                    db.collection("Attendees")
-//                                                            .whereEqualTo("ProfilePic", profilePic2)
-//                                                            .get()
-//                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                                                @SuppressLint("RestrictedApi")
-//                                                                @Override
-//                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                                                    if (task.isSuccessful()) {
-//                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                                                                            // Get the value of the "Name" subsection
-//                                                                            String name = document.getString("Name");
-//                                                                            if (name != null) {
-//                                                                                // Generated a new default profile pic.
-//                                                                                Bitmap newPic = userProfileFragment.generateImageWithInitials(name);
-//
-//                                                                                // Converted the bitmap to strong 64 (Compatible to firebase).
-//                                                                                String finalNewPic = imageEncoder.BitmapToBase64(newPic);
-//
-//                                                                                //
-//                                                                                document.getReference().update("ProfilePic", finalNewPic)
-//                                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                                                            @Override
-//                                                                                            public void onSuccess(Void unused) {
-//                                                                                                Log.d(TAG, "Default Profile picture generated successfully");
-//                                                                                                imageAdapter.notifyDataSetChanged();
-//                                                                                            }
-//                                                                                        }).addOnFailureListener(new OnFailureListener() {
-//                                                                                            @Override
-//                                                                                            public void onFailure(@NonNull Exception e) {
-//                                                                                                Log.e(TAG, "Error updating profile picture", e);
-//                                                                                            }
-//                                                                                        });
-//                                                                            }
-//                                                                            else {
-//                                                                                Log.d(TAG, "Error generating default image (No Name).");
-//                                                                            }
-//                                                                        }
-//                                                                    } else {
-//                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
-//                                                                    }
-//                                                                }
-//                                                            });
-//                                                }
-//                                            })
-//                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(DialogInterface dialog, int which) {
-//                                                    // User cancelled deletion
-//                                                    dialog.dismiss();
-//                                                }
-//                                            })
-//                                            .show();
-//                                }
-//                            }
-//                        }
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
-//    }
 }

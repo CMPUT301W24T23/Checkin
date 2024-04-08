@@ -7,8 +7,15 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/*
+This class sets the background layout for the rest of the administrator's fragments.
+ */
 public class AdministratorMainView extends AppCompatActivity {
     @Override
+
+    /**
+     * Deploys the frame layout fragment for the administrator.
+     */
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);

@@ -1,13 +1,4 @@
-// This class is a Fragment used to create new events. It allows the user to input event details,
-// including name, details, and upload poster image. The user can also enable/disable
-// geo-tracking for the event. The poster image can be selected from the device's gallery.
-// https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
-// https://stackoverflow.com/questions/66036757/android-location-gps-track
-// https://www.geeksforgeeks.org/how-to-manage-startactivityforresult-on-android/
-// https://www.youtube.com/watch?v=OV25x3a55pk
-// https://www.youtube.com/watch?v=bLi1qr6h4T4
-// https://www.geeksforgeeks.org/how-to-use-activityforresultluncher-as-startactivityforresult-is-deprecated-in-android/
-// https://www.youtube.com/watch?v=pHCZpw9JQHk&t=492s
+
 package com.example.checkin;
 
 import static android.content.ContentValues.TAG;
@@ -70,7 +61,21 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
-//represents a class that allows for new events to be created
+/*
+import android.widget.CheckBox;
+import android.widget.ImageView;This class is a Fragment used to create new events. It allows the user to input event details,
+including name, details, and upload poster image. The user can also enable/disable
+geo-tracking for the event. The poster image can be selected from the device's gallery.
+https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+https://stackoverflow.com/questions/66036757/android-location-gps-track
+https://www.geeksforgeeks.org/how-to-manage-startactivityforresult-on-android/
+https://www.youtube.com/watch?v=OV25x3a55pk
+https://www.youtube.com/watch?v=bLi1qr6h4T4
+https://www.geeksforgeeks.org/how-to-use-activityforresultluncher-as-startactivityforresult-is-deprecated-in-android/
+https://www.youtube.com/watch?v=pHCZpw9JQHk&t=492s
+
+represents a class that allows for new events to be created
+ */
 public class CreateEventFragment extends Fragment {
 
     private CheckBox checkBoxGeoTracking;
@@ -106,7 +111,10 @@ public class CreateEventFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-
+    /**
+     * ActivityResultLauncher to handle the result of picking an image from the device's gallery.
+     * It registers a launcher for getting content using the GetContent contract.
+     */
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
@@ -126,6 +134,18 @@ public class CreateEventFragment extends Fragment {
                 }
             });
 
+    /**
+     * Fragment for creating a new event.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
@@ -391,6 +411,12 @@ public class CreateEventFragment extends Fragment {
 
     }
 
+    /**
+     * Generates a QR code bitmap from the given QR code value.
+     *
+     * @param qrCodeValue The value to encode in the QR code.
+     * @return The generated QR code bitmap.
+     */
     public Bitmap generateQRCodeBitmap(String qrCodeValue) {
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
@@ -470,6 +496,10 @@ public class CreateEventFragment extends Fragment {
         return myText;
     }
 
+    /**
+     * Displays a time picker dialog for selecting the event time.
+     * Updates the event time EditText with the selected time.
+     */
     private void showTimePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -496,6 +526,10 @@ public class CreateEventFragment extends Fragment {
         timePickerDialog.show();
     }
 
+    /**
+     * Displays a date picker dialog for selecting the event date.
+     * Updates the event date EditText with the selected date.
+     */
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -558,6 +592,11 @@ public class CreateEventFragment extends Fragment {
         });
     }
 
+    /**
+     * Deletes a QR code document with the specified ID from the "DeletedQR" collection in Firebase Firestore.
+     *
+     * @param QRCodeId The unique ID of the QR code document to be deleted.
+     */
     public void deleteQRCode(String QRCodeId){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("DeletedQR").document(QRCodeId)

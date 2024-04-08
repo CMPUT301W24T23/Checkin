@@ -1,4 +1,3 @@
-// CHATGPT 3.5
 package com.example.checkin;
 
 import android.content.Context;
@@ -6,6 +5,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+/*
+  Detects swipe gestures on a view and triggers appropriate callbacks.
+ */
 public class OnSwipeTouchListener implements View.OnTouchListener {
 
     private final GestureDetector gestureDetector;
@@ -20,6 +22,13 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
     public void onSwipeRight() {
     }
 
+    /**
+     * Detects touch events and delegates to the gesture detector.
+     *
+     * @param v     The view that received the touch event.
+     * @param event The MotionEvent object containing full information about the event.
+     * @return True if the gesture detector consumed the event, false otherwise.
+     */
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }

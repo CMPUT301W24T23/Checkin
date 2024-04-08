@@ -51,6 +51,14 @@ public class EventDetailAtten extends Fragment {
     TextView eventlocation;
 
 
+    /**
+     * Called to create the content view for this Fragment.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate views in the fragment,
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState This fragment's previously saved state, if any.
+     * @return The View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

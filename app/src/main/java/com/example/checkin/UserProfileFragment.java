@@ -161,12 +161,14 @@ public class UserProfileFragment extends Fragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
                 && data != null && data.getData() != null) {
             imageUri = data.getData();
+
             newImage = true;
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
 
                 //resize to 100x100
                 bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+                System.out.println("bitmap" + bitmap);
 
                 myImageView.setImageBitmap(bitmap);
                 removePictureButton.setVisibility(View.VISIBLE);

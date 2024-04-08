@@ -131,8 +131,7 @@ public class AttendeeView extends AppCompatActivity {
             String qrCodeContent = intentResult.getContents();
             // retrive event related to scanned qr code, and check in attendee
             getEventDetailsFromFirebase(qrCodeContent, android_id);
-            BottomNavigationView bottomNavigationView2 = findViewById(R.id.bottomnavbar2);
-            bottomNavigationView2.setSelectedItemId(R.id.home2);
+
 
         }
     } else {

@@ -92,6 +92,7 @@ public class UserProfileFragment extends Fragment {
         editPictureButton = view.findViewById(R.id.editPictureButton);
         removePictureButton = view.findViewById(R.id.removePictureButton);
         saveButton = view.findViewById(R.id.saveButton);
+        Button backbutton = view.findViewById(R.id.backbutton);
 
 
         // Initialize other UI elements
@@ -124,6 +125,12 @@ public class UserProfileFragment extends Fragment {
 
         retrieveAttendee(currentUser.getUserId());      //query for firebase changes
 
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         //Button for saving all settings
         saveButton.setOnClickListener(new View.OnClickListener() {

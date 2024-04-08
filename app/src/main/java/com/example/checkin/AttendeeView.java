@@ -122,6 +122,7 @@ public class AttendeeView extends AppCompatActivity {
                     UserProfileFragment profileFragment = new UserProfileFragment();
                     getSupportFragmentManager()
                             .beginTransaction()
+                            .addToBackStack(null)
                             .replace(R.id.atten_view, profileFragment)
                             .commit();
                     return true;

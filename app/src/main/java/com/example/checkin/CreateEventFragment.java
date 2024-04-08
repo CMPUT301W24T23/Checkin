@@ -115,7 +115,7 @@ public class CreateEventFragment extends Fragment {
                     if (uri != null) {
                         try {
                             poster = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                            poster = Bitmap.createScaledBitmap(poster, 1000, 2000, false);
+
                             ivEventPoster.setImageBitmap(poster);
                             posterAdded = true;
                         } catch (IOException e) {

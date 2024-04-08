@@ -15,7 +15,7 @@
         android:layout_marginTop="50dp"
         android:text="Messsages Options"
         android:textColor="@color/black"
-        android:textSize="40dp" />
+        android:textSize="35sp" />
 
 
 

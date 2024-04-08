@@ -160,7 +160,7 @@ public class AdministratorPosterImgList extends Fragment {
 
                         assert imageString != null;
                         if (imageString.equals(posterPic2)){
-                            document.getReference().update("Poster", "");
+                            document.getReference().delete();
                         }
                     }
                 } else {

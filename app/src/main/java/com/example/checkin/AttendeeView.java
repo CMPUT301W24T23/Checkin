@@ -119,8 +119,7 @@ public class AttendeeView extends AppCompatActivity {
      super.onActivityResult(requestCode, resultCode, data);
     IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
     String android_id= Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-    BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar2);
-    bottomNavigationView.setSelectedItemId(R.id.home2);
+    
     // if the intentResult is null then
     // toast a message as "cancelled"
         if (intentResult != null) {

@@ -35,7 +35,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
+/**
 This Java class, named `AdministratorAttendeeList`, is responsible of generating a new fragment displaying
 the list of all the attendees/Users of the app.
  */

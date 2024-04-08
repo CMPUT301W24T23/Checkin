@@ -32,7 +32,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.List;
 import java.util.Map;
 
-// Event details page for Attendee
+/**
+Event details page for Attendee
+ */
 public class EventDetailAtten extends Fragment {
     Event myevent;
     TextView eventnametxt;

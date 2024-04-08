@@ -35,7 +35,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-/*
+/**
 `MainActivity` serves as the central hub for the event-check-in app,
 offering user-friendly navigation and dynamic ID generation based on roles.
  */

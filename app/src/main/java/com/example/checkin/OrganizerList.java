@@ -4,7 +4,7 @@ import com.example.checkin.Organizer;
 
 import java.util.ArrayList;
 
-/*
+/**
 Represents the list of Organizers.
  */
 public class OrganizerList {

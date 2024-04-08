@@ -27,7 +27,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.ArrayList;
 
 
-/*
+/**
   Class responsible for handling Firebase Cloud Messaging notifications.
  */
 public class PushNotifications extends FirebaseMessagingService {

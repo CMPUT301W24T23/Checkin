@@ -1,6 +1,6 @@
 package com.example.checkin;
 
-// displays events to select and send notifications to
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,7 +34,9 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
-
+/**
+ Displays events to select and send notifications to
+ */
 public class SelectEventMessages extends Fragment {
 
     private ArrayList<Event> datalist;

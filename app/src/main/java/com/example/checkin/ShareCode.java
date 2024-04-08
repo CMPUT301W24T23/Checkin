@@ -28,7 +28,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-/*
+/**
 A Fragment responsible for displaying and sharing a QR code.
  */
 public class ShareCode extends Fragment {

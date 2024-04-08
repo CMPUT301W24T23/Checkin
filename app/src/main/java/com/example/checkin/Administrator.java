@@ -6,10 +6,10 @@ import com.example.checkin.ImageList;
 
 import java.util.ArrayList;
 
-/*
-This Java class, named `Administrator`, provides methods to retrieve lists of users' profile pictures
-and posters used in the application.
-It utilizes an `ImageList` to access and return ArrayLists of Image objects for both profile pictures and posters.
+/**
+*This Java class, named `Administrator`, provides methods to retrieve lists of users' profile pictures
+*and posters used in the application.
+*It utilizes an `ImageList` to access and return ArrayLists of Image objects for both profile pictures and posters.
  */
 public class Administrator {
 

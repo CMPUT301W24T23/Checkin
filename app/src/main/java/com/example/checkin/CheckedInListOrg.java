@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-/*
+/**
  Shows list of checked in attendees for an event
 */
 public class CheckedInListOrg extends Fragment {

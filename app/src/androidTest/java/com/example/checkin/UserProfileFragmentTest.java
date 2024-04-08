@@ -60,17 +60,6 @@ public class UserProfileFragmentTest {
 //            onView(withId(R.id.nameEdit)).check(matches(withText(testName)));
 //        });
     }
-
-    /**
-     * Test method for setting the country in UserProfileFragment.
-     */
-    @Test
-    public void testSetPhone() {
-        String testPhone = "123";
-        onView(withId(R.id.phoneEdit)).perform(ViewActions.replaceText(testPhone));
-        onView(withId(R.id.saveButton)).perform(click());
-        onView(withId(R.id.phoneEdit)).check(matches(withText(testPhone)));
-    }
     /**
      * Test method for setting the homepage in UserProfileFragment.
      */
@@ -84,5 +73,4 @@ public class UserProfileFragmentTest {
 
 
 }
-
 

@@ -24,7 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 
-/*
+/**
  Fragment that represents event details for an event signed up for
  */
 public class signedupeventdetail extends Fragment {

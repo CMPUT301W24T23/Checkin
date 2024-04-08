@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/*
+/**
 A Fragment displaying the list of attendees signed in to an event.
  */
 public class SignedInList extends Fragment {

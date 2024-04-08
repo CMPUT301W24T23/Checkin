@@ -36,7 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-/*
+/**
  Fragment that displays all events retrieved from firebase
 */
 public class AttendeeFragment1 extends Fragment {

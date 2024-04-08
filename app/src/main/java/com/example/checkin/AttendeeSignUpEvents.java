@@ -29,7 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Map;
 
-/*
+/**
 fragment that displays all events attendee has signed up for
 */
 public class AttendeeSignUpEvents extends Fragment {

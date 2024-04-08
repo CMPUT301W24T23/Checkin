@@ -39,7 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
+/**
 This class is responsible for showing the list of the profile images of all the attendees/users signed in to the app.
  */
 public class AdministratorProfileImgList extends Fragment {

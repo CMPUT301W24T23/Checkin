@@ -76,6 +76,10 @@ https://www.youtube.com/watch?v=pHCZpw9JQHk&t=492s
 
 represents a class that allows for new events to be created
  */
+
+/**
+ * Class responsible of inflating the fragment for event creation for the organizer.
+ */
 public class CreateEventFragment extends Fragment {
 
     private CheckBox checkBoxGeoTracking;

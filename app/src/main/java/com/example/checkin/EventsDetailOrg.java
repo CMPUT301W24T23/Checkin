@@ -43,7 +43,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-// Shows event information for an organizer
+/**
+Shows event information for an organizer
+ */
 public class EventsDetailOrg extends Fragment {
     Button attendeelistbutton;
     Button qrcodebutton;

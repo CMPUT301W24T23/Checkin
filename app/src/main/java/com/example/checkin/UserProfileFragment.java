@@ -48,7 +48,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-/*
+/**
 Fragment displaying the user profile (using fragment_user_profile.xml layout)
 including profile pic, name and other information along with the functionality of
 generating, uploading profile pic based on the name initials and changing attendee information.
@@ -92,6 +92,7 @@ public class UserProfileFragment extends Fragment {
         editPictureButton = view.findViewById(R.id.editPictureButton);
         removePictureButton = view.findViewById(R.id.removePictureButton);
         saveButton = view.findViewById(R.id.saveButton);
+        Button backbutton = view.findViewById(R.id.backbutton);
 
 
         // Initialize other UI elements
@@ -124,6 +125,12 @@ public class UserProfileFragment extends Fragment {
 
         retrieveAttendee(currentUser.getUserId());      //query for firebase changes
 
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         //Button for saving all settings
         saveButton.setOnClickListener(new View.OnClickListener() {

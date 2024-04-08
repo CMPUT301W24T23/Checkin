@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-/*
+/**
 This class is responsible for executing the fragment "fragment_admin_menu" which provides the options to navigate for admin.
  */
 public class AdministratorView extends Fragment {

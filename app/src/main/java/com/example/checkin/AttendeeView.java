@@ -40,7 +40,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.Map;
 
-/*
+/**
  Represents the Attendee Perspective of the app
  */
 public class AttendeeView extends AppCompatActivity {
@@ -122,6 +122,7 @@ public class AttendeeView extends AppCompatActivity {
                     UserProfileFragment profileFragment = new UserProfileFragment();
                     getSupportFragmentManager()
                             .beginTransaction()
+                            .addToBackStack(null)
                             .replace(R.id.atten_view, profileFragment)
                             .commit();
                     return true;

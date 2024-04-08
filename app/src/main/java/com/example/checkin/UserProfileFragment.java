@@ -114,7 +114,12 @@ public class UserProfileFragment extends Fragment {
         if(!(currentUser.getProfilePicture() == "")){
             Bitmap avi = imgEncode.base64ToBitmap(currentUser.getProfilePicture());
             myImageView.setImageBitmap(avi);
-            removePictureButton.setVisibility(View.VISIBLE);
+            if(currentUser.isHasDefaultAvi()){
+                removePictureButton.setVisibility(View.GONE);
+            } else{
+                removePictureButton.setVisibility(View.VISIBLE);
+            }
+
         }
 
         retrieveAttendee(currentUser.getUserId());      //query for firebase changes
@@ -252,6 +257,7 @@ public class UserProfileFragment extends Fragment {
                 imageBase64 = imgEncode.BitmapToBase64(bitmap);
                 currentUser.setProfilePicture(imageBase64);
                 currentUser.setHasDefaultAvi(false);
+                removePictureButton.setVisibility(View.VISIBLE);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -266,10 +272,14 @@ public class UserProfileFragment extends Fragment {
             //save to cyurrent user
             imageBase64 = imgEncode.BitmapToBase64(bitmap);
             currentUser.setProfilePicture(imageBase64);
+            removePictureButton.setVisibility(View.GONE);
+
 
         } else if (!(currentUser.getProfilePicture().isEmpty())){
             //if no new image is uploaded and an image is saved locally
             imageBase64 = currentUser.getProfilePicture();
+            removePictureButton.setVisibility(View.VISIBLE);
+            currentUser.setHasDefaultAvi(false);
         } else {
             //otherwise generate a new image
             Log.d("UserProfileFragment", "Generating image with initials for name: " + name); // Add this line
@@ -289,6 +299,7 @@ public class UserProfileFragment extends Fragment {
             //save to cyurrent user
             imageBase64 = imgEncode.BitmapToBase64(bitmap);
             currentUser.setProfilePicture(imageBase64);
+            removePictureButton.setVisibility(View.GONE);
             // Log the visibility of the ImageView
             Log.d("ImageViewVisibility", "ImageView visibility after setting bitmap: " + myImageView.getVisibility());
 
@@ -296,7 +307,7 @@ public class UserProfileFragment extends Fragment {
 
 
         currentUser.setProfilePicture(imageBase64);
-        removePictureButton.setVisibility(View.VISIBLE);
+
 
         db.updateProfilePicture(imageBase64, currentUser.getUserId()); //update the image
         db.updateAttendee(currentUser);     //update user on firebase
@@ -356,7 +367,11 @@ public class UserProfileFragment extends Fragment {
         paint.setColor(Color.BLACK);            //set text color
         int xPos = (canvas.getWidth() / 2);
         int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
-        canvas.drawText(String.valueOf(name.charAt(0)), xPos - 1, yPos, paint);
+
+        if(!(name.isEmpty())){
+            canvas.drawText(String.valueOf(name.charAt(0)), xPos - 1, yPos, paint);
+        }
+
 
         // Log the content of the bitmap
         StringBuilder bitmapContent = new StringBuilder();
@@ -367,6 +382,7 @@ public class UserProfileFragment extends Fragment {
             }
             bitmapContent.append("\n");
         }
+
         Log.d("BitmapContent", "Bitmap content:\n" + bitmapContent.toString());
         Log.d("BitmapSize", "Bitmap width: " + bitmap.getWidth() + ", height: " + bitmap.getHeight());
 
@@ -378,6 +394,7 @@ public class UserProfileFragment extends Fragment {
 
         return bitmap;
     }
+
 
     /**
      * Validates an email address.
@@ -427,6 +444,12 @@ public class UserProfileFragment extends Fragment {
                         phoneEdit.setText(currentUser.getPhoneNumber());
                         locationBox.setChecked(currentUser.trackingEnabled());
 
+                        if (currentUser.isHasDefaultAvi()){
+                            removePictureButton.setVisibility(View.GONE);
+                        } else {
+                            removePictureButton.setVisibility(View.VISIBLE);
+                        }
+
                         Bitmap bitmap = imgEncode.base64ToBitmap(currentUser.getProfilePicture());
                         myImageView.setImageBitmap(bitmap);
 
@@ -458,9 +481,8 @@ public class UserProfileFragment extends Fragment {
         currentUser.setEmail(preferences.getString("Email", ""));
         currentUser.setHomepage(preferences.getString("Homepage", ""));
         currentUser.setPhoneNumber(preferences.getString("Phone", ""));
-        if(!(currentUser.trackingEnabled() == preferences.getBoolean("Tracking", false))){
-            currentUser.toggleTracking();
-        }
+        currentUser.setGeoTracking(preferences.getBoolean("Tracking", false));
+        currentUser.setHasDefaultAvi(preferences.getBoolean("DefaultAvi", false));
 
         currentUser.setProfilePicture(preferences.getString("ProfilePic", ""));
     }
@@ -477,6 +499,7 @@ public class UserProfileFragment extends Fragment {
         editor.putString("Homepage", currentUser.getHomepage());
         editor.putString("Phone", currentUser.getPhoneNumber());
         editor.putBoolean("Tracking", currentUser.trackingEnabled());
+        editor.putBoolean("DefaultAvi", currentUser.isHasDefaultAvi());
         editor.putString("ProfilePic", currentUser.getProfilePicture());
         editor.apply();
     }

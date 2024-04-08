@@ -57,7 +57,15 @@ public class OrganizerFragment1 extends Fragment {
     // List to store deleted QR codes
     private ArrayList<String> deletedQRCodes = new ArrayList<>();
 
-    // Shows the Organizer Home page, which includes list of events
+    /**
+     * Inflates the layout for the Organizer Home fragment.
+     * Initializes UI components, retrieves events from Firestore, and sets up event listeners.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container The parent view that the fragment's UI should be attached to
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state
+     * @return The View for the fragment's UI
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_organizer1, container, false);
@@ -142,11 +150,14 @@ public class OrganizerFragment1 extends Fragment {
                                 public View getView(int position, View convertView, ViewGroup parent) {
                                     View view = convertView;
                                     if (view == null) {
-                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                        view = inflater.inflate(R.layout.content, null);
+//                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                                        view = inflater.inflate(R.layout.admin_list_layout, null);
+                                        view = LayoutInflater.from(getContext()).inflate(R.layout.admin_list_layout, parent, false);
+
+
                                     }
 
-                                    TextView textView = view.findViewById(R.id.event_text);
+                                    TextView textView = view.findViewById(R.id.admin_text_view);
                                     textView.setText(allevents.getEvents().get(position).getEventname());
                                     return view;
                                 }
@@ -232,7 +243,11 @@ public class OrganizerFragment1 extends Fragment {
         return view;
     }
 
-    // Deletes an event
+    /**
+     * Deletes the specified event.
+     *
+     * @param event The event to be deleted
+     */
     private void deleteEvent(Event event) {
         String qrCodeid = event.getQRCode();
         organizer.removeEvent(event.getEventId());

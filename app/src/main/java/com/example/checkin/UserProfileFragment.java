@@ -74,6 +74,14 @@ public class UserProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * Inflates the layout for the user profile fragment and initializes UI elements.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment UI should be attached to.
+     * @param savedInstanceState A Bundle object containing the fragment's previously saved state.
+     * @return The inflated View object representing the fragment's UI.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

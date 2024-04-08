@@ -25,11 +25,25 @@ import android.view.ViewGroup;
 
 import org.checkerframework.checker.units.qual.A;
 
+/*
+  Represents a milestone received by the organizer for events.
+  This class provides functionality to send milestone notifications.
+ */
 public class MileStone {
 
     private static final String CHANNEL_ID = "milestone";
     static Database db = new Database();
 
+    /**
+     * Sends a milestone notification to the organizer.
+     *
+     * @param context         The context from which the notification is sent.
+     * @param title           The title of the notification.
+     * @param body            The body of the notification.
+     * @param eventid         The ID of the event associated with the milestone.
+     * @param targetIntent    The intent to be launched when the notification is tapped.
+     * @param notificationid  The ID of the notification.
+     */
     public static void sendMilestoneNotification(Context context, String title, String body, String eventid, Intent targetIntent, int notificationid) {
 
         Intent intent = new Intent(context, OrganizerView.class);

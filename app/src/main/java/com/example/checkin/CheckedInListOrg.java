@@ -33,7 +33,9 @@ import java.util.Map;
 import java.util.Set;
 
 
-// Shows list of checked in attendees for an event
+/*
+ Shows list of checked in attendees for an event
+*/
 public class CheckedInListOrg extends Fragment {
     private AttendeeList attendeedatalist;
     private ListView attendeesList;
@@ -45,6 +47,18 @@ public class CheckedInListOrg extends Fragment {
     TextView totalcheckin;
 
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,10 +88,6 @@ public class CheckedInListOrg extends Fragment {
             AttendeesAdapter = new AttendeeArrayAdapter(requireContext(), attendeedatalist.getAttendees());
             attendeesList.setAdapter(AttendeesAdapter);
         }
-
-
-
-
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String android_id = preferences.getString("ID", "");
@@ -117,9 +127,6 @@ public class CheckedInListOrg extends Fragment {
                 }
             }
         });
-
-
-
         return view;
     }
 
@@ -192,7 +199,4 @@ public class CheckedInListOrg extends Fragment {
 
                  });
     }
-
-
-
 }

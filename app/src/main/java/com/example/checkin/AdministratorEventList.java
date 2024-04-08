@@ -53,6 +53,19 @@ public class AdministratorEventList extends Fragment {
     CollectionReference eventDetails;
 
 
+    /**
+     * Responsible for generating the fragment displaying the list of events, buttons for navigating back to
+     * the main menu fragment.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.admin_eventlist, container, false);
@@ -91,9 +104,6 @@ public class AdministratorEventList extends Fragment {
                                     if (view == null) {
 
                                         view = LayoutInflater.from(getContext()).inflate(R.layout.admin_list_layout, parent, false);
-//                                        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                                        // Sets the view to the content layout.
-//                                        view = inflater.inflate(R.layout.content, null);
                                     }
 
                                     // Setting the text of content layout to the name of the event.

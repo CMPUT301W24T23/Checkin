@@ -178,6 +178,12 @@ public class Database {
 
     }
 
+    /**
+     * Updates the profile picture of a user in the Firestore database.
+     *
+     * @param base64Image The base64 encoded string representation of the image.
+     * @param userID      The ID of the user whose profile picture is being updated.
+     */
     public void updateProfilePicture(String base64Image, String userID){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference profilePicRef = db.collection("ProfilePics");
@@ -189,6 +195,12 @@ public class Database {
         profilePicRef.document(userID).set(data);
     }
 
+    /**
+     * Updates the poster image of an event in the Firestore database.
+     *
+     * @param base64Image The base64 encoded string representation of the image.
+     * @param eventID     The ID of the event whose poster is being updated.
+     */
     public void updatePoster(String base64Image, String eventID){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference profilePicRef = db.collection("Posters");
@@ -406,6 +418,12 @@ public class Database {
         });
     */
 
+    /**
+     * Parses a Firestore document snapshot into an Event object.
+     *
+     * @param doc The Firestore document snapshot containing event data.
+     * @return The parsed Event object.
+     */
     public Event getEvent(DocumentSnapshot doc){
         Organizer o = new Organizer();
         Event e = new Event(doc.getId());
@@ -512,7 +530,11 @@ public class Database {
     }
 
 
-
+    /**
+     * Updates a message in the Firestore database.
+     *
+     * @param m The Message object containing the message details.
+     */
     public void updateMessage(Message m){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference messageRef = db.collection("Messages");
@@ -558,9 +580,13 @@ public class Database {
                 });
     */
 
+    /**
+     * Fetches an attendee document from Firestore and adds it to the event's checked-in users list.
+     *
+     * @param attendeeId The ID of the attendee document to fetch.
+     * @param event      The Event object to which the attendee will be added as checked-in.
+     */
     private void fetchAttendeeFromFirestore(String attendeeId, Event event) {
-
-
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
         attendeeRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -571,8 +597,6 @@ public class Database {
                         // Convert the document snapshot to an Attendee object using Database class method
                         Attendee attendee = new Database().getAttendee(document);
                         event.userCheckIn(attendee);
-
-
                     }
 
                 }

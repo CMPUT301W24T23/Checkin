@@ -138,10 +138,6 @@ public class AdministratorPosterImgList extends Fragment {
         return view;
     }
 
-//    public Bitmap base64ToBitmap(String base64String) {
-//        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
-//        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-//    }
 
     /**
      * Deletes the selected poster image from the list of all the poster in the app.
@@ -153,10 +149,6 @@ public class AdministratorPosterImgList extends Fragment {
         imageAdapter.notifyDataSetChanged();
         eventProfileCollectionRef = db.collection("Events");
 
-
-        /*
-          Deletes the poster images selected from the list view from the event field.
-         */
         eventProfileCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -200,128 +192,3 @@ public class AdministratorPosterImgList extends Fragment {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-//
-//    @Override
-//    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        setupSwipeGesture();
-//    }
-//
-//    // CHATGPT 3.5
-//    @SuppressLint("ClickableViewAccessibility")
-//    private void setupSwipeGesture() {
-//        listView.setOnTouchListener(new View.OnTouchListener() {
-//            private float startX;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        startX = event.getX();
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        float endX = event.getX();
-//                        float deltaX = endX - startX;
-//
-//                        // Determine if it's a swipe
-//                        if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > SWIPE_VELOCITY_THRESHOLD) {
-//                            if (deltaX < 0) {
-//                                // Left swipe
-//                                int position = listView.pointToPosition((int) event.getX(), (int) event.getY());
-//                                if (position != ListView.INVALID_POSITION) {
-//                                    Bitmap posterImg = imageAdapter.getItem(position);
-//
-//                                    // Show confirmation dialog
-//                                    new AlertDialog.Builder(requireContext())
-//                                            .setTitle("Delete Poster Image")
-//                                            .setMessage("Are you sure you want to delete this Poster Image?")
-//
-//                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                                                @SuppressLint("RestrictedApi")
-//                                                @Override
-//                                                public void onClick(DialogInterface dialog, int which) {
-//
-//                                                    // Check if there is already any poster Image or not.
-//                                                    String posterImg2 = imageEncoder.BitmapToBase64(posterImg);
-//                                                    if (posterImg2 == noImagePic){
-//                                                        Log.d(TAG, "Already No Poster Image.");
-//                                                        dialog.dismiss();
-//                                                    }
-//                                                    Log.d(TAG, "Poster Image found.");
-//                                                    if (posterImg == noImgMap){
-//                                                        Log.d(TAG, "Already No Poster Image.");
-//                                                        dialog.dismiss();
-//                                                    }
-//                                                    Log.d(TAG, "Poster Image found.");
-//
-//                                                    // User confirmed deletion
-//                                                    // Remove the attendee from the adapter
-//                                                    imageAdapter.remove(posterImg);
-//                                                    // Notify adapter about the removal
-//                                                    imageAdapter.notifyDataSetChanged();
-//
-//                                                    // Delete the profile pic from the field "ProfilePics"
-//                                                    db.collection("Posters")
-//                                                            .whereEqualTo("Image", posterImg2)
-//                                                            .get()
-//                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                                                @SuppressLint("RestrictedApi")
-//                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                                                    if (task.isSuccessful()) {
-//                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                                                                            // Deletes the poster.
-//                                                                            document.getReference().delete();
-//                                                                            Log.d(TAG, "Deleted Poster Image");
-//                                                                            imageAdapter.notifyDataSetChanged();
-//                                                                        }
-//                                                                    } else {
-//                                                                        Log.d(TAG, "Error deleting Poster Image: ", task.getException());
-//                                                                    }
-//                                                                }
-//                                                            });
-//
-//                                                    // Delete the profile pic from the field "Attendees and subfield 'ProfilePic'".
-//                                                    db.collection("Events")
-//                                                            .whereEqualTo("Poster", posterImg2)
-//                                                            .get()
-//                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                                                @Override
-//                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                                                    if (task.isSuccessful()) {
-//                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                                                                            document.getReference().delete();
-//                                                                            imageAdapter.notifyDataSetChanged();
-//                                                                        }
-//                                                                    }
-//                                                                }
-//                                                            });
-//                                                }
-//                                            })
-//                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(DialogInterface dialog, int which) {
-//                                                    // User cancelled deletion
-//                                                    dialog.dismiss();
-//                                                }
-//                                            })
-//                                            .show();
-//                                }
-//                            }
-//                        }
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
-//    }

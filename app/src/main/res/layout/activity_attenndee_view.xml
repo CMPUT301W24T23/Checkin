@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomnavbar2"
+        android:background="@drawable/attendee"
         />
 
 
@@ -22,8 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        app:itemBackground="@color/lightpink"
-        android:background="@color/lightpink"
+        app:itemBackground="@color/lightblue"
+        android:background="@color/lightblue"
         app:itemTextColor="@color/black"
         app:itemIconTint="@drawable/selection"
         app:menu="@menu/attendeemenu" />

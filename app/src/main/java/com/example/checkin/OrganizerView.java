@@ -13,7 +13,10 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-// Organizer perspective of the app
+/*
+  Activity representing the Organizer perspective of the app.
+  Responsible for managing fragments and handling navigation through bottom navigation.
+ */
 public class OrganizerView extends AppCompatActivity {
 
     OrganizerFragment1 org_frag1;
@@ -22,7 +25,14 @@ public class OrganizerView extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_NOTIFICATION = 3;
 
-
+    /**
+     * Called when the activity is starting.
+     * Initializes the layout, sets up bottom navigation, and requests notification permission if not granted.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +102,12 @@ public class OrganizerView extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Called when a new intent is delivered to this activity.
+     * Handles the action of opening the milestones fragment.
+     *
+     * @param intent The new intent that was started for the activity.
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -112,6 +127,15 @@ public class OrganizerView extends AppCompatActivity {
 
         }
     }
+
+    /**
+     * Callback for the result from requesting permissions.
+     * Handles the result of the permission request for notifications.
+     *
+     * @param requestCode  The request code passed in requestPermissions(android.app.Activity, String[], int)
+     * @param permissions  The requested permissions.
+     * @param grantResults The grant results for the corresponding permissions.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

@@ -29,7 +29,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Map;
 
-// fragment that displays all events attendee has signed up for
+/*
+fragment that displays all events attendee has signed up for
+*/
 public class AttendeeSignUpEvents extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;
@@ -43,6 +45,18 @@ public class AttendeeSignUpEvents extends Fragment {
     String eventId;
 
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

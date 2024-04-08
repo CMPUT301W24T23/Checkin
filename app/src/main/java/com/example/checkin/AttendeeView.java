@@ -235,7 +235,7 @@ public class AttendeeView extends AppCompatActivity {
 
                                         // get both the event and the attendee
                                         if (attendee != null) {
-                                            
+
 
 
                                             FirebaseMessaging.getInstance().subscribeToTopic(event.getEventId()).addOnSuccessListener(new OnSuccessListener<Void>() {

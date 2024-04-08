@@ -26,6 +26,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,10 +47,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Button btnBack;
     private Attendee currentUser;
 
+    private AttendeeList trackedAttendees;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        // get event object from previous fragment
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            trackedAttendees = (AttendeeList) bundle.getSerializable("attendeeList");
+        }
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
@@ -61,6 +69,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 finish();
             }
         });
+
+
+
+
+
+
+
+
     }
 
     public Location getCurrentLocation() {
@@ -79,7 +95,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLocation = location;
-                    updateAttendee();
+                    //updateAttendee();
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(MapActivity.this);
@@ -96,6 +112,22 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
             mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        }
+
+        for(Attendee a : trackedAttendees.getAttendees()){
+            if((a.getLat() != 0d) || (a.getLon() != 0d)){
+                Log.d("Bundled Attendees", String.format("Bundled Attendee: %s", a.getUserId()));
+            /*
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(a.getLat(),a.getLon())));
+                    //.title("Hello world"));
+
+             */
+                LatLng latLng = new LatLng(a.getLat(), a.getLon());
+                MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
+                mMap.addMarker(markerOptions);
+            }
+
         }
     }
 

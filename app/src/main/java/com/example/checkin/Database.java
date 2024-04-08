@@ -163,21 +163,8 @@ public class Database {
 
         data.put("UserCheckIn", checkedIn);
 
-        //Map<String, String> updatedCheckInsId = e.getCheckInsId();
-
-        // Upload userIds of Checked in users
-        for (Attendee a : e.getCheckInList().getAttendees()) {
-            checkedIn.put(a.getUserId(), a.getCheckInLocation());
-        }
-
-        data.put("UserCheckIn", checkedIn);
 
 
-        data.put("UserCheckIn", checkedIn);
-
-        data.put("UserCheckIn", checkedIn);
-
-        //data.put("CheckInIds", updatedCheckInsId);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));

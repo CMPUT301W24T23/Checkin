@@ -359,7 +359,11 @@ public class UserProfileFragment extends Fragment {
         paint.setColor(Color.BLACK);            //set text color
         int xPos = (canvas.getWidth() / 2);
         int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
-        canvas.drawText(String.valueOf(name.charAt(0)), xPos - 1, yPos, paint);
+
+        if(!(name.isEmpty())){
+            canvas.drawText(String.valueOf(name.charAt(0)), xPos - 1, yPos, paint);
+        }
+
 
         // Log the content of the bitmap
         StringBuilder bitmapContent = new StringBuilder();
@@ -370,6 +374,7 @@ public class UserProfileFragment extends Fragment {
             }
             bitmapContent.append("\n");
         }
+
         Log.d("BitmapContent", "Bitmap content:\n" + bitmapContent.toString());
         Log.d("BitmapSize", "Bitmap width: " + bitmap.getWidth() + ", height: " + bitmap.getHeight());
 
@@ -381,6 +386,7 @@ public class UserProfileFragment extends Fragment {
 
         return bitmap;
     }
+
 
     /**
      * Validates an email address.

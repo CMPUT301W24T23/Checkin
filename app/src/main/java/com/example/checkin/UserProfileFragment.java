@@ -43,6 +43,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
+
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -169,12 +171,14 @@ public class UserProfileFragment extends Fragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
                 && data != null && data.getData() != null) {
             imageUri = data.getData();
+
             newImage = true;
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
 
                 //resize to 100x100
                 bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+                System.out.println("bitmap" + bitmap);
 
                 myImageView.setImageBitmap(bitmap);
                 removePictureButton.setVisibility(View.VISIBLE);
@@ -208,7 +212,7 @@ public class UserProfileFragment extends Fragment {
     /**
      * Saves the user information on screen to the database
      */
-    private void saveUserProfile() {
+    void saveUserProfile() {
         // Get user-entered information
         String name = nameEdit.getText().toString();
         String email = emailEdit.getText().toString();
@@ -229,9 +233,7 @@ public class UserProfileFragment extends Fragment {
         currentUser.setEmail(email);
         currentUser.setHomepage(homepage);
         currentUser.setPhoneNumber(phone);
-        if(!(currentUser.trackingEnabled() == locationPermission)) {
-            currentUser.toggleTracking();
-        }
+        currentUser.setGeoTracking(locationPermission);
 
 
         String imageBase64 = currentUser.getProfilePicture();

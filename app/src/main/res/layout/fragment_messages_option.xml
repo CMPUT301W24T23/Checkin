@@ -15,7 +15,7 @@
         android:layout_marginTop="50dp"
         android:text="Messsages Options"
         android:textColor="@color/black"
-        android:textSize="40dp" />
+        android:textSize="35sp" />
 
 
 
@@ -26,6 +26,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="-360dp"
+        android:backgroundTint="@color/bluegreen"
         android:text="Send Message" />
 
     <Button
@@ -35,6 +36,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_alignBottom="@id/sendmssgbtn"
+        android:backgroundTint="@color/bluegreen"
         android:layout_marginBottom="-100dp"
         android:text="View Milestones" />
 

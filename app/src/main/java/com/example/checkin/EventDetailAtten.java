@@ -82,7 +82,7 @@ public class EventDetailAtten extends Fragment {
         eventDate = view.findViewById(R.id.EventDatetxt);
         eventTime = view.findViewById(R.id.EventTimetxt);
         eventlocation = view.findViewById(R.id.editlocation);
-        checkinbutton = view.findViewById(R.id.checkinbtn);
+        //checkinbutton = view.findViewById(R.id.checkinbtn);
 
 
 
@@ -92,7 +92,7 @@ public class EventDetailAtten extends Fragment {
         String eventid = myevent.getEventId();
 
         // --- Remove -----
-        checkinbutton.setOnClickListener(new View.OnClickListener() {
+        /*checkinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -143,7 +143,7 @@ public class EventDetailAtten extends Fragment {
                             }
                         });
             }
-        });
+        });*/
 
 
         db = FirebaseFirestore.getInstance();

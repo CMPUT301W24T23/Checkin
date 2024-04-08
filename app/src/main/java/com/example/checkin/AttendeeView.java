@@ -5,17 +5,25 @@ package com.example.checkin;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -39,6 +47,12 @@ public class AttendeeView extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private static final int PERMISSION_REQUEST_NOTIFICATION = 2;
     private FirebaseFirestore db;
+    private boolean trackingAllowed = false;
+    private final Context globalContext = this;
+    private static final int REQUEST_CODE = 101;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    //private double curLat = 0, curLon = 0;
+    private Location curLocation;
 
     /**
      * Initializes the activity and sets up its layout and functionality.
@@ -67,15 +81,11 @@ public class AttendeeView extends AppCompatActivity {
         Announcements ann_frg1 = new Announcements();
         AttendeeEventOptions options_frag = new AttendeeEventOptions();
 
-
-
         // move to home page fragment
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.atten_view, options_frag)
                 .commit();
-
-
 
         // Set bottom navigation bar
         BottomNavigationView bottomnav = findViewById(R.id.bottomnavbar2);
@@ -92,6 +102,9 @@ public class AttendeeView extends AppCompatActivity {
                     return true;
                 }
                 else if (item.getItemId() == R.id.qrcodes2){
+                    //get attendee and check location permission
+                    retrieveAttendee(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+
                     startQRScan();
 
                     return true;
@@ -136,10 +149,8 @@ public class AttendeeView extends AppCompatActivity {
 
      super.onActivityResult(requestCode, resultCode, data);
     IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String android_id = preferences.getString("ID", "");
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavbar2);
-        bottomNavigationView.setSelectedItemId(R.id.home2);
+    String android_id= Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+    
     // if the intentResult is null then
     // toast a message as "cancelled"
         if (intentResult != null) {
@@ -154,12 +165,32 @@ public class AttendeeView extends AppCompatActivity {
             BottomNavigationView bottomNavigationView2 = findViewById(R.id.bottomnavbar2);
             bottomNavigationView2.setSelectedItemId(R.id.home2);
 
+
         }
     } else {
         super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
+    private void fetchLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE);
+            return;
+        }
+        Log.d("Fetching Location", "Fetching Location");
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    //updateAttendee();
+                    curLocation = location;
+                    Log.d("Firebase Retrieve", String.format("Get Location after scan. LAT: %f, LON: %f", location.getLatitude(), location.getLongitude() ));
+                }
+            }
+        });
+    }
 
     /**
      * retrieve event to get the scanned qr code from firebase
@@ -168,8 +199,7 @@ public class AttendeeView extends AppCompatActivity {
     private void getEventDetailsFromFirebase(String qrCodeId, String attendeeid) {
         Database database = new Database();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String androidId = preferences.getString("ID", "");
+        String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         CollectionReference eventsRef = db.collection("Events");
 
         // search for event qr code in database
@@ -185,7 +215,7 @@ public class AttendeeView extends AppCompatActivity {
                             for(String a : checkInMap.keySet()){
                                 //Check each user in to the event
                                 //db.getAttendee(document);
-                                retrieveAttendee(a, true, event);
+                                retrieveAttendeeForUpload(a, true, event);
                                 //myevent.userCheckIn();
                             }
 
@@ -193,9 +223,13 @@ public class AttendeeView extends AppCompatActivity {
                             for(String a : subbedMap.keySet()){
                                 //Check each user in to the event
                                 //db.getAttendee(document);
-                                retrieveAttendee(a, false, event);
+                                retrieveAttendeeForUpload(a, false, event);
                                 //myevent.userCheckIn();
                             }
+
+
+
+
                             //wait for execution FOR TESTING
                             try {
                                 Thread.sleep(500);
@@ -220,21 +254,17 @@ public class AttendeeView extends AppCompatActivity {
 
                                         // get both the event and the attendee
                                         if (attendee != null) {
-                                            attendee.updateCheckInCount(event);
-                                            //event.userCheckIn(attendee);
-                                            //System.out.println("Checked In Attendee");
-                                            //database.updateEvent(event);
-                                            database.updateAttendee(attendee);
+
 
 
                                             FirebaseMessaging.getInstance().subscribeToTopic(event.getEventId()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
-                                                    Log.d("Subscribe", "subscribe to event");
+                                                    Log.d("Subscribe", "subscribe to event!!!!");
                                                 }
                                             });
 
-                                            EventDetailAtten eventfragment = new EventDetailAtten();
+                                            signedupeventdetail eventfragment = new signedupeventdetail();
                                             Bundle args = new Bundle();
                                             args.putSerializable("event", event);
                                             eventfragment.setArguments(args);
@@ -325,6 +355,15 @@ public class AttendeeView extends AppCompatActivity {
                         }
                         Log.d("Test Current Checkin", "NUMBERS AFTER" + myevent.getCheckInList().getAttendees().size());
 
+                        //add location to attendee
+                        if(trackingAllowed){
+                            attendee.setLat(curLocation.getLatitude());
+                            attendee.setLon(curLocation.getLongitude());
+                            Log.d("Updating Tracking", String.format("Updating tracking Lat: %f, Lon: %f", curLocation.getLatitude(), curLocation.getLongitude()));
+                        }
+
+                        Log.d("Current Tracking", String.format("Current tracking Lat: %f, Lon: %f", attendee.getLat(), attendee.getLon()));
+
                         //attendee.CheckIn(event);
                         d.updateEvent(myevent);
                         d.updateAttendee(attendee);
@@ -343,7 +382,7 @@ public class AttendeeView extends AppCompatActivity {
      * @param CheckIn
      * @param myevent
      */
-    public void retrieveAttendee(String id, boolean CheckIn, Event myevent){
+    public void retrieveAttendeeForUpload(String id, boolean CheckIn, Event myevent){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Attendees").document(id);
         Database fireBase = new Database();
@@ -359,7 +398,7 @@ public class AttendeeView extends AppCompatActivity {
                         //If the user is to be checked in, check them in
                         //Otherwise sub them
                         if(CheckIn){
-                            myevent.userCheckIn(a);
+                            myevent.addToCheckIn(a);
                         } else{
                             myevent.userSubs(a);
                         }
@@ -413,7 +452,7 @@ public class AttendeeView extends AppCompatActivity {
         Database database = new Database();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String androidId = preferences.getString("ID", "");
+        String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         CollectionReference eventsRef = db.collection("Events");
 
         eventsRef.whereEqualTo("Event Qr Code Id", qrCodeContent)
@@ -475,5 +514,34 @@ public class AttendeeView extends AppCompatActivity {
 
     }
 
+    public void retrieveAttendee(String id){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Attendees").document(id);
 
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
+                        Database fireBase = new Database();
+                        Attendee a = fireBase.getAttendee(document);
+                        if(a.trackingEnabled()){
+                            Log.d("Tracking Enabled", "Attendee is Retrieved and Tracking Enabled");
+                            trackingAllowed = true;
+                            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(globalContext);
+                            fetchLastLocation();
+                        }
+
+                    } else {
+                        Log.d("Firebase", "No such document");
+
+                    }
+                } else {
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
 }

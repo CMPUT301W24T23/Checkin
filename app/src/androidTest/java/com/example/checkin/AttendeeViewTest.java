@@ -181,10 +181,7 @@ public class AttendeeViewTest {
         IdlingRegistry.getInstance().unregister(idlingResource);
 
         // click on first event in browse events
-        onData(instanceOf(Event.class))
-                .inAdapterView(withId(R.id.events))
-                .atPosition(0)
-                .perform(click());
+        onView(withText("Charity Event")).perform(click());
 
 
        // check event details fragment and if it matches with the event that was clicked on

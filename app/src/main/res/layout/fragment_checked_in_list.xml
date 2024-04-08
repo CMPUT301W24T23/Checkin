@@ -15,7 +15,7 @@
         android:layout_marginTop="50dp"
         android:text=" Checked In Attendees"
         android:textColor="@color/black"
-        android:textSize="40dp" />
+        android:textSize="30dp" />
 
     <ListView
         android:id="@+id/attendees_list"

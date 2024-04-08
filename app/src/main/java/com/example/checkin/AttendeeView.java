@@ -411,7 +411,7 @@ public class AttendeeView extends AppCompatActivity {
     private void startQRScan() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        integrator.setOrientationLocked(true);
+        integrator.setOrientationLocked(false);
         integrator.setPrompt("Scan a QR code");
         integrator.initiateScan();
     }

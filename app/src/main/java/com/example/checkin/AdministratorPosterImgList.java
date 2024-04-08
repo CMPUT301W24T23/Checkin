@@ -153,7 +153,7 @@ public class AdministratorPosterImgList extends Fragment {
 
 
         /*
-          Deletes the poster images selected from the list view from the event field.
+          Deletes the poster images selected from the event subfields.
          */
         eventProfileCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @SuppressLint("RestrictedApi")

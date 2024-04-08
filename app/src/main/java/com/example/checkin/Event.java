@@ -21,8 +21,6 @@ import java.util.Map;
  * This class outlines an Event object that stores all the information needed for an event
  */
 public class Event implements Serializable {
-    //TODO:
-    //      - Geolocation integration
 
     private String EventId;//unique identifier for event
     private String poster;        //Poster uploaded to this Event
@@ -41,7 +39,6 @@ public class Event implements Serializable {
 
     private String location;
     private String attendeeCap;
-    private Map<String, String> userCheckInLocation;
 
 
 
@@ -56,7 +53,6 @@ public class Event implements Serializable {
     public Event(String eventname, String eventdetails, ArrayList<Attendee> checkInList) {
         this.eventname = eventname;
         this.eventdetails = eventdetails;
-        this.userCheckInLocation = new HashMap<>();
 
 
     }
@@ -92,7 +88,6 @@ public class Event implements Serializable {
         this.poster = "";
         this.CheckInsId = new Hashtable<>();
         this.attendeeCap = "";
-        this.userCheckInLocation = new Hashtable<>();
 
     }
 
@@ -344,13 +339,6 @@ public class Event implements Serializable {
         this.attendeeCap = attendeeCap;
     }
 
-    public void setUserCheckInLocation(Map<String, String> userCheckInLocation) {
-        this.userCheckInLocation = userCheckInLocation;
-    }
-
-    public Map<String, String> getUserCheckInLocation() {
-        return userCheckInLocation;
-    }
 
     public String getQRCode() {
             return qrcodeid;

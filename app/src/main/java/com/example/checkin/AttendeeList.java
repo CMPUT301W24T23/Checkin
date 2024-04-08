@@ -94,6 +94,10 @@ public class AttendeeList implements Serializable {
         Attendees.removeIf(AinList -> a.getUserId().equals(AinList.getUserId()));
     }
 
+    public boolean isEmpty(){
+        return Attendees.isEmpty();
+    }
+
     public ArrayList<Attendee> getAttendees() {
         return Attendees;
     }

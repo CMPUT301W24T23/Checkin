@@ -1,11 +1,11 @@
 package com.example.checkin;
-
+// https://www.youtube.com/watch?v=32rSs4tE-mc
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-/*
+/**
   Detects swipe gestures on a view and triggers appropriate callbacks.
  */
 public class OnSwipeTouchListener implements View.OnTouchListener {

@@ -28,7 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 
-// Fragment that displays milestones for an organizer
+/**
+Fragment that displays milestones for an organizer
+ */
 public class DisplayMilestones extends Fragment {
 
     ListView milestones;

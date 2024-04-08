@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-/*
+/**
  Array Adapter for Events
 */
 public class EventArrayAdapter extends ArrayAdapter<Event> {

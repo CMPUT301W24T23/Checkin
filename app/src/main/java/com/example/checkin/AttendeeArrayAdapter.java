@@ -1,12 +1,6 @@
 
 package com.example.checkin;
 
-/*
- This code defines a custom ArrayAdapter for displaying a list of attendees in a ListView.
- It inflates a layout (content2.xml) for each item in the list and sets the text of a TextView
- (attendee_name) to the name of the attendee at the corresponding position in the list.
- */
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +18,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+
+/**
+ This code defines a custom ArrayAdapter for displaying a list of attendees in a ListView.
+ It inflates a layout (content2.xml) for each item in the list and sets the text of a TextView
+ (attendee_name) to the name of the attendee at the corresponding position in the list.
+ */
 public class AttendeeArrayAdapter extends ArrayAdapter<Attendee> {
     private ArrayList<Attendee> attendees;
     private Context context;

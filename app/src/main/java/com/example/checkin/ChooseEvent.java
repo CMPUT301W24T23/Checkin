@@ -33,7 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 
-/*
+/**
  Fragment that provides list of attendees so organizer can select
  and view options for attendees checked in or signed up
  */

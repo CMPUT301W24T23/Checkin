@@ -12,7 +12,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-// Array Adapter for message objects
+/**
+Array Adapter for message objects
+ */
 public class MessageAdapter extends ArrayAdapter<Message> {
     private ArrayList<Message> messages;
     private Context context;

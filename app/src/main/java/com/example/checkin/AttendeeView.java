@@ -40,7 +40,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.Map;
 
-/*
+/**
  Represents the Attendee Perspective of the app
  */
 public class AttendeeView extends AppCompatActivity {

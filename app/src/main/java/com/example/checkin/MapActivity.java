@@ -38,6 +38,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * MapActivity displays a map with the current user's location and marks the locations of checked-in attendees.
+ * It fetches the current user's location using the FusedLocationProviderClient and displays it on a Google Map.
+ * Additionally, it retrieves a list of tracked attendees from the previous fragment and marks their locations on the map.
+ */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -106,8 +111,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap = googleMap;
         if (currentLocation != null) {
             LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
-            mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
 

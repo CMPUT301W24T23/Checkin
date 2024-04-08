@@ -28,9 +28,10 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/*
+/**
   Fragment responsible for displaying and sharing promotional QR code.
- */public class PromotionQrShare extends Fragment {
+ */
+public class PromotionQrShare extends Fragment {
     Event myevent;
     Button sharebutton;
     Button backbutton;

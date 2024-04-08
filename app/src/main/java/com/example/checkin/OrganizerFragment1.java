@@ -37,7 +37,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-// represents fragment that displays an organizer's events
+/**
+represents fragment that displays an organizer's events
+ */
 public class OrganizerFragment1 extends Fragment {
     private ArrayList<Event> datalist;
     private ListView eventslist;

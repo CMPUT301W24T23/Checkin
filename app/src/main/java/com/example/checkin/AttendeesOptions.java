@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-/*
+/**
 An Android Fragment displaying options for an event's attendees,
 featuring buttons to view the checked-in list and navigate back.
  */

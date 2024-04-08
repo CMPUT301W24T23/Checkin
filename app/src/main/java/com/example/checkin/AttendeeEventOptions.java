@@ -12,7 +12,7 @@ import android.widget.Button;
 
 import org.checkerframework.checker.units.qual.A;
 
-/*
+/**
  Fragment that provides attendee with options to browse all events
  or signed up events
  */

@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/*
+/**
 Announcements page that shows messages received by event organizers - will implement
 sending notifications in next part of project, has mock data for now
 */

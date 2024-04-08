@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
+/**
   A Fragment responsible for sending notifications to selected events.
  */
 public class SendNotification extends Fragment {

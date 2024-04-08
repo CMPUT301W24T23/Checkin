@@ -1,6 +1,5 @@
 package com.example.checkin;
 
-// provides options to either send notification or view milestones
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+/**
+provides options to either send notification or view milestones
+ */
 
 public class MessagesOption extends Fragment {
 

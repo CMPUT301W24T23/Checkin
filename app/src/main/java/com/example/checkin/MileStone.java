@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 
 import org.checkerframework.checker.units.qual.A;
 
-/*
+/**
   Represents a milestone received by the organizer for events.
   This class provides functionality to send milestone notifications.
  */

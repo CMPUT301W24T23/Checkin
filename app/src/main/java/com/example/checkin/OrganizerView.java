@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-/*
+/**
   Activity representing the Organizer perspective of the app.
   Responsible for managing fragments and handling navigation through bottom navigation.
  */

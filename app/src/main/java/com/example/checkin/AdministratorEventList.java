@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -38,12 +39,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Fragment responsible of showing the list of events in the app and gives the functionality for admin to
+ * navigate through each event and see the details and also delete the event.
+ */
 public class AdministratorEventList extends Fragment {
     FirebaseFirestore db;
     private ArrayAdapter<Event> EventAdapter;
     private EventList allevents;
     private ListView listView;
     Database database = new Database();
+    CollectionReference attendeeDetails;
+    CollectionReference eventDetails;
 
 
     @Override
@@ -60,9 +67,10 @@ public class AdministratorEventList extends Fragment {
         });
 
         db = FirebaseFirestore.getInstance();
+        eventDetails = db.collection("Events");
 
         // Query all events without filtering based on organizer ID
-        db.collection("Events")
+        eventDetails
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -138,99 +146,134 @@ public class AdministratorEventList extends Fragment {
         return view;
     }
 
-    // Deletes an event
+    /**
+     * Deletes the selected event from both the event field and from the each attendees list who were checked-in/signed-in to that
+     * particular event.
+     * @param event : selected event to delete.
+     */
+    @SuppressLint("RestrictedApi")
     private void deleteEvent(Event event) {
         String eventId = event.getEventId();
+        attendeeDetails = db.collection("Attendees");
+        final List<Map<String, Object>> subscribedList = new ArrayList<>();
+        final List<Map<String, Object>> checkedList = new ArrayList<>();
+
+        eventDetails.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        // Getting the map of the attendeesId who are checked in and subscribed.
+
+                        Map<String, Object> subscribedMap = (Map<String, Object>) document.get("Subscribers");
+                        Map<String, Object> checkedMap = (Map<String, Object>) document.get("UserCheckIn");
+
+                    }
+
+
+                    // Removing the event from the attendee's subscribed list.
+                    for (Map<String, Object> subscribedMap : subscribedList){
+
+                        for(String key : subscribedMap.keySet()){
+
+                            DocumentReference docRef;
+                            docRef = attendeeDetails.document(key);
+
+                            // Document of the particular attendee that is subscribed to the event.
+                            docRef
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+
+                                            DocumentSnapshot document = task.getResult();
+
+                                            // Getting the map from the firebase.
+                                            Map<String, Object> checkinsMap = (Map<String, Object>) document.get("Signups");
+                                            assert checkinsMap != null;
+                                            checkinsMap.remove(key);
+
+                                            // Update the new map on the firebase.
+                                            docRef.update("Signups", checkinsMap)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w("Update", "Error updating document", e);
+                                                        }
+                                                    });
+
+                                        } else {
+                                            Log.d("Query", "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
+                        }
+                    }
+
+                    // Removing the event from the attendee's checked in list.
+                    for (Map<String, Object> checkedMap : checkedList){
+
+                        for(String key : checkedMap.keySet()){
+
+                            DocumentReference docRef;
+                            docRef = attendeeDetails.document(key);
+
+                            // Document of the particular attendee that is checked in to the event.
+                            docRef
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+
+                                            DocumentSnapshot document = task.getResult();
+
+                                            // Getting the map from the firebase.
+                                            Map<String, Object> checkinsMap = (Map<String, Object>) document.get("Checkins");
+                                            checkinsMap.remove(key);
+
+                                            // Update the new map on the firebase.
+                                            docRef.update("Checkins", checkinsMap)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w("Update", "Error updating document", e);
+                                                        }
+                                                    });
+
+                                        } else {
+                                            Log.d("Query", "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
+                        }
+                    }
+
+                }
+            }
+        });
+
         allevents.removeEvent(event);
         EventAdapter.notifyDataSetChanged(); // Refresh the list
-        db.collection("Events").document(eventId).delete()
+
+        // Removing the event from the Events field in the firebase.
+        eventDetails.document(eventId).delete()
                 .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted"))
                 .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
+
     }
-
-
-//
-//    @Override
-//    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        setupSwipeGesture();
-//    }
-//
-//    // CHATGPT 3.5
-//    @SuppressLint("ClickableViewAccessibility")
-//    private void setupSwipeGesture() {
-//        listView.setOnTouchListener(new View.OnTouchListener() {
-//            private float startX;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        startX = event.getX();
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        float endX = event.getX();
-//                        float deltaX = endX - startX;
-//
-//                        // Determine if it's a swipe
-//                        if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > SWIPE_VELOCITY_THRESHOLD) {
-//                            if (deltaX < 0) {
-//                                // Left swipe
-//                                int position = listView.pointToPosition((int) event.getX(), (int) event.getY());
-//                                if (position != ListView.INVALID_POSITION) {
-//                                    String selectedEvent = String.valueOf(EventAdapter.getItem(position));
-//                                    Event selectedEvent2 = (EventAdapter.getItem(position));
-//
-//                                    // Show confirmation dialog
-//                                    new AlertDialog.Builder(requireContext())
-//                                            .setTitle("Delete Event")
-//                                            .setMessage("Are you sure you want to delete this Event?")
-//                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(DialogInterface dialog, int which) {
-//                                                    // User confirmed deletion
-//                                                    // Remove the attendee from the adapter
-//                                                    EventAdapter.remove(selectedEvent2);
-//                                                    // Notify adapter about the removal
-//                                                    EventAdapter.notifyDataSetChanged();
-//
-//                                                    // Delete the attendee from the field "Attendees".
-//                                                    db.collection("Attendees")
-//                                                            .whereEqualTo("Name", selectedEvent)
-//                                                            .get()
-//                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                                                @SuppressLint("RestrictedApi")
-//                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                                                    if (task.isSuccessful()) {
-//                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                                                                            document.getReference().delete();
-//                                                                            Log.d(TAG, "Successfully deleted the event. ", task.getException());
-//                                                                        }
-//                                                                    } else {
-//                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
-//                                                                    }
-//                                                                }
-//                                                            });
-//                                                }
-//                                            })
-//                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(DialogInterface dialog, int which) {
-//                                                    // User cancelled deletion
-//                                                    dialog.dismiss();
-//                                                }
-//                                            })
-//                                            .show();
-//                                }
-//                            }
-//                        }
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
-//    }
-//
 
 }
 

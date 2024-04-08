@@ -94,7 +94,7 @@ public class CreateEventFragment extends Fragment {
     private Button backbutton;
     private Button addeventbutton;
     private Button qrcodebutton;
-    private Button btnMap;
+//    private Button btnMap;
     private Button btnUseExistingQR;
     private boolean qrCodeOptionSelected = false;
     private EventList events;
@@ -160,7 +160,7 @@ public class CreateEventFragment extends Fragment {
         addeventbutton = view.findViewById(R.id.createeventbtn);
         qrcodebutton = view.findViewById(R.id.btnGenerateQR);
         backbutton = view.findViewById(R.id.backbtn);
-        btnMap = view.findViewById(R.id.btnMap);
+//        btnMap = view.findViewById(R.id.btnMap);
         qrcodeimage = view.findViewById(R.id.qrcodeimage);
         uniqueqrcodeimage = view.findViewById(R.id.uniquecodeimage);
         btnUseExistingQR = view.findViewById(R.id.btnUseExistingQR);
@@ -368,10 +368,10 @@ public class CreateEventFragment extends Fragment {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.org_view, organizerfrag).addToBackStack(null).commit();
         });
 
-        btnMap.setOnClickListener(view14 -> {
-            Intent intent = new Intent(getActivity(), MapActivity.class);
-            startActivity(intent);
-        });
+//        btnMap.setOnClickListener(view14 -> {
+//            Intent intent = new Intent(getActivity(), MapActivity.class);
+//            startActivity(intent);
+//        });
 
         qrcodebutton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -153,7 +153,11 @@ public class AdministratorPosterImgList extends Fragment {
 
 
         /*
+<<<<<<< Updated upstream
           Deletes the poster images selected from the event subfields.
+=======
+          Deletes the poster images selected from the event field.
+>>>>>>> Stashed changes
          */
         eventProfileCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @SuppressLint("RestrictedApi")

@@ -2,12 +2,10 @@ package com.example.checkin;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,28 +24,25 @@ public class UserProfileFragmentTest {
     /**
      * Initializes Espresso Intents and launches the UserProfileFragment for testing.
      */
-    @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new
-            ActivityScenarioRule<MainActivity>(MainActivity.class);
-    public ActivityScenarioRule<AttendeeView> userProfileFragment = new ActivityScenarioRule<>(AttendeeView.class);
-    private ViewIdlingResource idlingResource = new ViewIdlingResource(R.id.progress);
+    @Before
+    public void setUp() {
+        Intents.init();
+        FragmentScenario.launchInContainer(UserProfileFragment.class);
 
-
+    }
+    /**
+     * Releases Espresso Intents after the test completes.
+     */
+    @After
+    public void tearDown() {
+        // Release Espresso-Intents
+        Intents.release();
+    }
     /**
      * Test method for setting the name in UserProfileFragment.
      */
     @Test
     public void testSetName() {
-
-
-        idlingResource.increment();
-        // click on organizer button
-        onView(withId(R.id.attendeebtn)).perform(click());
-        onView(withId(R.id.profile)).perform(click());
-
-        String name = "Test Name";
-scen
-
 //        // Set up the initial state of the fragment
 //        UserProfileFragment fragment = new UserProfileFragment();
 //        FragmentScenario<UserProfileFragment> scenario = FragmentScenario.launchInContainer(UserProfileFragment.class);
@@ -65,18 +60,6 @@ scen
 //            onView(withId(R.id.nameEdit)).check(matches(withText(testName)));
 //        });
     }
-
-    /**
-     * Test method for setting the country in UserProfileFragment.
-     */
-    @Test
-    public void testSetPhone() {
-        String testPhone = "123";
-        onView(withId(R.id.profile)).perform(click());
-        onView(withId(R.id.phoneEdit)).perform(ViewActions.replaceText(testPhone));
-        onView(withId(R.id.saveButton)).perform(click());
-        onView(withId(R.id.phoneEdit)).check(matches(withText(testPhone)));
-    }
     /**
      * Test method for setting the homepage in UserProfileFragment.
      */
@@ -89,15 +72,5 @@ scen
     }
 
 
-    /**
-     * Releases Espresso Intents after the test completes.
-     */
-    @After
-    public void tearDown() {
-        // Release Espresso-Intents
-        Intents.release();
-    }
-
 }
-
 

@@ -34,7 +34,7 @@ public class AttendeeEventTest {
         assertFalse(e.IsSubscribed(a));
         e.userSubs(a);
         assertTrue(e.IsSubscribed(a));
-        e.userUnSubs(a);
+        e.userSubs(a);
         assertFalse(e.IsSubscribed(a));
     }
 
@@ -64,8 +64,4 @@ public class AttendeeEventTest {
         e.userCheckIn(new1);
         assertEquals(2, a.CheckedInCount(e));
     }
-
-
-
-
 }

@@ -53,7 +53,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        // get event object from previous fragment
+
+        //Get Checked in attendees from previous fragment
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             trackedAttendees = (AttendeeList) bundle.getSerializable("attendeeList");
@@ -70,19 +71,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             }
         });
 
-
-
-
-
-
-
-
     }
 
     public Location getCurrentLocation() {
         return currentLocation;
     }
 
+    /**
+     * Fetches the current user location and marks attendee check in locations on the map
+     */
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -114,15 +111,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
 
+
+        //Iterate through checked in attendees and mark them on the map
         for(Attendee a : trackedAttendees.getAttendees()){
             if((a.getLat() != 0d) || (a.getLon() != 0d)){
                 Log.d("Bundled Attendees", String.format("Bundled Attendee: %s", a.getUserId()));
-            /*
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(a.getLat(),a.getLon())));
-                    //.title("Hello world"));
-
-             */
                 LatLng latLng = new LatLng(a.getLat(), a.getLon());
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
                 mMap.addMarker(markerOptions);

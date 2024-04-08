@@ -10,6 +10,7 @@
 
 package com.example.checkin;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -17,9 +18,11 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +33,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 // Shows event information for an organizer
@@ -54,6 +64,8 @@ public class EventsDetailOrg extends Fragment {
 
     Button savebutton;
     private Button checkInLocation;
+
+    private AttendeeList TrackedAttendees = new AttendeeList();
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -131,6 +143,15 @@ public class EventsDetailOrg extends Fragment {
                         myevent = (Event) bundle.getSerializable("event");
                     }
 
+                    //Populate event list
+
+                    populateEventLists();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     String time = "Time: " + myevent.getEventTime();
                     String date = "Date: "+ myevent.getEventDate();
                     String location = "Location: " +myevent.getLocation();
@@ -141,25 +162,23 @@ public class EventsDetailOrg extends Fragment {
                     eventTime.setText(time);
                     eventlocation.setText(location);
                     attendeeCap.setText(myevent.getAttendeeCap());
+                    checkInLocation.setText("View check-in map");
 
-                    // Display user check-in locations if available
-                    Map<String, String> checkInLocations = myevent.getUserCheckInLocation();
-                    if (checkInLocations != null) {
-                        String locationString = "";
-                        for (Map.Entry<String, String> entry : checkInLocations.entrySet()) {
-                            locationString += entry.getKey() + ": " + entry.getValue() + "\n";
+                    checkInLocation.setOnClickListener(view14 -> {
+                        if(TrackedAttendees.getAttendees().isEmpty()){
+                            Toast.makeText(getActivity(), "No Attendees Checked in", Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                        checkInLocation.setText(locationString);
-                    } else {
-                        checkInLocation.setText("No check-in locations available");
-                    }
+                        Bundle b = new Bundle();
+                        b.putSerializable("attendeeList", TrackedAttendees);
 
-                    checkInLocation.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // Handle check-in location button click
-                        }
+
+                        Intent intent = new Intent(getActivity(), MapActivity.class);
+                        intent.putExtras(b);
+                        Log.d("Going to map", "Going to Map");
+                        startActivity(intent);
                     });
+
 
                     if (myevent.getPoster().equals("")) {
                         //no poster for this event
@@ -308,41 +327,78 @@ public class EventsDetailOrg extends Fragment {
 ////
 ////
                 }
-////
-////<<<<<<< HEAD
-//                //Create fragment
-//                EventPosterFrag posterShareFrag = new EventPosterFrag();
-//
-//                UserImage poster = new UserImage();
-//                poster.setImageB64(myevent.getPoster());
-//                poster.setID(myevent.getEventId());
-//
-//                Bundle args = new Bundle();
-//                args.putSerializable("Poster", poster);
-//
-//                posterShareFrag.setArguments(args);
-//                //ShareCode code_frag = new ShareCode();
-//                //Bundle args = new Bundle();
-//                //args.putSerializable("event", myevent);
-//                //code_frag.setArguments(args);
-//                getParentFragmentManager().setFragmentResult("Poster",args);
-//
-//                getActivity().getSupportFragmentManager().beginTransaction().replace(frameLayout, posterShareFrag).addToBackStack(null).commit();
-//
-//
-//
-//                //getActivity().getSupportFragmentManager().popBackStack();
-//            }
-//        });
-//
-//        eventnametxt.setText(myevent.getEventname());
-//        eventdetails.setText(myevent.getEventDetails());
-//
-//        return view;
-//
-//
-//    }
-//}
-//=======
+
+    public void populateEventLists(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Database d = new Database();
+        DocumentReference eventRef = db.collection("Events").document(myevent.getEventId());
+        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        myevent = d.getEvent(document);
+                        System.out.println("checkinpeople first " + myevent.getCheckInList().getAttendees().size());
+
+                        Map<String, String> checkInMap = (Map<String, String>) document.get("UserCheckIn");
+                        for (String a : checkInMap.keySet()) {
+                            retrieveAttendeeForEvent(a, true, myevent);
+                        }
+                        Map<String, String> subbedMap = (Map<String, String>) document.get("Subscribers");
+                        for (String a : subbedMap.keySet()) {
+                            retrieveAttendeeForEvent(a, false, myevent);
+                        }
+
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        System.out.println("checkinpeople last " + myevent.getCheckInList().getAttendees().size());
+
+                    } else {
+                        Log.d("Firestore", "No such document");
+                    }
+                } else {
+                    Log.d("Firestore", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void retrieveAttendeeForEvent(String id, boolean CheckIn, Event myevent){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Attendees").document(id);
+        Database fireBase = new Database();
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("Firebase Succeed", "Retrieve attendee: " + document.getData());
+                        Attendee a = fireBase.getAttendee(document);
+
+                        //If the user is to be checked in, check them in
+                        //Otherwise sub them
+                        if(CheckIn){
+                            myevent.addToCheckIn(a);
+                            TrackedAttendees.addAttendee(a);
+                        } else{
+                            myevent.userSubs(a);
+                        }
+
+
+                    } else {
+                        Log.d("Firebase", "No such document");
+                    }
+                } else {
+                    Log.d("Firebase get failed", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
 }
 //>>>>>>> main

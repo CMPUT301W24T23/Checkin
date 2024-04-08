@@ -63,8 +63,8 @@ public class Attendee implements User, Serializable {
         this.geoTracking = true;        //on by default
         this.profilePicture = "";           //Generate a new profile picture
         this.CheckInHist = new Hashtable<>();
-        this.lat = 0;
-        this.lon = 0;
+        this.lat = 0d;
+        this.lon = 0d;
     }
 
     /**
@@ -91,8 +91,8 @@ public class Attendee implements User, Serializable {
         this.geoTracking = tracking;
         this.profilePicture = "";
         this.CheckInHist = new Hashtable<>();
-        this.lat = 0;
-        this.lon = 0;
+        this.lat = 0d;
+        this.lon = 0d;
     }
 
     /**
@@ -310,6 +310,7 @@ public class Attendee implements User, Serializable {
         this.checkInLocation = checkInLocation;
     }
 
-
-
+    public void setGeoTracking(boolean geoTracking) {
+        this.geoTracking = geoTracking;
+    }
 }

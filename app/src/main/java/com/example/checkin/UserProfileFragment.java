@@ -225,9 +225,7 @@ public class UserProfileFragment extends Fragment {
         currentUser.setEmail(email);
         currentUser.setHomepage(homepage);
         currentUser.setPhoneNumber(phone);
-        if(!(currentUser.trackingEnabled() == locationPermission)) {
-            currentUser.toggleTracking();
-        }
+        currentUser.setGeoTracking(locationPermission);
 
 
         String imageBase64 = currentUser.getProfilePicture();

@@ -76,9 +76,10 @@ public class Database {
         //upload tracking data
         data.put("Latitude", a.getLat());
         data.put("Longitude", a.getLon());
+        Log.d("Database Tracking", String.format("Current tracking Lat: %f, Lon: %f", a.getLat(), a.getLon()));
 
         //upload profile picture data
-        data.put("Tracking", a.isHasDefaultAvi());
+        data.put("HasDefaultAvi", a.isHasDefaultAvi());
 
         //DocumentReference picRef = attendeeRef.document("ProfilePic");
         //Upload check in counts
@@ -162,21 +163,8 @@ public class Database {
 
         data.put("UserCheckIn", checkedIn);
 
-        //Map<String, String> updatedCheckInsId = e.getCheckInsId();
-
-        // Upload userIds of Checked in users
-        for (Attendee a : e.getCheckInList().getAttendees()) {
-            checkedIn.put(a.getUserId(), a.getCheckInLocation());
-        }
-
-        data.put("UserCheckIn", checkedIn);
 
 
-        data.put("UserCheckIn", checkedIn);
-
-        data.put("UserCheckIn", checkedIn);
-
-        //data.put("CheckInIds", updatedCheckInsId);
 
 
         Log.d("UpdateEvent", String.format("Event(%s, %s)", e.getEventId(), e.getEventname()));
@@ -264,11 +252,7 @@ public class Database {
         //data.put("Longitude", a.getLon());
 
         //set the tracking status of the attendee
-        //the empty constructor has tracking as true by default
-        boolean track = Boolean.TRUE.equals(doc.getBoolean("Tracking"));
-        if(!(track == a.trackingEnabled())){
-            a.toggleTracking();
-        }
+        a.setGeoTracking(Boolean.TRUE.equals(doc.getBoolean("Tracking")));
 
         a.setHasDefaultAvi(Boolean.TRUE.equals(doc.getBoolean("HasDefaultAvi")));
 

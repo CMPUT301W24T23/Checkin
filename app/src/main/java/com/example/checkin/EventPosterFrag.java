@@ -33,7 +33,6 @@ import java.util.Date;
  */
 public class EventPosterFrag extends Fragment {
     Button backbutton;
-    Button sharebutton;
     UserImage poster = new UserImage();
 
     @Override
@@ -50,16 +49,6 @@ public class EventPosterFrag extends Fragment {
         assert poster != null;
         imagePoster.setImageBitmap(poster.imageBitmap());
 
-        //Share the poster
-        sharebutton = view.findViewById(R.id.sharebtn);
-        sharebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BitmapDrawable bitmapdrawable = (BitmapDrawable) imagePoster.getDrawable();
-                Bitmap bitmap = bitmapdrawable.getBitmap();
-                shareImage(bitmap, requireContext());
-            }
-        });
 
         //Return
         backbutton = view.findViewById(R.id.backbtn);
@@ -74,50 +63,6 @@ public class EventPosterFrag extends Fragment {
         return view;
     }
 
-    /**
-     * Shares generated qr code image to other apps
-     * @param bitmap
-     * @param context
-     */
 
-    // URL: https://www.geeksforgeeks.org/how-to-share-image-of-your-app-with-another-app-in-android/
-    private void shareImage(Bitmap bitmap, Context context) {
-        Uri uri = getImageShare(bitmap, context);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, "Sharing Poster" );
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        intent.setType("image/png");
-        startActivity(Intent.createChooser(intent, "Share Via"));
-    }
-
-    /**
-     *
-     * @param bitmap
-     * @param context
-     * @return
-     */
-
-    // URL: https://www.geeksforgeeks.org/how-to-share-image-of-your-app-with-another-app-in-android/
-    private Uri getImageShare(Bitmap bitmap, Context context) {
-
-        File images = new File(context.getCacheDir(), "app_images");
-        Uri uri = null;
-
-        try {
-            images.mkdirs();
-            File file = new File(images, "image.png");
-            FileOutputStream fileoutput = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileoutput);
-            fileoutput.flush();
-            fileoutput.close();
-
-            uri = FileProvider.getUriForFile(context, "com.example.checkin", file);
-        }
-        catch (Exception e){
-            System.out.println("Error");
-        }
-        return uri;
-
-    }
 
 }

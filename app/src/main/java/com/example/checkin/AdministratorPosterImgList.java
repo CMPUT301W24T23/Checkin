@@ -91,6 +91,8 @@ public class AdministratorPosterImgList extends Fragment {
                 ImageView imageView = convertView.findViewById(R.id.admin_img_view);
                 Bitmap bitmap = getItem(position);
                 if (bitmap != null) {
+                    //resize image for a uniform view
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
                     imageView.setImageBitmap(bitmap);
                 }
                 return convertView;

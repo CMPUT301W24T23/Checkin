@@ -55,7 +55,7 @@ android {
 
 dependencies {
 
-    //implementation(files("/Users/samirasalman/Library/Android/sdk/platforms/android-34/android.jar")) // need for creating javadocs
+   // implementation(files("/Users/samirasalman/Library/Android/sdk/platforms/android-34/android.jar")) // need for creating javadocs
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.google.android.gms:play-services-maps:17.0.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")

@@ -182,6 +182,73 @@ public class AdministratorEventList extends Fragment {
                     }
 
 
+                    CollectionReference imagesCollectionRef = db.collection("Posters");
+
+
+                    eventDetails.document(eventId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()){
+                                DocumentSnapshot document = task.getResult(); // Corrected to use the result of the task
+                                if (document != null) { // Check if the document actually exists
+                                    String imageString2 = document.getString("Poster"); // Properly accessing the document
+                                    if (imageString2 != null){
+                                        imagesCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isComplete()){
+                                                    for (QueryDocumentSnapshot document : task.getResult()){
+                                                        String imageString = document.getString("Image"); // Assuming the field name is "image"
+
+                                                        assert imageString != null;
+                                                        if (imageString.equals(imageString2)) {
+                                                            // Convert string to bitmap and add to the list
+                                                            document.getReference().delete();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+//                    /*
+//                     Deletes the selected poster pic from the posters field.
+//                     */
+//                    eventDetails.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                    if (requireNonNull(document.getString("Name")).equals(event.getEventname())){
+//                                        String imageString2 = document.getString("Poster"); // Assuming the field name is "image"
+//                                        if (imageString2 != null){
+//                                            imagesCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                                                @Override
+//                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                                    if (task.isComplete()){
+//                                                        for (QueryDocumentSnapshot document : task.getResult()){
+//                                                            String imageString = document.getString("Image"); // Assuming the field name is "image"
+//
+//                                                            assert imageString != null;
+//                                                            if (imageString.equals(imageString2)) {
+//                                                                // Convert string to bitmap and add to the list
+//                                                                document.getReference().delete();
+//                                                            }
+//                                                        }
+//                                                    }
+//                                                }
+//                                            });
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    });
+
                     // Removing the event from the attendee's subscribed list.
                     for (Map<String, Object> subscribedMap : subscribedList){
 
@@ -226,6 +293,8 @@ public class AdministratorEventList extends Fragment {
                                 });
                         }
                     }
+
+
 
                     // Removing the event from the attendee's checked in list.
                     for (Map<String, Object> checkedMap : checkedList){
